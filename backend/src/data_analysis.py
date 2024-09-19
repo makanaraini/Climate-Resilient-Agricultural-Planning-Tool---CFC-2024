@@ -1,3 +1,4 @@
+import json
 import pandas as pd
 import numpy as np
 from typing import Dict, List
@@ -62,3 +63,8 @@ analysis_results = analyze_crop_data(sample_data)
 
 # Print the results
 print(json.dumps(analysis_results, indent=2))
+
+if __name__ == "__main__":
+    # Your test data and analysis call here
+    analysis_results = analyze_crop_data(your_test_data)
+    print(json.dumps(analysis_results, indent=2))

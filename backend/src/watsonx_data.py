@@ -11,24 +11,13 @@ API_KEY = os.getenv('WATSONX_DATA_API_KEY')
 URL = os.getenv('WATSONX_DATA_URL')
 PROJECT_ID = os.getenv('WATSONX_DATA_PROJECT_ID')
 
-# Initialize the API client
-client = APIClient(
-    credentials={
-        "apikey": API_KEY,
-        "url": URL
-    }
-)
-
-# Set project
-client.set.default_project(PROJECT_ID)
+# For now, set client to None
+client = None
 
 def execute_sql_query(query):
-    """
-    Execute a SQL query on watsonx.data
-    
-    :param query: SQL query string
-    :return: Pandas DataFrame with query results
-    """
+    if not client:
+        print("APIClient not initialized. Cannot execute query.")
+        return None
     try:
         result = client.data_management.run_sql(query)
         return pd.DataFrame(result.result)
@@ -37,11 +26,9 @@ def execute_sql_query(query):
         return None
 
 def list_datasets():
-    """
-    List all available datasets in watsonx.data
-    
-    :return: List of dataset names
-    """
+    if not client:
+        print("APIClient not initialized. Cannot list datasets.")
+        return None
     try:
         datasets = client.data_management.list_data_assets()
         return [dataset['metadata']['name'] for dataset in datasets['resources']]
@@ -50,14 +37,9 @@ def list_datasets():
         return None
 
 def create_dataset(name, description, sql_query):
-    """
-    Create a new dataset in watsonx.data
-    
-    :param name: Name of the new dataset
-    :param description: Description of the dataset
-    :param sql_query: SQL query to populate the dataset
-    :return: True if successful, False otherwise
-    """
+    if not client:
+        print("APIClient not initialized. Cannot create dataset.")
+        return False
     try:
         client.data_management.create_data_asset(
             name=name,
@@ -70,12 +52,9 @@ def create_dataset(name, description, sql_query):
         return False
 
 def delete_dataset(name):
-    """
-    Delete a dataset from watsonx.data
-    
-    :param name: Name of the dataset to delete
-    :return: True if successful, False otherwise
-    """
+    if not client:
+        print("APIClient not initialized. Cannot delete dataset.")
+        return False
     try:
         datasets = client.data_management.list_data_assets()
         dataset_id = next((d['metadata']['asset_id'] for d in datasets['resources'] if d['metadata']['name'] == name), None)
@@ -90,12 +69,9 @@ def delete_dataset(name):
         return False
 
 def get_dataset_info(name):
-    """
-    Get information about a specific dataset
-    
-    :param name: Name of the dataset
-    :return: Dictionary containing dataset information
-    """
+    if not client:
+        print("APIClient not initialized. Cannot get dataset info.")
+        return None
     try:
         datasets = client.data_management.list_data_assets()
         dataset = next((d for d in datasets['resources'] if d['metadata']['name'] == name), None)
