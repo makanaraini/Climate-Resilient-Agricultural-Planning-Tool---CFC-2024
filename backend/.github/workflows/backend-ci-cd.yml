@@ -1,0 +1,80 @@
+﻿name: Backend CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+    
+    - name: Run tests
+      run: |
+        cd backend
+        python -m pytest
+    
+    - name: Build Docker image
+      run: |
+        cd backend
+        docker build -t climate-resilient-ag-planning-tool .
+    
+    - name: Run Docker container
+      run: |
+        docker run -d -p 8080:8080 climate-resilient-ag-planning-tool
+        sleep 10
+        curl http://localhost:8080 || exit 1
+    
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install IBM Cloud CLI
+      run: |
+        curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+        ibmcloud --version
+        ibmcloud config --check-version=false
+    
+    - name: Authenticate with IBM Cloud
+      env:
+        IBM_CLOUD_API_KEY: ${{ secrets.IBM_CLOUD_API_KEY }}
+      run: |
+        ibmcloud login --apikey $IBM_CLOUD_API_KEY -r us-south
+        ibmcloud target -g Default
+    
+    - name: Build and push Docker image
+      env:
+        ICR_NAMESPACE: your-icr-namespace
+        IMAGE_NAME: climate-resilient-ag-planning-tool
+      run: |
+        cd backend
+        ibmcloud cr login
+        docker build -t us.icr.io/$ICR_NAMESPACE/$IMAGE_NAME:latest .
+        docker push us.icr.io/$ICR_NAMESPACE/$IMAGE_NAME:latest
+    
+    - name: Deploy to IBM Cloud Kubernetes Service
+      env:
+        CLUSTER_NAME: your-cluster-name
+        DEPLOYMENT_NAME: climate-resilient-ag-planning-tool
+      run: |
+        ibmcloud ks cluster config --cluster $CLUSTER_NAME
+        kubectl set image deployment/$DEPLOYMENT_NAME $DEPLOYMENT_NAME=us.icr.io/$ICR_NAMESPACE/$IMAGE_NAME:latest
+        kubectl rollout status deployment/$DEPLOYMENT_NAME
