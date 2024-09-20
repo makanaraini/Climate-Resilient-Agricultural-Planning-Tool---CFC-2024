@@ -1,63 +1,91 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Typography, Box, List, ListItem, ListItemText } from '@mui/material';
+import { TextField, Button, Typography, Box, List, ListItem, ListItemText, Alert } from '@mui/material';
+import { useAuth } from '../context/AuthContext'; // Add this import
 
 const PestDiseasePrediction = () => {
-  const [crop, setCrop] = useState('');
-  const [temperature, setTemperature] = useState('');
-  const [humidity, setHumidity] = useState('');
+  const { user } = useAuth(); // Add this line
+  const [formData, setFormData] = useState({
+    crop: '',
+    temperature: '',
+    humidity: ''
+  });
   const [predictions, setPredictions] = useState([]);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
+    if (!user) {
+      setError('You must be logged in to use this feature.');
+      return;
+    }
+    setError('');
+    setIsLoading(true);
+
     try {
       const response = await axios.post('http://localhost:5000/api/pest-disease-prediction', 
         { 
-          crop, 
-          temperature: parseFloat(temperature), 
-          humidity: parseFloat(humidity)
+          crop: formData.crop, 
+          temperature: parseFloat(formData.temperature), 
+          humidity: parseFloat(formData.humidity)
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${user.token}` } }
       );
       setPredictions(response.data);
     } catch (error) {
       console.error('Error fetching pest/disease predictions:', error);
+      setError('Failed to fetch predictions. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <Box>
       <Typography variant="h6">Pest and Disease Prediction</Typography>
+      {error && <Alert severity="error" sx={{ mt: 2, mb: 2 }}>{error}</Alert>}
       <form onSubmit={handleSubmit}>
         <TextField
           label="Crop"
-          value={crop}
-          onChange={(e) => setCrop(e.target.value)}
+          name="crop"
+          value={formData.crop}
+          onChange={handleChange}
           required
           margin="normal"
           fullWidth
         />
         <TextField
           label="Temperature (°C)"
+          name="temperature"
           type="number"
-          value={temperature}
-          onChange={(e) => setTemperature(e.target.value)}
+          value={formData.temperature}
+          onChange={handleChange}
           required
           margin="normal"
           fullWidth
         />
         <TextField
           label="Humidity (%)"
+          name="humidity"
           type="number"
-          value={humidity}
-          onChange={(e) => setHumidity(e.target.value)}
+          value={formData.humidity}
+          onChange={handleChange}
           required
           margin="normal"
           fullWidth
         />
-        <Button type="submit" variant="contained" color="primary">
-          Predict Risks
+        <Button 
+          type="submit" 
+          variant="contained" 
+          color="primary"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Predicting...' : 'Predict Risks'}
         </Button>
       </form>
       {predictions.length > 0 && (
@@ -75,7 +103,7 @@ const PestDiseasePrediction = () => {
           </List>
         </Box>
       )}
-      {predictions.length === 0 && <Typography mt={2}>No significant risks predicted.</Typography>}
+      {predictions.length === 0 && !isLoading && <Typography mt={2}>No significant risks predicted.</Typography>}
     </Box>
   );
 };

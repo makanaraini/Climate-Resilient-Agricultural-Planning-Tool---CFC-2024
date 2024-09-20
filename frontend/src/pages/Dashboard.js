@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // Add this import
 import DataInputForm from '../components/DataInputForm';
 import DataVisualization from '../components/DataVisualization';
 import DataCard from '../components/DataCard';
@@ -10,10 +11,13 @@ import WaterManagement from '../components/WaterManagement';
 import PestDiseasePrediction from '../components/PestDiseasePrediction';
 import UserProfile from '../components/UserProfile';
 import DataExport from '../components/DataExport';
-import { Container, Button, Typography } from '@mui/material';
+import AICropRecommendations from '../components/AICropRecommendations';
+import ReportDownload from '../components/ReportDownload';
+import { Container, Button, Typography, Grid } from '@mui/material';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-function Dashboard({ setAuth }) {
+function Dashboard() { // Remove setAuth prop
+  const { logout } = useAuth(); // Add this line
   const [weatherData, setWeatherData] = useState(null);
   const [weatherForecast, setWeatherForecast] = useState(null);
   const [cropsData, setCropsData] = useState(null);
@@ -24,7 +28,7 @@ function Dashboard({ setAuth }) {
     const fetchData = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
-        setAuth(false);
+        logout(); // Replace setAuth(false) with logout()
         navigate('/login');
         return;
       }
@@ -52,18 +56,18 @@ function Dashboard({ setAuth }) {
       } catch (err) {
         console.error('Error fetching data:', err);
         if (err.response && err.response.status === 401) {
-          setAuth(false);
+          logout(); // Replace setAuth(false) with logout()
           navigate('/login');
         }
       }
     };
 
     fetchData();
-  }, [setAuth, navigate]);
+  }, [logout, navigate]); // Update dependencies
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    setAuth(false);
+    logout(); // Replace setAuth(false) with logout()
     navigate('/login');
   };
 
@@ -72,53 +76,79 @@ function Dashboard({ setAuth }) {
       <Typography variant="h2" component="h1" gutterBottom>
         Dashboard
       </Typography>
-      {weatherData && (
-        <DataCard title="Current Weather">
-          <Typography>Temperature: {weatherData.temperature}°C</Typography>
-          <Typography>Humidity: {weatherData.humidity}%</Typography>
-          <Typography>Precipitation: {weatherData.precipitation}mm</Typography>
-        </DataCard>
-      )}
-      {weatherForecast && (
-        <DataCard title="Weather Forecast">
-          <WeatherForecast forecast={weatherForecast} />
-        </DataCard>
-      )}
-      {cropsData && (
-        <DataCard title="Crops">
-          <ul>
-            {cropsData.map(crop => (
-              <li key={crop.id}>{crop.name} - Optimal Temp: {crop.optimal_temp}°C, Water Needs: {crop.water_needs}</li>
-            ))}
-          </ul>
-        </DataCard>
-      )}
-      {agriculturalData && agriculturalData.length > 0 ? (
-        <DataCard title="Data Visualization">
-          <ErrorBoundary>
-            <DataVisualization agriculturalData={agriculturalData} />
-          </ErrorBoundary>
-        </DataCard>
-      ) : (
-        <DataCard title="Data Visualization">
-          <p>No agricultural data available</p>
-        </DataCard>
-      )}
-      <DataCard title="Crop Recommendation">
-        <CropRecommendation />
-      </DataCard>
-      <DataCard title="Water Management">
-        <WaterManagement />
-      </DataCard>
-      <DataCard title="Pest and Disease Prediction">
-        <PestDiseasePrediction />
-      </DataCard>
-      <DataCard title="User Profile">
-        <UserProfile />
-      </DataCard>
-      <DataCard title="Export Data">
-        <DataExport />
-      </DataCard>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={6}>
+          {weatherData && (
+            <DataCard title="Current Weather">
+              <Typography>Temperature: {weatherData.temperature}°C</Typography>
+              <Typography>Humidity: {weatherData.humidity}%</Typography>
+              <Typography>Precipitation: {weatherData.precipitation}mm</Typography>
+            </DataCard>
+          )}
+        </Grid>
+        <Grid item xs={12} md={6}>
+          {weatherForecast && (
+            <DataCard title="Weather Forecast">
+              <WeatherForecast forecast={weatherForecast} />
+            </DataCard>
+          )}
+        </Grid>
+        <Grid item xs={12}>
+          {cropsData && (
+            <DataCard title="Crops">
+              <ul>
+                {cropsData.map(crop => (
+                  <li key={crop.id}>{crop.name} - Optimal Temp: {crop.optimal_temp}°C, Water Needs: {crop.water_needs}</li>
+                ))}
+              </ul>
+            </DataCard>
+          )}
+        </Grid>
+        <Grid item xs={12}>
+          {agriculturalData && agriculturalData.length > 0 && (
+            <DataCard title="Data Visualization">
+              <ErrorBoundary>
+                <DataVisualization agriculturalData={agriculturalData} />
+              </ErrorBoundary>
+            </DataCard>
+          )}
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <DataCard title="Crop Recommendation">
+            <CropRecommendation />
+          </DataCard>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <DataCard title="AI Crop Recommendations">
+            <AICropRecommendations />
+          </DataCard>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <DataCard title="Water Management">
+            <WaterManagement />
+          </DataCard>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <DataCard title="Pest and Disease Prediction">
+            <PestDiseasePrediction />
+          </DataCard>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <DataCard title="User Profile">
+            <UserProfile />
+          </DataCard>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <DataCard title="Export Data">
+            <DataExport />
+          </DataCard>
+        </Grid>
+        <Grid item xs={12}>
+          <DataCard title="Download Reports">
+            <ReportDownload />
+          </DataCard>
+        </Grid>
+      </Grid>
       <DataInputForm />
       <Button variant="contained" color="secondary" onClick={handleLogout}>
         Logout

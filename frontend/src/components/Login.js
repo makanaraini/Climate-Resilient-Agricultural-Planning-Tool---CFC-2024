@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // Add this import
 
-function Login({ setAuth }) {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     try {
-      const response = await axios.post('http://localhost:5000/api/login', { username, password });
-      if (response.data.access_token) {
-        localStorage.setItem('token', response.data.access_token);
-        setAuth(true);
-        navigate('/dashboard');
-      }
-    } catch (err) {
+      await login({ email: username, password });
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Login failed:', error);
       setError('Invalid username or password');
     }
   };
@@ -46,6 +46,6 @@ function Login({ setAuth }) {
       <p>Don't have an account? <Link to="/register">Register here</Link></p>
     </div>
   );
-}
+};
 
 export default Login;

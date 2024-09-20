@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Box } from '@mui/material';
+import { useAuth } from '../context/AuthContext';
 
 const WaterManagement = () => {
+  const { user } = useAuth();
+  
   const [crop, setCrop] = useState('');
   const [area, setArea] = useState('');
   const [days, setDays] = useState('');
   const [expectedRainfall, setExpectedRainfall] = useState('');
   const [waterPlan, setWaterPlan] = useState(null);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
+    if (!crop || area <= 0 || days <= 0 || expectedRainfall < 0) {
+      setError('Please fill all fields with valid values.');
+      return;
+    }
+    if (!user) {
+      setError('You must be logged in to use this feature.');
+      return;
+    }
+    setIsLoading(true);
     try {
+      const token = user.token;
       const response = await axios.post('http://localhost:5000/api/water-management', 
         { 
           crop, 
@@ -25,11 +39,15 @@ const WaterManagement = () => {
       setWaterPlan(response.data);
     } catch (error) {
       console.error('Error fetching water management plan:', error);
+      setError('Failed to fetch water management plan. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <Box>
+      {error && <Typography color="error">{error}</Typography>}
       <Typography variant="h6">Water Management Plan</Typography>
       <form onSubmit={handleSubmit}>
         <TextField
@@ -67,8 +85,8 @@ const WaterManagement = () => {
           margin="normal"
           fullWidth
         />
-        <Button type="submit" variant="contained" color="primary">
-          Calculate Water Needs
+        <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
+          {isLoading ? 'Calculating...' : 'Calculate Water Needs'}
         </Button>
       </form>
       {waterPlan && (

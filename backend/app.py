@@ -8,6 +8,14 @@ import csv
 from io import StringIO
 
 import logging
+import io
+import pandas as pd
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+
+import os
+from ibm_watson import AssistantV2
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 app = Flask(__name__)
 CORS(app)
@@ -43,11 +51,11 @@ agricultural_data = [
 
 # Mock database of crops and their optimal conditions
 crops_db = [
-    {"name": "Wheat", "optimal_temp": 21, "optimal_humidity": 50, "optimal_soil_ph": 6.5},
-    {"name": "Rice", "optimal_temp": 27, "optimal_humidity": 70, "optimal_soil_ph": 6.0},
-    {"name": "Corn", "optimal_temp": 24, "optimal_humidity": 60, "optimal_soil_ph": 6.8},
-    {"name": "Soybeans", "optimal_temp": 26, "optimal_humidity": 65, "optimal_soil_ph": 6.3},
-    {"name": "Potatoes", "optimal_temp": 18, "optimal_humidity": 55, "optimal_soil_ph": 6.0},
+    {"name": "Wheat", "optimal_temp": 21, "optimal_humidity": 50, "optimal_soil_ph": 6.5, "suitable_soil_types": {"loamy": 1, "sandy": 1}, "optimal_rainfall": 400},
+    {"name": "Rice", "optimal_temp": 27, "optimal_humidity": 70, "optimal_soil_ph": 6.0, "suitable_soil_types": {"clay": 1}, "optimal_rainfall": 600},
+    {"name": "Corn", "optimal_temp": 24, "optimal_humidity": 60, "optimal_soil_ph": 6.8, "suitable_soil_types": {"loamy": 1}, "optimal_rainfall": 500},
+    {"name": "Soybeans", "optimal_temp": 26, "optimal_humidity": 65, "optimal_soil_ph": 6.3, "suitable_soil_types": {"loamy": 1}, "optimal_rainfall": 450},
+    {"name": "Potatoes", "optimal_temp": 18, "optimal_humidity": 55, "optimal_soil_ph": 6.0, "suitable_soil_types": {"loamy": 1}, "optimal_rainfall": 300},
 ]
 
 # Mock database of crops and their water needs (mm per day)
@@ -77,6 +85,19 @@ pest_disease_risks = {
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
+
+# Placeholder for Watson credentials
+WATSON_API_KEY = os.environ.get('WATSON_API_KEY', 'your-api-key')
+WATSON_URL = os.environ.get('WATSON_URL', 'your-url')
+WATSON_ASSISTANT_ID = os.environ.get('WATSON_ASSISTANT_ID', 'your-assistant-id')
+
+# Initialize Watson Assistant
+authenticator = IAMAuthenticator(WATSON_API_KEY)
+assistant = AssistantV2(
+    version='2021-06-14',
+    authenticator=authenticator
+)
+assistant.set_service_url(WATSON_URL)
 
 @app.route('/api/register', methods=['POST'])
 def register():
@@ -223,16 +244,20 @@ def get_crop_recommendation():
     temperature = data.get('temperature')
     humidity = data.get('humidity')
     soil_ph = data.get('soil_ph')
+    soil_type = data.get('soil_type')
+    rainfall = data.get('rainfall')
 
-    if not all([temperature, humidity, soil_ph]):
+    if not all([temperature, humidity, soil_ph, soil_type, rainfall]):
         return jsonify({"error": "Missing required data"}), 400
 
     recommendations = []
     for crop in crops_db:
         score = (
-            (1 - abs(crop['optimal_temp'] - temperature) / 10) * 0.4 +
-            (1 - abs(crop['optimal_humidity'] - humidity) / 50) * 0.3 +
-            (1 - abs(crop['optimal_soil_ph'] - soil_ph) / 2) * 0.3
+            (1 - abs(crop['optimal_temp'] - temperature) / 10) * 0.3 +
+            (1 - abs(crop['optimal_humidity'] - humidity) / 50) * 0.2 +
+            (1 - abs(crop['optimal_soil_ph'] - soil_ph) / 2) * 0.2 +
+            (1 if crop['suitable_soil_types'].get(soil_type, 0) else 0) * 0.2 +
+            (1 - abs(crop['optimal_rainfall'] - rainfall) / 500) * 0.1
         )
         recommendations.append({"crop": crop['name'], "score": round(score * 100, 2)})
 
@@ -247,8 +272,9 @@ def get_water_management_plan():
     area = data.get('area')  # in hectares
     days = data.get('days')
     expected_rainfall = data.get('expected_rainfall')  # in mm
+    soil_type = data.get('soil_type')
 
-    if not all([crop, area, days, expected_rainfall]):
+    if not all([crop, area, days, expected_rainfall, soil_type]):
         return jsonify({"error": "Missing required data"}), 400
 
     if crop not in crops_water_needs:
@@ -259,11 +285,30 @@ def get_water_management_plan():
     total_rainfall = expected_rainfall * area * 10000  # Convert to liters
     irrigation_need = max(0, total_water_need - total_rainfall)
 
+    # Adjust for soil type
+    soil_adjustment = {
+        "sandy": 1.2,
+        "loamy": 1.0,
+        "clay": 0.8
+    }
+    adjusted_irrigation = irrigation_need * soil_adjustment.get(soil_type, 1.0)
+
+    irrigation_schedule = [
+        {"day": i+1, "amount": round(adjusted_irrigation / days, 2)}
+        for i in range(days)
+    ]
+
     return jsonify({
         "total_water_need": round(total_water_need, 2),
         "expected_rainfall": round(total_rainfall, 2),
-        "irrigation_need": round(irrigation_need, 2),
-        "daily_irrigation": round(irrigation_need / days, 2) if days > 0 else 0
+        "irrigation_need": round(adjusted_irrigation, 2),
+        "daily_irrigation": round(adjusted_irrigation / days, 2),
+        "irrigation_schedule": irrigation_schedule,
+        "water_conservation_tips": [
+            "Use mulch to reduce evaporation",
+            "Water early in the morning or late in the evening",
+            "Consider drip irrigation for more efficient water use"
+        ]
     }), 200
 
 @app.route('/api/pest-disease-prediction', methods=['POST'])
@@ -337,6 +382,190 @@ def export_data():
                      mimetype='text/csv',
                      as_attachment=True,
                      attachment_filename='agricultural_data.csv')
+
+@app.route('/api/generate-report/<format>', methods=['GET'])
+@jwt_required()
+def generate_report(format):
+    # Convert the agricultural_data list to a pandas DataFrame
+    df = pd.DataFrame(agricultural_data)
+
+    if format == 'xlsx':
+        # Generate Excel file
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, sheet_name='Agricultural Data', index=False)
+        output.seek(0)
+        return send_file(output, 
+                         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+                         as_attachment=True, 
+                         attachment_filename='agricultural_report.xlsx')
+
+    elif format == 'pdf':
+        # Generate PDF file
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter)
+        p.drawString(100, 750, "Agricultural Report")
+        y = 700
+        for index, row in df.iterrows():
+            p.drawString(100, y, f"{row['date']}: {row['crop']} - Yield: {row['yield']}, Area: {row['area']}")
+            y -= 20
+        p.showPage()
+        p.save()
+        buffer.seek(0)
+        return send_file(buffer, 
+                         mimetype='application/pdf', 
+                         as_attachment=True, 
+                         attachment_filename='agricultural_report.pdf')
+
+    else:
+        return jsonify({"error": "Invalid format. Use 'xlsx' or 'pdf'."}), 400
+
+@app.route('/api/watson-query', methods=['POST'])
+@jwt_required()
+def query_watson():
+    user_input = request.json.get('query')
+    try:
+        response = assistant.message(
+            assistant_id=WATSON_ASSISTANT_ID,
+            session_id=create_session(),
+            input={
+                'message_type': 'text',
+                'text': user_input
+            }
+        ).get_result()
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def create_session():
+    try:
+        response = assistant.create_session(
+            assistant_id=WATSON_ASSISTANT_ID
+        ).get_result()
+        return response['session_id']
+    except Exception as e:
+        print(f"Error creating Watson session: {str(e)}")
+        return None
+
+@app.route('/api/planning-calendar', methods=['POST'])
+@jwt_required()
+def get_planning_calendar():
+    data = request.json
+    latitude = data.get('latitude')
+    longitude = data.get('longitude')
+    crops = data.get('crops')
+
+    if not all([latitude, longitude, crops]):
+        return jsonify({"error": "Missing required data"}), 400
+
+    # This is a placeholder. In a real application, you would:
+    # 1. Use the latitude and longitude to determine the climate zone
+    # 2. Look up the optimal planting and harvesting times for each crop in that zone
+    # 3. Generate a calendar based on this information
+
+    calendar = []
+    for crop in crops:
+        calendar.append({
+            "crop": crop,
+            "plant_date": "2023-03-15",  # Placeholder date
+            "harvest_date": "2023-09-15"  # Placeholder date
+        })
+
+    return jsonify(calendar), 200
+
+@app.route('/api/soil-health', methods=['POST'])
+@jwt_required()
+def track_soil_health():
+    data = request.json
+    soil_type = data.get('soil_type')
+    ph_level = data.get('ph_level')
+    nitrogen = data.get('nitrogen')
+    phosphorus = data.get('phosphorus')
+    potassium = data.get('potassium')
+    organic_matter = data.get('organic_matter')
+
+    if not all([soil_type, ph_level, nitrogen, phosphorus, potassium, organic_matter]):
+        return jsonify({"error": "Missing required data"}), 400
+
+    health_score = (
+        (7 - abs(7 - ph_level)) / 7 * 20 +
+        min(nitrogen / 100, 1) * 20 +
+        min(phosphorus / 100, 1) * 20 +
+        min(potassium / 100, 1) * 20 +
+        min(organic_matter / 5, 1) * 20
+    )
+
+    return jsonify({
+        "soil_health_score": round(health_score, 2),
+        "recommendations": [
+            "Consider adding compost to improve organic matter content",
+            f"The soil pH is {ph_level}. Ideal range is 6.0-7.0.",
+            "Rotate crops to maintain soil health"
+        ]
+    }), 200
+
+@app.route('/api/market-trends', methods=['GET'])
+@jwt_required()
+def analyze_market_trends():
+    # This is a placeholder. In a real application, you would:
+    # 1. Fetch real-time market data from an API
+    # 2. Analyze historical price trends
+    # 3. Consider factors like global supply and demand
+
+    market_trends = [
+        {"crop": "Wheat", "current_price": 7.5, "trend": "rising", "demand": "high"},
+        {"crop": "Corn", "current_price": 6.2, "trend": "stable", "demand": "moderate"},
+        {"crop": "Soybeans", "current_price": 14.3, "trend": "falling", "demand": "low"}
+    ]
+
+    return jsonify(market_trends), 200
+
+@app.route('/api/risk-assessment', methods=['POST'])
+@jwt_required()
+def assess_risk():
+    data = request.json
+    crop = data.get('crop')
+    location = data.get('location')
+    planting_date = data.get('planting_date')
+
+    if not all([crop, location, planting_date]):
+        return jsonify({"error": "Missing required data"}), 400
+
+    # This is a placeholder. In a real application, you would:
+    # 1. Use historical weather data for the location
+    # 2. Consider pest prevalence in the area
+    # 3. Analyze market volatility for the crop
+
+    risks = [
+        {"type": "Weather", "risk_level": "medium", "details": "Potential for dry spell in mid-season"},
+        {"type": "Pests", "risk_level": "low", "details": "No major pest outbreaks expected"},
+        {"type": "Market", "risk_level": "high", "details": "Price volatility due to global supply changes"}
+    ]
+
+    return jsonify(risks), 200
+
+@app.route('/api/notifications', methods=['GET'])
+@jwt_required()
+def get_notifications():
+    # In a real application, you would fetch this data from a database
+    # and filter based on the current user
+    notifications = [
+        {
+            "id": 1,
+            "title": "Weather Warning",
+            "message": "Heavy rainfall expected in your area in the next 48 hours.",
+            "type": "weather",
+            "severity": "high"
+        },
+        {
+            "id": 2,
+            "title": "Water Scarcity Alert",
+            "message": "Water levels in local reservoirs are low. Consider water conservation measures.",
+            "type": "water",
+            "severity": "medium"
+        }
+    ]
+    return jsonify(notifications), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,51 @@
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { AppBar, Toolbar, Typography, Container } from '@mui/material';
+import Login from './components/Login';
+import Register from './components/Register';
+import Dashboard from './pages/Dashboard';
+import NotificationSystem from './components/NotificationSystem';
+
+function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const setAuth = (boolean) => {
+    setIsAuthenticated(boolean);
+  };
+
+  return (
+    <Router>
+      <div className="App">
+        {isAuthenticated && (
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" style={{ flexGrow: 1 }}>
+                Climate-Resilient Agricultural Planning Tool
+              </Typography>
+              <NotificationSystem />
+            </Toolbar>
+          </AppBar>
+        )}
+        <Container>
+          <Routes>
+            <Route 
+              path="/login" 
+              element={!isAuthenticated ? <Login setAuth={setAuth} /> : <Navigate to="/dashboard" />} 
+            />
+            <Route 
+              path="/register" 
+              element={!isAuthenticated ? <Register setAuth={setAuth} /> : <Navigate to="/dashboard" />} 
+            />
+            <Route 
+              path="/dashboard" 
+              element={isAuthenticated ? <Dashboard setAuth={setAuth} /> : <Navigate to="/login" />} 
+            />
+            <Route path="/" element={<Navigate to="/login" />} />
+          </Routes>
+        </Container>
+      </div>
+    </Router>
+  );
+}
+
+export default App;

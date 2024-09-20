@@ -1,38 +1,48 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Container, Alert } from '@mui/material';
+import { useAuth } from '../context/AuthContext'; // Add this import
 
 function DataInputForm() {
-  const [crop, setCrop] = useState('');
-  const [yieldAmount, setYieldAmount] = useState('');
-  const [temperature, setTemperature] = useState('');
-  const [rainfall, setRainfall] = useState('');
+  const { user } = useAuth(); // Add this line
+  const [formData, setFormData] = useState({
+    crop: '',
+    yieldAmount: '',
+    temperature: '',
+    rainfall: '',
+    plantingDate: '',
+    harvestDate: '',
+    area: ''
+  });
   const [message, setMessage] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!user) {
       setMessage('You must be logged in to submit data.');
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/agricultural-data', {
-        crop,
-        yield: yieldAmount,
-        temperature,
-        rainfall
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.post('http://localhost:5000/api/agricultural-data', formData, {
+        headers: { Authorization: `Bearer ${user.token}` }
       });
 
       if (response.status === 201) {
         setMessage('Data submitted successfully.');
-        setCrop('');
-        setYieldAmount('');
-        setTemperature('');
-        setRainfall('');
+        setFormData({
+          crop: '',
+          yieldAmount: '',
+          temperature: '',
+          rainfall: '',
+          plantingDate: '',
+          harvestDate: '',
+          area: ''
+        });
       }
     } catch (err) {
       setMessage('Error submitting data.');
@@ -54,8 +64,8 @@ function DataInputForm() {
           id="crop"
           label="Crop"
           name="crop"
-          value={crop}
-          onChange={(e) => setCrop(e.target.value)}
+          value={formData.crop}
+          onChange={handleChange}
         />
         <TextField
           variant="outlined"
@@ -63,11 +73,11 @@ function DataInputForm() {
           required
           fullWidth
           id="yield"
-          label="Yield"
-          name="yield"
+          label="Yield (kg/hectare)"
+          name="yieldAmount"
           type="number"
-          value={yieldAmount}
-          onChange={(e) => setYieldAmount(e.target.value)}
+          value={formData.yieldAmount}
+          onChange={handleChange}
         />
         <TextField
           variant="outlined"
@@ -75,11 +85,11 @@ function DataInputForm() {
           required
           fullWidth
           id="temperature"
-          label="Temperature"
+          label="Temperature (°C)"
           name="temperature"
           type="number"
-          value={temperature}
-          onChange={(e) => setTemperature(e.target.value)}
+          value={formData.temperature}
+          onChange={handleChange}
         />
         <TextField
           variant="outlined"
@@ -87,11 +97,49 @@ function DataInputForm() {
           required
           fullWidth
           id="rainfall"
-          label="Rainfall"
+          label="Rainfall (mm)"
           name="rainfall"
           type="number"
-          value={rainfall}
-          onChange={(e) => setRainfall(e.target.value)}
+          value={formData.rainfall}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="plantingDate"
+          label="Planting Date"
+          name="plantingDate"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          value={formData.plantingDate}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="harvestDate"
+          label="Harvest Date"
+          name="harvestDate"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          value={formData.harvestDate}
+          onChange={handleChange}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="area"
+          label="Area (hectares)"
+          name="area"
+          type="number"
+          value={formData.area}
+          onChange={handleChange}
         />
         <Button
           type="submit"

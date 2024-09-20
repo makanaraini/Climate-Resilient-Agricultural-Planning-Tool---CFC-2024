@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, TimeScale } from 'chart.js';
 import { Bar, Line, Scatter } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Box, Typography, TextField, Button, Select, MenuItem } from '@mui/material';
 import 'chartjs-adapter-date-fns';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  TimeScale,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const DataVisualization = ({ agriculturalData }) => {
   const [startDate, setStartDate] = useState('');
