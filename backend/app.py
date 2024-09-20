@@ -101,6 +101,9 @@ assistant.set_service_url(WATSON_URL)
 
 @app.route('/api/register', methods=['POST'])
 def register():
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
     username = request.json.get('username', None)
     password = request.json.get('password', None)
     if not username or not password:
@@ -109,8 +112,9 @@ def register():
     if username in users:
         return jsonify({"msg": "Username already exists"}), 400
     
+    hashed_password = generate_password_hash(password)
     users[username] = {
-        "password": generate_password_hash(password),
+        "password": hashed_password,
         "name": "",
         "email": "",
         "location": "",

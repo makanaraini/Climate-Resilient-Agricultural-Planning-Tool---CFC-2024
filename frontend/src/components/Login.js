@@ -1,51 +1,89 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // Add this import
+import { TextField, Button, Typography, Box, Container, Alert } from '@mui/material';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
-const Login = () => {
+function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useContext(AuthContext); // Use the login function from AuthContext
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     try {
-      await login({ email: username, password });
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Login failed:', error);
-      setError('Invalid username or password');
+      const response = await axios.post('http://localhost:5000/api/login', { username, password });
+      console.log('Login response:', response.data); // For debugging
+      if (response.data.access_token) {
+        login(response.data.access_token); // Use the login function from context
+        navigate('/dashboard');
+      } else {
+        setError('Login failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Login error:', err.response?.data || err.message);
+      setError(err.response?.data?.msg || 'Login failed. Please try again.');
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      {error && <p style={{color: 'red'}}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
-      <p>Don't have an account? <Link to="/register">Register here</Link></p>
-    </div>
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Typography component="h1" variant="h5">
+          Login
+        </Typography>
+        {error && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{error}</Alert>}
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
+            autoFocus
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Sign In
+          </Button>
+          <Link to="/register" style={{ textDecoration: 'none' }}>
+            <Typography variant="body2" align="center">
+              Don't have an account? Register here
+            </Typography>
+          </Link>
+        </Box>
+      </Box>
+    </Container>
   );
-};
+}
 
 export default Login;

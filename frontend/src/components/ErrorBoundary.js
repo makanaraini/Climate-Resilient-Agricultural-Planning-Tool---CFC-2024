@@ -1,4 +1,5 @@
 import React from 'react';
+import { Typography, Box } from '@mui/material';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -16,7 +17,13 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      return <h1>Something went wrong with the chart.</h1>;
+      return (
+        <Box sx={{ p: 2, textAlign: 'center' }}>
+          <Typography variant="h5" color="error">
+            Something went wrong with the chart.
+          </Typography>
+        </Box>
+      );
     }
 
     return this.props.children; 

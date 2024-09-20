@@ -1,160 +1,180 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useContext } from 'react';
+import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import MuiDrawer from '@mui/material/Drawer';
+import Box from '@mui/material/Box';
+import MuiAppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { mainListItems, secondaryListItems } from './listItems';
+import FarmDashboard from '../components/FarmDashboard';
+import { AuthContext } from '../context/AuthContext'; // Update this import
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // Add this import
-import DataInputForm from '../components/DataInputForm';
-import DataVisualization from '../components/DataVisualization';
-import DataCard from '../components/DataCard';
-import WeatherForecast from '../components/WeatherForecast';
-import CropRecommendation from '../components/CropRecommendation';
-import WaterManagement from '../components/WaterManagement';
-import PestDiseasePrediction from '../components/PestDiseasePrediction';
-import UserProfile from '../components/UserProfile';
-import DataExport from '../components/DataExport';
-import AICropRecommendations from '../components/AICropRecommendations';
-import ReportDownload from '../components/ReportDownload';
-import { Container, Button, Typography, Grid } from '@mui/material';
-import ErrorBoundary from '../components/ErrorBoundary';
+import Button from '@mui/material/Button';
 
-function Dashboard() { // Remove setAuth prop
-  const { logout } = useAuth(); // Add this line
-  const [weatherData, setWeatherData] = useState(null);
-  const [weatherForecast, setWeatherForecast] = useState(null);
-  const [cropsData, setCropsData] = useState(null);
-  const [agriculturalData, setAgriculturalData] = useState([]);
+const drawerWidth = 240;
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(['width', 'margin'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
+    '& .MuiDrawer-paper': {
+      position: 'relative',
+      whiteSpace: 'nowrap',
+      width: drawerWidth,
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      boxSizing: 'border-box',
+      ...(!open && {
+        overflowX: 'hidden',
+        transition: theme.transitions.create('width', {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.leavingScreen,
+        }),
+        width: theme.spacing(7),
+        [theme.breakpoints.up('sm')]: {
+          width: theme.spacing(9),
+        },
+      }),
+    },
+  }),
+);
+
+const mdTheme = createTheme();
+
+function DashboardContent() {
+  const [open, setOpen] = useState(true);
+  const { isAuthenticated, logout } = useContext(AuthContext); // Use AuthContext
   const navigate = useNavigate();
 
+  const toggleDrawer = () => {
+    setOpen(!open);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        logout(); // Replace setAuth(false) with logout()
-        navigate('/login');
-        return;
-      }
-
-      try {
-        const weatherResponse = await axios.get('http://localhost:5000/api/weather', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setWeatherData(weatherResponse.data);
-
-        const forecastResponse = await axios.get('http://localhost:5000/api/weather-forecast', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setWeatherForecast(forecastResponse.data);
-
-        const cropsResponse = await axios.get('http://localhost:5000/api/crops', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setCropsData(cropsResponse.data);
-
-        const agriculturalResponse = await axios.get('http://localhost:5000/api/agricultural-data', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setAgriculturalData(agriculturalResponse.data);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        if (err.response && err.response.status === 401) {
-          logout(); // Replace setAuth(false) with logout()
-          navigate('/login');
-        }
-      }
-    };
-
-    fetchData();
-  }, [logout, navigate]); // Update dependencies
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    logout(); // Replace setAuth(false) with logout()
+    logout();
     navigate('/login');
   };
 
+  if (!isAuthenticated) {
+    return null; // or a loading spinner
+  }
+
   return (
-    <Container>
-      <Typography variant="h2" component="h1" gutterBottom>
-        Dashboard
-      </Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          {weatherData && (
-            <DataCard title="Current Weather">
-              <Typography>Temperature: {weatherData.temperature}°C</Typography>
-              <Typography>Humidity: {weatherData.humidity}%</Typography>
-              <Typography>Precipitation: {weatherData.precipitation}mm</Typography>
-            </DataCard>
-          )}
-        </Grid>
-        <Grid item xs={12} md={6}>
-          {weatherForecast && (
-            <DataCard title="Weather Forecast">
-              <WeatherForecast forecast={weatherForecast} />
-            </DataCard>
-          )}
-        </Grid>
-        <Grid item xs={12}>
-          {cropsData && (
-            <DataCard title="Crops">
-              <ul>
-                {cropsData.map(crop => (
-                  <li key={crop.id}>{crop.name} - Optimal Temp: {crop.optimal_temp}°C, Water Needs: {crop.water_needs}</li>
-                ))}
-              </ul>
-            </DataCard>
-          )}
-        </Grid>
-        <Grid item xs={12}>
-          {agriculturalData && agriculturalData.length > 0 && (
-            <DataCard title="Data Visualization">
-              <ErrorBoundary>
-                <DataVisualization agriculturalData={agriculturalData} />
-              </ErrorBoundary>
-            </DataCard>
-          )}
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <DataCard title="Crop Recommendation">
-            <CropRecommendation />
-          </DataCard>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <DataCard title="AI Crop Recommendations">
-            <AICropRecommendations />
-          </DataCard>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <DataCard title="Water Management">
-            <WaterManagement />
-          </DataCard>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <DataCard title="Pest and Disease Prediction">
-            <PestDiseasePrediction />
-          </DataCard>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <DataCard title="User Profile">
-            <UserProfile />
-          </DataCard>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <DataCard title="Export Data">
-            <DataExport />
-          </DataCard>
-        </Grid>
-        <Grid item xs={12}>
-          <DataCard title="Download Reports">
-            <ReportDownload />
-          </DataCard>
-        </Grid>
-      </Grid>
-      <DataInputForm />
-      <Button variant="contained" color="secondary" onClick={handleLogout}>
-        Logout
-      </Button>
-    </Container>
+    <ThemeProvider theme={mdTheme}>
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        <AppBar position="absolute" open={open}>
+          <Toolbar
+            sx={{
+              pr: '24px', // keep right padding when drawer closed
+            }}
+          >
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={toggleDrawer}
+              sx={{
+                marginRight: '36px',
+                ...(open && { display: 'none' }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              sx={{ flexGrow: 1 }}
+            >
+              Dashboard
+            </Typography>
+            <Button color="inherit" onClick={handleLogout}>Logout</Button>
+          </Toolbar>
+        </AppBar>
+        <Drawer variant="permanent" open={open}>
+          <Toolbar
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              px: [1],
+            }}
+          >
+            <IconButton onClick={toggleDrawer}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </Toolbar>
+          <Divider />
+          <List component="nav">
+            {mainListItems}
+            <Divider sx={{ my: 1 }} />
+            {secondaryListItems}
+          </List>
+        </Drawer>
+        <Box
+          component="main"
+          sx={{
+            backgroundColor: (theme) =>
+              theme.palette.mode === 'light'
+                ? theme.palette.grey[100]
+                : theme.palette.grey[900],
+            flexGrow: 1,
+            height: '100vh',
+            overflow: 'auto',
+          }}
+        >
+          <Toolbar />
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Grid container spacing={3}>
+              {/* Farm Dashboard */}
+              <Grid item xs={12}>
+                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                  <FarmDashboard />
+                </Paper>
+              </Grid>
+            </Grid>
+          </Container>
+        </Box>
+      </Box>
+    </ThemeProvider>
   );
 }
 
-export default Dashboard;
+export default function Dashboard() {
+  return <DashboardContent />;
+}

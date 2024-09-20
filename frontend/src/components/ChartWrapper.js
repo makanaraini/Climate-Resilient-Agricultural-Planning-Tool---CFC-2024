@@ -1,10 +1,11 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
+import { Box, Typography } from '@mui/material';
 
 const ChartWrapper = ({ data }) => {
   console.log('ChartWrapper data:', data);
   if (!data || data.length === 0) {
-    return <div>No data available</div>;
+    return <Typography>No data available</Typography>;
   }
 
   const chartData = {
@@ -32,7 +33,11 @@ const ChartWrapper = ({ data }) => {
     },
   };
 
-  return <Line data={chartData} options={options} />;
+  return (
+    <Box>
+      <Line data={chartData} options={options} />
+    </Box>
+  );
 };
 
 export default ChartWrapper;

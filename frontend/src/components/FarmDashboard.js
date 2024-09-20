@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { 
   Typography, Box, Grid, Paper, Button, CircularProgress, 
@@ -17,11 +17,7 @@ const FarmDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     if (!user) {
       setError('You must be logged in to view this dashboard.');
       setIsLoading(false);
@@ -40,7 +36,11 @@ const FarmDashboard = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const exportCSV = () => {
     const csvContent = "data:text/csv;charset=utf-8," 
