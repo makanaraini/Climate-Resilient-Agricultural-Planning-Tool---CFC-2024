@@ -32,7 +32,7 @@ Climate change in Eastern Africa is causing extreme weather variability, leading
 
 ### How our technology solution can help
 
-Our AI tool provides climate-resilient farming insights for Eastern African farmers.
+Our AI tool provides climate-resilient farming insights for Eastern African farmers. EEE2062rm/16814
 
 ### Our idea
 

@@ -1,180 +1,82 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiDrawer from '@mui/material/Drawer';
-import Box from '@mui/material/Box';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { mainListItems, secondaryListItems } from './listItems';
-import FarmDashboard from '../components/FarmDashboard';
-import { AuthContext } from '../context/AuthContext'; // Update this import
-import { useNavigate } from 'react-router-dom';
-import Button from '@mui/material/Button';
+import React, { useState, useEffect } from 'react';
+import { Typography, Box, Grid, Paper, CircularProgress } from '@mui/material';
+import { supabase } from '../utils/supabaseClient';
+import WeatherWidget from '../components/WeatherWidget';
+import DataCard from '../components/DataCard';
+import CropRecommendation from '../components/CropRecommendation';
 
-const drawerWidth = 240;
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
-      transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(9),
-        },
-      }),
-    },
-  }),
-);
-
-const mdTheme = createTheme();
-
-function DashboardContent() {
-  const [open, setOpen] = useState(true);
-  const { isAuthenticated, logout } = useContext(AuthContext); // Use AuthContext
-  const navigate = useNavigate();
-
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
+function Dashboard() {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [dashboardData, setDashboardData] = useState({
+    totalCrops: 0,
+    averageYield: 0,
+    waterUsage: 0,
+  });
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
+    async function fetchDashboardData() {
+      try {
+        setLoading(true);
+        // Fetch data from your Supabase tables
+        const { data: cropsData, error: cropsError } = await supabase
+          .from('crops')
+          .select('*');
+
+        if (cropsError) throw cropsError;
+
+        // Calculate dashboard metrics
+        const totalCrops = cropsData.length;
+        const averageYield = cropsData.reduce((sum, crop) => sum + (crop.yield || 0), 0) / totalCrops;
+        const waterUsage = cropsData.reduce((sum, crop) => sum + (crop.water_requirements || 0), 0);
+
+        setDashboardData({
+          totalCrops,
+          averageYield: averageYield.toFixed(2),
+          waterUsage: waterUsage.toFixed(2),
+        });
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        setError('Failed to fetch dashboard data');
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [isAuthenticated, navigate]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+    fetchDashboardData();
+  }, []);
 
-  if (!isAuthenticated) {
-    return null; // or a loading spinner
-  }
+  if (loading) return <CircularProgress />;
+  if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <ThemeProvider theme={mdTheme}>
-      <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <AppBar position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px', // keep right padding when drawer closed
-            }}
-          >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              Dashboard
-            </Typography>
-            <Button color="inherit" onClick={handleLogout}>Logout</Button>
-          </Toolbar>
-        </AppBar>
-        <Drawer variant="permanent" open={open}>
-          <Toolbar
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              px: [1],
-            }}
-          >
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Toolbar>
-          <Divider />
-          <List component="nav">
-            {mainListItems}
-            <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
-          </List>
-        </Drawer>
-        <Box
-          component="main"
-          sx={{
-            backgroundColor: (theme) =>
-              theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
-                : theme.palette.grey[900],
-            flexGrow: 1,
-            height: '100vh',
-            overflow: 'auto',
-          }}
-        >
-          <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Farm Dashboard */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <FarmDashboard />
-                </Paper>
-              </Grid>
-            </Grid>
-          </Container>
-        </Box>
-      </Box>
-    </ThemeProvider>
+    <Box sx={{ flexGrow: 1, p: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        Farm Dashboard
+      </Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={4}>
+          <DataCard title="Total Crops" value={dashboardData.totalCrops} />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <DataCard title="Average Yield" value={`${dashboardData.averageYield} kg/ha`} />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <DataCard title="Water Usage" value={`${dashboardData.waterUsage} L`} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2 }}>
+            <WeatherWidget />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2 }}>
+            <CropRecommendation />
+          </Paper>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
 
-export default function Dashboard() {
-  return <DashboardContent />;
-}
+export default Dashboard;

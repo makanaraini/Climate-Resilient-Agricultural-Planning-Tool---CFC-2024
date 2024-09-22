@@ -1,20 +1,12 @@
 import React from 'react';
-import { Card, CardContent, Typography, styled } from '@mui/material';
+import { Typography, Paper } from '@mui/material';
 
-const StyledCard = styled(Card)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-}));
-
-function DataCard({ title, children }) {
+function DataCard({ title, value }) {
   return (
-    <StyledCard variant="outlined">
-      <CardContent>
-        <Typography variant="h5" component="h2">
-          {title}
-        </Typography>
-        {children}
-      </CardContent>
-    </StyledCard>
+    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Typography variant="h6">{title}</Typography>
+      <Typography variant="h4">{value}</Typography>
+    </Paper>
   );
 }
 

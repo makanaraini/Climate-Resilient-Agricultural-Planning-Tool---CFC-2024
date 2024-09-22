@@ -3,10 +3,11 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PeopleIcon from '@mui/icons-material/People';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import LayersIcon from '@mui/icons-material/Layers';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
+import GrassIcon from '@mui/icons-material/Grass';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import PersonIcon from '@mui/icons-material/Person';
 
 export const mainListItems = (
   <React.Fragment>
@@ -18,33 +19,38 @@ export const mainListItems = (
     </ListItemButton>
     <ListItemButton>
       <ListItemIcon>
-        <ShoppingCartIcon />
+        <WaterDropIcon />
       </ListItemIcon>
-      <ListItemText primary="Orders" />
+      <ListItemText primary="Water Management" />
     </ListItemButton>
     <ListItemButton>
       <ListItemIcon>
-        <PeopleIcon />
+        <GrassIcon />
       </ListItemIcon>
-      <ListItemText primary="Customers" />
+      <ListItemText primary="Soil Analysis" />
     </ListItemButton>
     <ListItemButton>
       <ListItemIcon>
-        <BarChartIcon />
+        <WbSunnyIcon />
+      </ListItemIcon>
+      <ListItemText primary="Weather Details" />
+    </ListItemButton>
+    <ListItemButton>
+      <ListItemIcon>
+        <AssessmentIcon />
       </ListItemIcon>
       <ListItemText primary="Reports" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Integrations" />
     </ListItemButton>
   </React.Fragment>
 );
 
 export const secondaryListItems = (
   <React.Fragment>
-    {/* Add secondary list items here if needed */}
+    <ListItemButton>
+      <ListItemIcon>
+        <PersonIcon />
+      </ListItemIcon>
+      <ListItemText primary="User Profile" />
+    </ListItemButton>
   </React.Fragment>
 );

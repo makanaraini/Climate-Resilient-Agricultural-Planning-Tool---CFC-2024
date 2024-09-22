@@ -1,38 +1,44 @@
 import React from 'react';
-import axios from 'axios';
-import { Button, Typography, Box } from '@mui/material';
+import { Button } from '@mui/material';
 
-const DataExport = () => {
-  const handleExport = async () => {
-    const token = localStorage.getItem('token');
-    try {
-      const response = await axios.get('http://localhost:5000/api/export-data', {
-        headers: { Authorization: `Bearer ${token}` },
-        responseType: 'blob', // Important for file download
-      });
-      
-      // Create a blob from the response data
-      const blob = new Blob([response.data], { type: 'text/csv' });
-      
-      // Create a link element and trigger the download
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'agricultural_data.csv';
+function DataExport({ weatherData, cropData }) {
+  const exportData = () => {
+    const weatherCSV = convertToCSV(weatherData);
+    const cropCSV = convertToCSV(cropData);
+
+    const blob = new Blob([weatherCSV, '\n\n', cropCSV], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'farm_data_export.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
       link.click();
-      
-    } catch (error) {
-      console.error('Error exporting data:', error);
+      document.body.removeChild(link);
     }
   };
 
+  const convertToCSV = (objArray) => {
+    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+    let str = `${Object.keys(array[0]).join(',')}\r\n`;
+
+    for (let i = 0; i < array.length; i++) {
+      let line = '';
+      for (let index in array[i]) {
+        if (line !== '') line += ',';
+        line += array[i][index];
+      }
+      str += line + '\r\n';
+    }
+    return str;
+  };
+
   return (
-    <Box>
-      <Typography variant="h6">Export Data</Typography>
-      <Button onClick={handleExport} variant="contained" color="primary">
-        Download CSV
-      </Button>
-    </Box>
+    <Button variant="contained" color="primary" onClick={exportData}>
+      Export Data
+    </Button>
   );
-};
+}
 
 export default DataExport;

@@ -1,30 +1,37 @@
-import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Container, Alert } from '@mui/material';
-import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { 
+  Box, 
+  Button, 
+  TextField, 
+  Typography, 
+  Container, 
+  Alert, 
+  CircularProgress 
+} from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Avatar from '@mui/material/Avatar';
 
 function Login() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // Use the login function from AuthContext
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/login', { username, password });
-      console.log('Login response:', response.data); // For debugging
-      if (response.data.access_token) {
-        login(response.data.access_token); // Use the login function from context
-        navigate('/dashboard');
-      } else {
-        setError('Login failed. Please try again.');
-      }
-    } catch (err) {
-      console.error('Login error:', err.response?.data || err.message);
-      setError(err.response?.data?.msg || 'Login failed. Please try again.');
+      setError('');
+      setLoading(true);
+      await login(email, password);
+      navigate('/dashboard');
+    } catch (error) {
+      setError(error.message || 'Failed to log in');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,22 +45,25 @@ function Login() {
           alignItems: 'center',
         }}
       >
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <LockOutlinedIcon />
+        </Avatar>
         <Typography component="h1" variant="h5">
-          Login
+          Sign in
         </Typography>
-        {error && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{error}</Alert>}
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
           <TextField
             margin="normal"
             required
             fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            autoComplete="username"
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
             autoFocus
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -72,14 +82,10 @@ function Login() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled={loading}
           >
-            Sign In
+            {loading ? <CircularProgress size={24} /> : 'Sign In'}
           </Button>
-          <Link to="/register" style={{ textDecoration: 'none' }}>
-            <Typography variant="body2" align="center">
-              Don't have an account? Register here
-            </Typography>
-          </Link>
         </Box>
       </Box>
     </Container>

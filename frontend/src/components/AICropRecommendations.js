@@ -7,6 +7,17 @@ const AICropRecommendations = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Tailwind classes for styling
+  const containerClasses = "bg-white shadow-lg rounded-lg p-6 mb-8";
+  const titleClasses = "text-2xl font-bold text-gray-800 mb-4";
+  const loadingClasses = "flex justify-center items-center h-40";
+  const errorClasses = "text-red-500 text-center";
+  const listClasses = "divide-y divide-gray-200";
+  const listItemClasses = "py-4";
+  const cropNameClasses = "text-lg font-semibold text-indigo-600";
+  const confidenceClasses = "text-sm text-gray-600";
+  const reasonClasses = "mt-1 text-gray-500";
+
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {

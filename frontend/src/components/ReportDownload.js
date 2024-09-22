@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, CircularProgress, Typography } from '@mui/material';
+import { Button, CircularProgress, Typography, Box, Paper } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import TableChartIcon from '@mui/icons-material/TableChart';
 
 const ReportDownload = () => {
   const [loading, setLoading] = useState(false);
@@ -14,10 +16,9 @@ const ReportDownload = () => {
       const token = localStorage.getItem('token');
       const response = await axios.get(`http://localhost:5000/api/generate-report/${format}`, {
         headers: { Authorization: `Bearer ${token}` },
-        responseType: 'blob', // Important for file download
+        responseType: 'blob',
       });
 
-      // Create a blob from the response data
       const blob = new Blob([response.data], { type: response.headers['content-type'] });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -35,30 +36,45 @@ const ReportDownload = () => {
   };
 
   return (
-    <div>
-      <Typography variant="h6" gutterBottom>Download Reports</Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<FileDownloadIcon />}
-        onClick={() => handleDownload('pdf')}
-        disabled={loading}
-        style={{ marginRight: '10px' }}
-      >
-        Download PDF
-      </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        startIcon={<FileDownloadIcon />}
-        onClick={() => handleDownload('xlsx')}
-        disabled={loading}
-      >
-        Download Excel
-      </Button>
-      {loading && <CircularProgress size={24} style={{ marginLeft: '10px' }} />}
-      {error && <Typography color="error">{error}</Typography>}
-    </div>
+    <Paper elevation={3} className="p-8 bg-gradient-to-br from-green-100 to-blue-100 rounded-xl shadow-2xl">
+      <Typography variant="h4" className="text-gray-800 font-bold mb-6 text-center">
+        Download Reports
+      </Typography>
+      <Box className="flex flex-col sm:flex-row gap-6 justify-center">
+        <Button
+          variant="contained"
+          className="bg-green-600 hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+          startIcon={<PictureAsPdfIcon />}
+          onClick={() => handleDownload('pdf')}
+          disabled={loading}
+          fullWidth
+          size="large"
+        >
+          Download PDF
+        </Button>
+        <Button
+          variant="contained"
+          className="bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+          startIcon={<TableChartIcon />}
+          onClick={() => handleDownload('xlsx')}
+          disabled={loading}
+          fullWidth
+          size="large"
+        >
+          Download Excel
+        </Button>
+      </Box>
+      {loading && (
+        <Box className="flex justify-center mt-6">
+          <CircularProgress size={36} className="text-green-600" />
+        </Box>
+      )}
+      {error && (
+        <Typography color="error" className="mt-6 text-center text-lg font-semibold">
+          {error}
+        </Typography>
+      )}
+    </Paper>
   );
 };
 

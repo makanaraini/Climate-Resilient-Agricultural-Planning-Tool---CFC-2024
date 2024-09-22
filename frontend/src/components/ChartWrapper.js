@@ -1,21 +1,18 @@
 import React from 'react';
-import { Line } from 'react-chartjs-2';
-import { Box, Typography } from '@mui/material';
+import { Line, Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
-const ChartWrapper = ({ data }) => {
-  console.log('ChartWrapper data:', data);
-  if (!data || data.length === 0) {
-    return <Typography>No data available</Typography>;
-  }
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
+function ChartWrapper({ data, xAxis, yAxis, title, chartType = 'line' }) {
   const chartData = {
-    labels: data.map(item => item.crop),
+    labels: data.map(item => new Date(item[xAxis]).toLocaleDateString()),
     datasets: [
       {
-        label: 'Yield',
-        data: data.map(item => item.yield),
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        label: yAxis,
+        data: data.map(item => item[yAxis]),
+        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgba(75, 192, 192, 0.5)',
       },
     ],
   };
@@ -28,16 +25,16 @@ const ChartWrapper = ({ data }) => {
       },
       title: {
         display: true,
-        text: 'Agricultural Data',
+        text: title,
       },
     },
   };
 
-  return (
-    <Box>
-      <Line data={chartData} options={options} />
-    </Box>
+  return chartType === 'line' ? (
+    <Line options={options} data={chartData} />
+  ) : (
+    <Bar options={options} data={chartData} />
   );
-};
+}
 
 export default ChartWrapper;

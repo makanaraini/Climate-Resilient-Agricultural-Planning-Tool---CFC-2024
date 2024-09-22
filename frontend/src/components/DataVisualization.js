@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, TimeScale } from 'chart.js';
 import { Bar, Line, Scatter } from 'react-chartjs-2';
-import { Box, Typography, TextField, Button, Select, MenuItem } from '@mui/material';
+import { Box, Typography, TextField, Button, Select, MenuItem, Paper, Grid } from '@mui/material';
 import 'chartjs-adapter-date-fns';
 
 ChartJS.register(
@@ -99,37 +99,59 @@ const DataVisualization = ({ agriculturalData }) => {
   };
 
   return (
-    <Box>
-      <Typography variant="h6" gutterBottom>Agricultural Data Visualization</Typography>
-      <Box mb={2}>
-        <TextField
-          label="Start Date"
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          InputLabelProps={{ shrink: true }}
-        />
-        <TextField
-          label="End Date"
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          InputLabelProps={{ shrink: true }}
-        />
-        <Select
-          value={selectedCrop}
-          onChange={(e) => setSelectedCrop(e.target.value)}
-        >
-          {crops.map(crop => (
-            <MenuItem key={crop} value={crop}>{crop}</MenuItem>
-          ))}
-        </Select>
-        <Button variant="contained" color="primary" onClick={toggleChartType}>
-          Toggle Chart Type
-        </Button>
-      </Box>
-      <Box mb={4}>
-        <Typography variant="subtitle1">
+    <Paper elevation={3} className="p-8 bg-gradient-to-br from-green-50 to-blue-50">
+      <Typography variant="h4" className="text-center text-green-800 font-bold mb-6">
+        Agricultural Data Visualization
+      </Typography>
+      <Grid container spacing={3} className="mb-6">
+        <Grid item xs={12} sm={6} md={3}>
+          <TextField
+            label="Start Date"
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            className="bg-white"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <TextField
+            label="End Date"
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            className="bg-white"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Select
+            value={selectedCrop}
+            onChange={(e) => setSelectedCrop(e.target.value)}
+            fullWidth
+            className="bg-white"
+          >
+            {crops.map(crop => (
+              <MenuItem key={crop} value={crop}>{crop}</MenuItem>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={toggleChartType}
+            fullWidth
+            className="h-full bg-green-600 hover:bg-green-700 transition duration-300"
+          >
+            Toggle Chart Type
+          </Button>
+        </Grid>
+      </Grid>
+      <Box className="mb-8 bg-white p-4 rounded-lg shadow-md">
+        <Typography variant="h6" className="mb-4 text-gray-700">
           {chartType === 'bar' ? 'Yield Over Time' : 'Area Over Time'}
         </Typography>
         {chartType === 'bar' ? (
@@ -138,8 +160,10 @@ const DataVisualization = ({ agriculturalData }) => {
           <Line data={lineData} options={options} />
         )}
       </Box>
-      <Box mb={4}>
-        <Typography variant="subtitle1">Yield vs Area (Scatter Plot)</Typography>
+      <Box className="mb-8 bg-white p-4 rounded-lg shadow-md">
+        <Typography variant="h6" className="mb-4 text-gray-700">
+          Yield vs Area (Scatter Plot)
+        </Typography>
         <Scatter data={scatterData} options={{
           ...options,
           scales: {
@@ -148,7 +172,7 @@ const DataVisualization = ({ agriculturalData }) => {
           },
         }} />
       </Box>
-    </Box>
+    </Paper>
   );
 };
 

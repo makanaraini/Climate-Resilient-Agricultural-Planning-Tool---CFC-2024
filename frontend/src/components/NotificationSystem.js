@@ -44,16 +44,45 @@ const NotificationSystem = () => {
 
   return (
     <>
-      <IconButton color="inherit" onClick={toggleDrawer}>
-        <Badge badgeContent={notifications.length} color="secondary">
-          <NotificationsIcon />
+      <IconButton
+        color="inherit"
+        onClick={toggleDrawer}
+        className="hover:bg-green-100 transition-colors duration-300"
+      >
+        <Badge
+          badgeContent={notifications.length}
+          color="secondary"
+          className="animate-pulse"
+        >
+          <NotificationsIcon className="text-green-600" />
         </Badge>
       </IconButton>
-      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
-        <List sx={{ width: 250 }}>
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={toggleDrawer}
+        PaperProps={{
+          className: "bg-gradient-to-b from-green-50 to-blue-50",
+        }}
+      >
+        <List sx={{ width: 300 }} className="p-4">
           {notifications.map((notification, index) => (
-            <ListItem key={index}>
-              <ListItemText primary={notification.title} secondary={notification.message} />
+            <ListItem
+              key={index}
+              className="mb-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+            >
+              <ListItemText
+                primary={
+                  <span className="text-lg font-semibold text-green-700">
+                    {notification.title}
+                  </span>
+                }
+                secondary={
+                  <span className="text-sm text-gray-600">
+                    {notification.message}
+                  </span>
+                }
+              />
             </ListItem>
           ))}
         </List>
@@ -66,9 +95,22 @@ const NotificationSystem = () => {
         open={open}
         autoHideDuration={6000}
         onClose={handleClose}
-        message={notifications.length > 0 ? notifications[0].message : ''}
+        message={
+          <span className="text-green-700">
+            {notifications.length > 0 ? notifications[0].message : ''}
+          </span>
+        }
+        ContentProps={{
+          className: "bg-green-100 border-l-4 border-green-500 text-green-700 p-4",
+        }}
         action={
-          <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+            className="text-green-700 hover:text-green-900"
+          >
             <CloseIcon fontSize="small" />
           </IconButton>
         }
