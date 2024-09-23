@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, Grid, Paper, CircularProgress } from '@mui/material';
+import { Typography, Box, Grid, Paper, CircularProgress, Tabs, Tab } from '@mui/material';
 import { supabase } from '../utils/supabaseClient';
 import WeatherWidget from '../components/WeatherWidget';
 import CropYieldPrediction from '../components/CropYieldPrediction';
@@ -19,6 +19,7 @@ function Dashboard() {
   });
   const [weatherData, setWeatherData] = useState([]);
   const [cropData, setCropData] = useState([]);
+  const [tabIndex, setTabIndex] = useState(0);
 
   const fetchWeatherData = useCallback(async () => {
     try {
@@ -60,6 +61,10 @@ function Dashboard() {
       .catch(() => setLoading(false));
   }, [fetchWeatherData, fetchCropData]);
 
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
+
   if (loading) return <CircularProgress />;
   if (error) return <Typography color="error">{error}</Typography>;
 
@@ -68,47 +73,58 @@ function Dashboard() {
       <Typography variant="h4" gutterBottom>
         Farm Dashboard
       </Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <DataCard title="Total Crops" value={dashboardData.totalCrops} />
+      <Tabs value={tabIndex} onChange={handleTabChange} aria-label="dashboard tabs">
+        <Tab label="Overview" />
+        <Tab label="Weather" />
+        <Tab label="Crop Recommendations" />
+        <Tab label="Crop Yield Prediction" />
+        <Tab label="Notifications" />
+        <Tab label="Soil Analysis" />
+        <Tab label="Data Visualization" />
+      </Tabs>
+      {tabIndex === 0 && (
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={4}>
+            <DataCard title="Total Crops" value={dashboardData.totalCrops} />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <DataCard title="Average Yield" value={`${dashboardData.averageYield} kg/ha`} />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <DataCard title="Water Usage" value={`${dashboardData.waterUsage} L`} />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <DataCard title="Average Yield" value={`${dashboardData.averageYield} kg/ha`} />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <DataCard title="Water Usage" value={`${dashboardData.waterUsage} L`} />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2 }}>
-            <WeatherWidget />
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2 }}>
-            <CropRecommendation />
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
-            <CropYieldPrediction weatherData={weatherData} />
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
-            <Notifications weatherData={weatherData} crops={cropData} />
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
-            <SoilAnalysis />
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
-            <DataVisualization agriculturalData={cropData} />
-          </Paper>
-        </Grid>
-      </Grid>
+      )}
+      {tabIndex === 1 && (
+        <Paper sx={{ p: 2 }}>
+          <WeatherWidget />
+        </Paper>
+      )}
+      {tabIndex === 2 && (
+        <Paper sx={{ p: 2 }}>
+          <CropRecommendation />
+        </Paper>
+      )}
+      {tabIndex === 3 && (
+        <Paper sx={{ p: 2 }}>
+          <CropYieldPrediction weatherData={weatherData} />
+        </Paper>
+      )}
+      {tabIndex === 4 && (
+        <Paper sx={{ p: 2 }}>
+          <Notifications weatherData={weatherData} crops={cropData} />
+        </Paper>
+      )}
+      {tabIndex === 5 && (
+        <Paper sx={{ p: 2 }}>
+          <SoilAnalysis />
+        </Paper>
+      )}
+      {tabIndex === 6 && (
+        <Paper sx={{ p: 2 }}>
+          <DataVisualization agriculturalData={cropData} />
+        </Paper>
+      )}
     </Box>
   );
 }

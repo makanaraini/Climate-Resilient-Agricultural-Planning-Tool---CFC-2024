@@ -15,6 +15,7 @@ import Dashboard from './pages/Dashboard';
 import SoilAnalysis from './pages/SoilAnalysis';
 import MarketTrends from './components/MarketTrends'; // Ensure this path is correct
 import DataInputForm from './components/DataInputForm'; // Ensure this path is correct
+import './App.css'; // Import the CSS file
 
 const theme = createTheme();
 
@@ -24,19 +25,25 @@ function App() {
       <CssBaseline />
       <Router>
         <AuthProvider>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-            <Route path="/reports" element={<PrivateRoute><Reports /></PrivateRoute>} />
-            <Route path="/planning" element={<PrivateRoute><Planning /></PrivateRoute>} />
-            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-            <Route path="/soil-analysis" element={<PrivateRoute><SoilAnalysis /></PrivateRoute>} />
-            <Route path="/market-trends" element={<PrivateRoute><MarketTrends /></PrivateRoute>} /> {/* Add MarketTrends route */}
-            <Route path="/data-input" element={<PrivateRoute><DataInputForm /></PrivateRoute>} /> {/* Add DataInput route */}
-          </Routes>
+          <div className="app-container">
+            <div className="sidebar">
+              <Navbar />
+            </div>
+            <div className="main-content">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+                <Route path="/reports" element={<PrivateRoute><Reports /></PrivateRoute>} />
+                <Route path="/planning" element={<PrivateRoute><Planning /></PrivateRoute>} />
+                <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+                <Route path="/soil-analysis" element={<PrivateRoute><SoilAnalysis /></PrivateRoute>} />
+                <Route path="/market-trends" element={<PrivateRoute><MarketTrends /></PrivateRoute>} />
+                <Route path="/data-input" element={<PrivateRoute><DataInputForm /></PrivateRoute>} />
+              </Routes>
+            </div>
+          </div>
         </AuthProvider>
       </Router>
     </ThemeProvider>

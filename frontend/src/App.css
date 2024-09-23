@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 }
+
+body, html, #root {
+  height: 100%;
+  margin: 0;
+}
+
+.app-container {
+  display: flex;
+  height: 100%;
+}
+
+.sidebar {
+  width: 62.5px; /* Adjust this value based on the width of your sidebar */
+  background-color: #f4f4f4; /* Adjust the background color as needed */
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+.main-content {
+  margin-left: 250px; /* Adjust this value based on the width of your sidebar */
+  padding: 20px; /* Add some padding for the main content */
+  width: calc(100% - 250px); /* Adjust the width based on the sidebar width */
+}
