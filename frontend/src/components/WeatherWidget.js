@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, CircularProgress } from '@mui/material';
+import { Typography, Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { getWeatherForecast } from '../utils/weatherApiClient';
+import { WiDaySunny, WiCloud, WiRain, WiSnow, WiThunderstorm } from 'weather-icons-react';
 
 function WeatherWidget() {
   const [weather, setWeather] = useState(null);
@@ -35,20 +36,65 @@ function WeatherWidget() {
   // OpenWeatherMap provides forecast data in 3-hour intervals
   const dailyForecasts = weather.list.filter((item, index) => index % 8 === 0).slice(0, 3);
 
+  const getWeatherIcon = (description) => {
+    switch (description) {
+      case 'clear sky':
+        return <WiDaySunny size={24} />;
+      case 'few clouds':
+      case 'scattered clouds':
+      case 'broken clouds':
+        return <WiCloud size={24} />;
+      case 'shower rain':
+      case 'rain':
+        return <WiRain size={24} />;
+      case 'thunderstorm':
+        return <WiThunderstorm size={24} />;
+      case 'snow':
+        return <WiSnow size={24} />;
+      default:
+        return <WiCloud size={24} />;
+    }
+  };
+
   return (
-    <Box>
-      <Typography variant="h6">3-Day Weather Forecast</Typography>
-      {dailyForecasts.map((forecast, index) => (
-        <Box key={index} mt={2}>
-          <Typography variant="subtitle1">
-            {new Date(forecast.dt * 1000).toLocaleDateString('en-US', { weekday: 'long' })}
-          </Typography>
-          <Typography>Temperature: {forecast.main.temp}°C</Typography>
-          <Typography>Feels Like: {forecast.main.feels_like}°C</Typography>
-          <Typography>Humidity: {forecast.main.humidity}%</Typography>
-          <Typography>Description: {forecast.weather[0].description}</Typography>
-        </Box>
-      ))}
+    <Box 
+      sx={{ 
+        p: 3, 
+        backgroundColor: '#f5f5dc', // Light beige background
+        borderRadius: 2, 
+        boxShadow: 3, 
+        color: '#2e7d32' // Dark green text
+      }}
+    >
+      <Typography variant="h6" sx={{ mb: 2 }}>3-Day Weather Forecast</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Day</TableCell>
+              <TableCell>Temperature</TableCell>
+              <TableCell>Feels Like</TableCell>
+              <TableCell>Humidity</TableCell>
+              <TableCell>Description</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {dailyForecasts.map((forecast, index) => (
+              <TableRow key={index}>
+                <TableCell sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
+                  {new Date(forecast.dt * 1000).toLocaleDateString('en-US', { weekday: 'long' })}
+                </TableCell>
+                <TableCell>{forecast.main.temp}°C</TableCell>
+                <TableCell>{forecast.main.feels_like}°C</TableCell>
+                <TableCell>{forecast.main.humidity}%</TableCell>
+                <TableCell>
+                  {getWeatherIcon(forecast.weather[0].description)} {forecast.weather[0].description}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 }

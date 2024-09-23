@@ -1,20 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Paper, List, ListItem, ListItemText, TextField, Button, Box, CircularProgress } from '@mui/material';
+import { Typography, Paper, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
 import { getWeatherForecast } from '../utils/weatherApiClient';
 import { supabase } from '../utils/supabaseClient';
+import { geocodeLocation } from '../utils/geocodeApiClient'; // Import your geocoding API client
+import DataInputForm from './DataInputForm'; // Import DataInputForm
 
 function CropRecommendations() {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [location, setLocation] = useState('');
   const [soilType, setSoilType] = useState('');
-  const [season, setSeason] = useState('');
+  const [region, setRegion] = useState('');
+  const [altitude, setAltitude] = useState('');
 
   const fetchRecommendations = useCallback(async () => {
     try {
       setLoading(true);
-      const lat = 33.74; // Replace with actual farm coordinates
-      const lon = -84.39;
+      const { lat, lon } = await geocodeLocation(location); // Get coordinates from location
       const weatherData = await getWeatherForecast(lat, lon);
       const { data: cropData, error: cropError } = await supabase
         .from('crops')
@@ -22,7 +25,7 @@ function CropRecommendations() {
 
       if (cropError) throw cropError;
 
-      const newRecommendations = generateRecommendations(weatherData, cropData, soilType, season);
+      const newRecommendations = generateRecommendations(weatherData, cropData, soilType, region, altitude);
       setRecommendations(newRecommendations);
     } catch (error) {
       console.error('Error fetching recommendations:', error);
@@ -30,13 +33,15 @@ function CropRecommendations() {
     } finally {
       setLoading(false);
     }
-  }, [soilType, season]); // Add dependencies here
+  }, [location, soilType, region, altitude]); // Add dependencies here
 
   useEffect(() => {
-    fetchRecommendations();
+    if (location) {
+      fetchRecommendations();
+    }
   }, [fetchRecommendations]);
 
-  const generateRecommendations = (weatherData, cropData, soilType, season) => {
+  const generateRecommendations = (weatherData, cropData, soilType, region, altitude) => {
     const avgTemp = weatherData.list.reduce((sum, item) => sum + item.main.temp, 0) / weatherData.list.length;
     const totalRain = weatherData.list.reduce((sum, item) => sum + (item.rain ? item.rain['3h'] : 0), 0);
 
@@ -57,10 +62,24 @@ function CropRecommendations() {
       recommendations.push('Consider crops that do well in sandy soils, like carrots or potatoes');
     }
 
-    if (season === 'spring') {
-      recommendations.push('Good time for planting most crops');
-    } else if (season === 'fall') {
-      recommendations.push('Consider planting cover crops to improve soil health');
+    // Add region-specific recommendations
+    if (region === 'north') {
+      recommendations.push('Consider cold-resistant crops for northern regions');
+    } else if (region === 'south') {
+      recommendations.push('Consider heat-tolerant crops for southern regions');
+    } else if (region === 'east') {
+      recommendations.push('Consider crops that can handle high humidity for eastern regions');
+    } else if (region === 'west') {
+      recommendations.push('Consider drought-resistant crops for western regions');
+    }
+
+    // Add altitude-specific recommendations
+    if (altitude === 'low') {
+      recommendations.push('Consider crops that thrive in low altitude areas');
+    } else if (altitude === 'medium') {
+      recommendations.push('Consider crops suitable for medium altitude areas');
+    } else if (altitude === 'high') {
+      recommendations.push('Consider crops that can grow in high altitude areas');
     }
 
     // Add recommendations based on historical crop performance
@@ -78,52 +97,27 @@ function CropRecommendations() {
     fetchRecommendations();
   };
 
-  if (loading) return <CircularProgress />;
+  if (loading) return <CircularProgress sx={{ color: '#2e7d32' }} />;
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <Paper elevation={3} sx={{ p: 2, mt: 2 }}>
-      <Typography variant="h6" gutterBottom>Crop Recommendations</Typography>
-      <Box component="form" onSubmit={handleSubmit} sx={{ mb: 2 }}>
-        <TextField
-          select
-          label="Soil Type"
-          value={soilType}
-          onChange={(e) => setSoilType(e.target.value)}
-          sx={{ mr: 2, mb: 2 }}
-          SelectProps={{
-            native: true,
-          }}
-        >
-          <option value="">Select...</option>
-          <option value="clay">Clay</option>
-          <option value="sandy">Sandy</option>
-          <option value="loam">Loam</option>
-        </TextField>
-        <TextField
-          select
-          label="Season"
-          value={season}
-          onChange={(e) => setSeason(e.target.value)}
-          sx={{ mr: 2, mb: 2 }}
-          SelectProps={{
-            native: true,
-          }}
-        >
-          <option value="">Select...</option>
-          <option value="spring">Spring</option>
-          <option value="summer">Summer</option>
-          <option value="fall">Fall</option>
-          <option value="winter">Winter</option>
-        </TextField>
-        <Button type="submit" variant="contained" color="primary">
-          Update Recommendations
-        </Button>
-      </Box>
+    <Paper elevation={3} sx={{ p: 2, mt: 2, backgroundColor: '#f5f5dc', borderRadius: 2 }}>
+      <Typography variant="h6" gutterBottom sx={{ color: '#2e7d32' }}>Crop Recommendations</Typography>
+      <DataInputForm
+        location={location}
+        setLocation={setLocation}
+        soilType={soilType}
+        setSoilType={setSoilType}
+        region={region}
+        setRegion={setRegion}
+        altitude={altitude}
+        setAltitude={setAltitude}
+        handleSubmit={handleSubmit}
+      />
       <List>
         {recommendations.map((recommendation, index) => (
-          <ListItem key={index}>
-            <ListItemText primary={recommendation} />
+          <ListItem key={index} sx={{ backgroundColor: '#e0e0d1', borderRadius: 1, mb: 1 }}>
+            <ListItemText primary={recommendation} sx={{ color: '#2e7d32' }} />
           </ListItem>
         ))}
       </List>

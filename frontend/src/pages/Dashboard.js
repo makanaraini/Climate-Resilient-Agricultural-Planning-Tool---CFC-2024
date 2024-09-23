@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, Grid, Paper, CircularProgress, Tabs, Tab } from '@mui/material';
+import { Typography, Box, Grid, Paper, CircularProgress, List, ListItem, ListItemText, Collapse, Tabs, Tab } from '@mui/material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { supabase } from '../utils/supabaseClient';
 import WeatherWidget from '../components/WeatherWidget';
 import CropYieldPrediction from '../components/CropYieldPrediction';
@@ -20,6 +21,7 @@ function Dashboard() {
   const [weatherData, setWeatherData] = useState([]);
   const [cropData, setCropData] = useState([]);
   const [tabIndex, setTabIndex] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const fetchWeatherData = useCallback(async () => {
     try {
@@ -61,8 +63,12 @@ function Dashboard() {
       .catch(() => setLoading(false));
   }, [fetchWeatherData, fetchCropData]);
 
-  const handleTabChange = (event, newValue) => {
-    setTabIndex(newValue);
+  const handleTabChange = (event, newIndex) => {
+    setTabIndex(newIndex);
+  };
+
+  const handleClick = () => {
+    setOpen(!open);
   };
 
   if (loading) return <CircularProgress />;
@@ -73,7 +79,7 @@ function Dashboard() {
       <Typography variant="h4" gutterBottom>
         Farm Dashboard
       </Typography>
-      <Tabs value={tabIndex} onChange={handleTabChange} aria-label="dashboard tabs">
+      <Tabs value={tabIndex} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
         <Tab label="Overview" />
         <Tab label="Weather" />
         <Tab label="Crop Recommendations" />
@@ -85,13 +91,34 @@ function Dashboard() {
       {tabIndex === 0 && (
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <DataCard title="Total Crops" value={dashboardData.totalCrops} />
+            <DataCard 
+              title="Total Crops" 
+              value={dashboardData.totalCrops} 
+              isLoading={loading} 
+              error={error} 
+              icon={null} 
+              customStyles={{}} 
+            />
           </Grid>
           <Grid item xs={12} md={4}>
-            <DataCard title="Average Yield" value={`${dashboardData.averageYield} kg/ha`} />
+            <DataCard 
+              title="Average Yield" 
+              value={`${dashboardData.averageYield} kg/ha`} 
+              isLoading={loading} 
+              error={error} 
+              icon={null} 
+              customStyles={{}} 
+            />
           </Grid>
           <Grid item xs={12} md={4}>
-            <DataCard title="Water Usage" value={`${dashboardData.waterUsage} L`} />
+            <DataCard 
+              title="Water Usage" 
+              value={`${dashboardData.waterUsage} L`} 
+              isLoading={loading} 
+              error={error} 
+              icon={null} 
+              customStyles={{}} 
+            />
           </Grid>
         </Grid>
       )}
