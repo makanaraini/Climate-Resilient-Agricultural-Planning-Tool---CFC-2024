@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\makana\OneDrive\Desktop\C-RAP-CFC2024\Climate-Resilient-Agricultural-Planning-Tool---CFC-2024\.venv
+set VIRTUAL_ENV=c:\Users\makana\OneDrive\Desktop\C-RAP-CFC2024\Climate-Resilient-Agricultural-Planning-Tool---CFC-2024\.venv
 
 if not defined PROMPT set PROMPT=$P$G
 

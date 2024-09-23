@@ -1,39 +1,32 @@
 import React from 'react';
 import { Line, Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
 function ChartWrapper({ data, xAxis, yAxis, title, chartType = 'line' }) {
   const chartData = {
-    labels: data.map(item => new Date(item[xAxis]).toLocaleDateString()),
+    labels: data.map(item => item[xAxis]),
     datasets: [
       {
         label: yAxis,
         data: data.map(item => item[yAxis]),
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+        backgroundColor: 'rgba(75,192,192,0.4)',
+        borderColor: 'rgba(75,192,192,1)',
+        borderWidth: 1,
       },
     ],
   };
 
   const options = {
     responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: title,
-      },
+    title: {
+      display: true,
+      text: title,
     },
   };
 
-  return chartType === 'line' ? (
-    <Line options={options} data={chartData} />
+  return chartType === 'bar' ? (
+    <Bar data={chartData} options={options} />
   ) : (
-    <Bar options={options} data={chartData} />
+    <Line data={chartData} options={options} />
   );
 }
 

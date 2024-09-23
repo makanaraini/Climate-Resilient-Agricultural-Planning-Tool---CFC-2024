@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Button, Box, FormControlLabel, Checkbox } from '@mui/material';
+import { TextField, Button, Box, FormControlLabel, Checkbox, MenuItem } from '@mui/material';
 
 function DataInputForm({ 
   location, setLocation, 
@@ -16,118 +16,114 @@ function DataInputForm({
   handleSubmit 
 }) {
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mb: 2 }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mb: 2, p: 3, backgroundColor: '#f5f5f5', borderRadius: 2, boxShadow: 3 }}>
       <TextField
         label="Location"
         value={location}
         onChange={(e) => setLocation(e.target.value)}
-        sx={{ mr: 2, mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
+        fullWidth
+        sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       />
       <TextField
         select
         label="Soil Type"
         value={soilType}
         onChange={(e) => setSoilType(e.target.value)}
-        sx={{ mr: 2, mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
-        SelectProps={{
-          native: true,
-        }}
+        fullWidth
+        sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       >
-        <option value="">Select...</option>
-        <option value="clay">Clay</option>
-        <option value="sandy">Sandy</option>
-        <option value="loam">Loam</option>
+        <MenuItem value="">Select...</MenuItem>
+        <MenuItem value="clay">Clay</MenuItem>
+        <MenuItem value="sandy">Sandy</MenuItem>
+        <MenuItem value="loam">Loam</MenuItem>
       </TextField>
       <TextField
         select
         label="Region"
         value={region}
         onChange={(e) => setRegion(e.target.value)}
-        sx={{ mr: 2, mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
-        SelectProps={{
-          native: true,
-        }}
+        fullWidth
+        sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       >
-        <option value="">Select...</option>
-        <option value="north">North</option>
-        <option value="south">South</option>
-        <option value="east">East</option>
-        <option value="west">West</option>
+        <MenuItem value="">Select...</MenuItem>
+        <MenuItem value="north">North</MenuItem>
+        <MenuItem value="south">South</MenuItem>
+        <MenuItem value="east">East</MenuItem>
+        <MenuItem value="west">West</MenuItem>
       </TextField>
       <TextField
         select
         label="Altitude"
         value={altitude}
         onChange={(e) => setAltitude(e.target.value)}
-        sx={{ mr: 2, mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
-        SelectProps={{
-          native: true,
-        }}
+        fullWidth
+        sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       >
-        <option value="">Select...</option>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
+        <MenuItem value="">Select...</MenuItem>
+        <MenuItem value="low">Low</MenuItem>
+        <MenuItem value="medium">Medium</MenuItem>
+        <MenuItem value="high">High</MenuItem>
       </TextField>
       <TextField
         label="Farm Size (acres)"
         type="number"
         value={farmSize}
         onChange={(e) => setFarmSize(e.target.value)}
-        sx={{ mr: 2, mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
+        fullWidth
+        sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       />
       <TextField
         select
         label="Water Availability"
         value={waterAvailability}
         onChange={(e) => setWaterAvailability(e.target.value)}
-        sx={{ mr: 2, mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
-        SelectProps={{
-          native: true,
-        }}
+        fullWidth
+        sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       >
-        <option value="">Select...</option>
-        <option value="abundant">Abundant</option>
-        <option value="limited">Limited</option>
-        <option value="scarce">Scarce</option>
+        <MenuItem value="">Select...</MenuItem>
+        <MenuItem value="abundant">Abundant</MenuItem>
+        <MenuItem value="limited">Limited</MenuItem>
+        <MenuItem value="scarce">Scarce</MenuItem>
       </TextField>
       <TextField
         select
         label="Current Season"
         value={season}
         onChange={(e) => setSeason(e.target.value)}
-        sx={{ mr: 2, mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
-        SelectProps={{
-          native: true,
-        }}
+        fullWidth
+        sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       >
-        <option value="">Select...</option>
-        <option value="spring">Spring</option>
-        <option value="summer">Summer</option>
-        <option value="autumn">Autumn</option>
-        <option value="winter">Winter</option>
+        <MenuItem value="">Select...</MenuItem>
+        <MenuItem value="spring">Spring</MenuItem>
+        <MenuItem value="summer">Summer</MenuItem>
+        <MenuItem value="autumn">Autumn</MenuItem>
+        <MenuItem value="winter">Winter</MenuItem>
       </TextField>
       <TextField
         label="Previous Crop"
         value={previousCrop}
         onChange={(e) => setPreviousCrop(e.target.value)}
-        sx={{ mr: 2, mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
+        fullWidth
+        sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       />
       <FormControlLabel
         control={<Checkbox checked={farmingMethod === 'organic'} onChange={(e) => setFarmingMethod(e.target.checked ? 'organic' : null)} />}
         label="Organic Farming"
+        sx={{ mb: 2 }}
       />
       <TextField
         label="Available Equipment"
         value={equipment}
         onChange={(e) => setEquipment(e.target.value)}
-        sx={{ mr: 2, mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
+        fullWidth
+        sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       />
       <TextField
         label="Market Demand"
         value={marketDemand}
         onChange={(e) => setMarketDemand(e.target.value)}
-        sx={{ mr: 2, mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
+        fullWidth
+        sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       />
       <Button type="submit" variant="contained" sx={{ backgroundColor: '#2e7d32', color: '#ffffff' }}>
         Update Recommendations

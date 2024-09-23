@@ -1,42 +1,27 @@
 import React from 'react';
 import { Button } from '@mui/material';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 function DataExport({ weatherData, cropData }) {
-  const exportData = () => {
-    const weatherCSV = convertToCSV(weatherData);
-    const cropCSV = convertToCSV(cropData);
-
-    const blob = new Blob([weatherCSV, '\n\n', cropCSV], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', 'farm_data_export.csv');
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  };
-
-  const convertToCSV = (objArray) => {
-    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
-    let str = `${Object.keys(array[0]).join(',')}\r\n`;
-
-    for (let i = 0; i < array.length; i++) {
-      let line = '';
-      for (let index in array[i]) {
-        if (line !== '') line += ',';
-        line += array[i][index];
-      }
-      str += line + '\r\n';
-    }
-    return str;
+  const exportPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Weather Data', 20, 10);
+    doc.autoTable({
+      head: [['Date', 'Max Temperature', 'Precipitation']],
+      body: weatherData.map(item => [item.date, item.temperature_max, item.precipitation]),
+    });
+    doc.text('Crop Data', 20, 50);
+    doc.autoTable({
+      head: [['Crop Name', 'Yield', 'Date']],
+      body: cropData.map(item => [item.crop_name, item.yield, item.date]),
+    });
+    doc.save('report.pdf');
   };
 
   return (
-    <Button variant="contained" color="primary" onClick={exportData}>
-      Export Data
+    <Button variant="contained" color="primary" onClick={exportPDF}>
+      Download Report
     </Button>
   );
 }

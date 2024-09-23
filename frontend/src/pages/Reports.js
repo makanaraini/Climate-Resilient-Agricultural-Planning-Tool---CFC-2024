@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Grid, Paper, CircularProgress, TextField } from '@mui/material';
+import { Typography, Box, Grid, Paper, CircularProgress, TextField, Container } from '@mui/material';
 import { supabase } from '../utils/supabaseClient';
 import ChartWrapper from '../components/ChartWrapper';
 import DataExport from '../components/DataExport';
 import WeatherDetails from '../components/WeatherDetails';
-import CropYieldPrediction from '../components/CropYieldPrediction';
+import SummaryStatistics from '../components/SummaryStatistics';
+import DataTable from '../components/DataTable';
 
 function Reports() {
   const [weatherData, setWeatherData] = useState([]);
@@ -55,8 +56,8 @@ function Reports() {
     }
   };
 
-  if (loading) return <CircularProgress />;
-  if (error) return <Typography color="error">{error}</Typography>;
+  if (loading) return <CircularProgress sx={{ display: 'block', margin: 'auto', mt: 5 }} />;
+  if (error) return <Typography color="error" align="center" sx={{ mt: 5 }}>{error}</Typography>;
 
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
@@ -75,6 +76,8 @@ function Reports() {
               shrink: true,
             }}
             fullWidth
+            variant="outlined"
+            sx={{ backgroundColor: 'white', borderRadius: 1 }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -88,12 +91,15 @@ function Reports() {
               shrink: true,
             }}
             fullWidth
+            variant="outlined"
+            sx={{ backgroundColor: 'white', borderRadius: 1 }}
           />
         </Grid>
       </Grid>
+      <SummaryStatistics weatherData={weatherData} cropData={cropData} />
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2 }}>
+          <Paper sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
             <ChartWrapper 
               data={weatherData}
               xAxis="date"
@@ -103,7 +109,7 @@ function Reports() {
           </Paper>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2 }}>
+          <Paper sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
             <ChartWrapper 
               data={weatherData}
               xAxis="date"
@@ -114,11 +120,20 @@ function Reports() {
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          <CropYieldPrediction weatherData={weatherData} />
+          <Paper sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
+            <WeatherDetails data={weatherData} />
+          </Paper>
         </Grid>
         <Grid item xs={12}>
           <Paper sx={{ p: 2 }}>
-            <WeatherDetails data={weatherData} />
+            <Typography variant="h6">Weather Data</Typography>
+            <DataTable data={weatherData} columns={['date', 'temperature_max', 'precipitation']} />
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="h6">Crop Data</Typography>
+            <DataTable data={cropData} columns={['crop_name', 'yield', 'date']} />
           </Paper>
         </Grid>
         <Grid item xs={12}>
