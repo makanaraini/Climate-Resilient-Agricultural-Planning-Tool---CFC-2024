@@ -1,33 +1,33 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 function WeatherDetails({ data }) {
+  const latestData = data[data.length - 1];
+
   return (
     <>
-      <Typography variant="h6" gutterBottom>
-        Weather Details
-      </Typography>
+      <Typography variant="h6" gutterBottom>Latest Weather Details</Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Date</TableCell>
-              <TableCell>Temperature (°C)</TableCell>
-              <TableCell>Humidity (%)</TableCell>
+              <TableCell>Max Temp (°C)</TableCell>
+              <TableCell>Min Temp (°C)</TableCell>
               <TableCell>Precipitation (mm)</TableCell>
+              <TableCell>Humidity (%)</TableCell>
               <TableCell>Wind Speed (km/h)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
-                <TableCell>{row.temperature_max}</TableCell>
-                <TableCell>{row.humidity}</TableCell>
-                <TableCell>{row.precipitation}</TableCell>
-                <TableCell>{row.wind_speed}</TableCell>
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableCell>{new Date(latestData.date).toLocaleDateString()}</TableCell>
+              <TableCell>{latestData.temperature_max}</TableCell>
+              <TableCell>{latestData.temperature_min}</TableCell>
+              <TableCell>{latestData.precipitation}</TableCell>
+              <TableCell>{latestData.humidity}</TableCell>
+              <TableCell>{latestData.wind_speed}</TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Box, Grid, Paper, CircularProgress } from '@mui/material';
 import { supabase } from '../utils/supabaseClient';
 import WeatherWidget from '../components/WeatherWidget';
+import CropYieldPrediction from '../components/CropYieldPrediction';
+import Notifications from '../components/Notifications';
+import SoilAnalysis from '../components/SoilAnalysis';
 import DataCard from '../components/DataCard';
 import CropRecommendation from '../components/CropRecommendations';
 
@@ -13,38 +16,60 @@ function Dashboard() {
     averageYield: 0,
     waterUsage: 0,
   });
+  const [weatherData, setWeatherData] = useState([]);
+  const [cropData, setCropData] = useState([]);
+  const [soilData, setSoilData] = useState([]);
+
+  const fetchWeatherData = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.from('weather_data').select('*').order('date', { ascending: true });
+      if (error) throw error;
+      setWeatherData(data);
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+      setError('Failed to fetch weather data');
+    }
+  }, []);
+
+  const fetchCropData = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.from('crops').select('*');
+      if (error) throw error;
+      setCropData(data);
+
+      // Calculate dashboard metrics
+      const totalCrops = data.length;
+      const averageYield = data.reduce((sum, crop) => sum + (crop.yield || 0), 0) / totalCrops;
+      const waterUsage = data.reduce((sum, crop) => sum + (crop.water_requirements || 0), 0);
+
+      setDashboardData({
+        totalCrops,
+        averageYield: averageYield.toFixed(2),
+        waterUsage: waterUsage.toFixed(2),
+      });
+    } catch (error) {
+      console.error('Error fetching crop data:', error);
+      setError('Failed to fetch crop data');
+    }
+  }, []);
+
+  const fetchSoilData = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.from('soil_analysis').select('*').order('date', { ascending: true });
+      if (error) throw error;
+      setSoilData(data);
+    } catch (error) {
+      console.error('Error fetching soil data:', error);
+      setError('Failed to fetch soil data');
+    }
+  }, []);
 
   useEffect(() => {
-    async function fetchDashboardData() {
-      try {
-        setLoading(true);
-        // Fetch data from your Supabase tables
-        const { data: cropsData, error: cropsError } = await supabase
-          .from('crops')
-          .select('*');
-
-        if (cropsError) throw cropsError;
-
-        // Calculate dashboard metrics
-        const totalCrops = cropsData.length;
-        const averageYield = cropsData.reduce((sum, crop) => sum + (crop.yield || 0), 0) / totalCrops;
-        const waterUsage = cropsData.reduce((sum, crop) => sum + (crop.water_requirements || 0), 0);
-
-        setDashboardData({
-          totalCrops,
-          averageYield: averageYield.toFixed(2),
-          waterUsage: waterUsage.toFixed(2),
-        });
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        setError('Failed to fetch dashboard data');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchDashboardData();
-  }, []);
+    setLoading(true);
+    Promise.all([fetchWeatherData(), fetchCropData(), fetchSoilData()])
+      .then(() => setLoading(false))
+      .catch(() => setLoading(false));
+  }, [fetchWeatherData, fetchCropData, fetchSoilData]);
 
   if (loading) return <CircularProgress />;
   if (error) return <Typography color="error">{error}</Typography>;
@@ -72,6 +97,21 @@ function Dashboard() {
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2 }}>
             <CropRecommendation />
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2 }}>
+            <CropYieldPrediction weatherData={weatherData} />
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2 }}>
+            <Notifications weatherData={weatherData} crops={cropData} />
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2 }}>
+            <SoilAnalysis />
           </Paper>
         </Grid>
       </Grid>
