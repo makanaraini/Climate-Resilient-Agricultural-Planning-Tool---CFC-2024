@@ -1,148 +1,89 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, Box, Paper, TextField, Button, Grid, Snackbar, Alert, CircularProgress } from '@mui/material';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Typography, TextField, Button, Box } from '@mui/material';
 import { supabase } from '../utils/supabaseClient';
 
 function Profile() {
-  const { user, updateProfile } = useAuth();
-  const [name, setName] = useState(user?.user_metadata?.name || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [farmSize, setFarmSize] = useState('');
-  const [resources, setResources] = useState('');
-  const [practices, setPractices] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [farmName, setFarmName] = useState('');
+  const [location, setLocation] = useState('');
 
-  useEffect(() => {
-    fetchFarmerProfile();
-  }, [user]);
-
-  async function fetchFarmerProfile() {
-    try {
+  const fetchFarmerProfile = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
       const { data, error } = await supabase
-        .from('farmer_profiles')
+        .from('farmers')
         .select('*')
         .eq('user_id', user.id)
         .single();
 
-      if (error) throw error;
-
-      if (data) {
-        setFarmSize(data.farm_size || '');
-        setResources(data.resources_available || '');
-        setPractices(data.farming_practices || '');
+      if (error) {
+        console.error('Error fetching farmer profile:', error);
+      } else if (data) {
+        setName(data.name || '');
+        setEmail(user.email || '');
+        setFarmName(data.farm_name || '');
+        setLocation(data.location || '');
       }
-    } catch (error) {
-      console.error('Error fetching farmer profile:', error);
-    } finally {
-      setLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    fetchFarmerProfile();
+  }, [fetchFarmerProfile]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess(false);
-    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { error } = await supabase
+        .from('farmers')
+        .upsert({ user_id: user.id, name, farm_name: farmName, location });
 
-    try {
-      const updates = {
-        data: { name },
-      };
-
-      const { error: updateError } = await updateProfile(updates);
-      if (updateError) throw updateError;
-
-      const { error: farmerProfileError } = await supabase
-        .from('farmer_profiles')
-        .upsert({ 
-          user_id: user.id, 
-          farm_size: parseFloat(farmSize), 
-          resources_available: resources, 
-          farming_practices: practices 
-        });
-
-      if (farmerProfileError) throw farmerProfileError;
-
-      setSuccess(true);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
+      if (error) {
+        console.error('Error updating profile:', error);
+      } else {
+        console.log('Profile updated successfully');
+      }
     }
   };
 
-  if (loading) return <CircularProgress />;
-
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Farmer Profile
-      </Typography>
-      <Paper sx={{ p: 2 }}>
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Email"
-                type="email"
-                value={email}
-                disabled
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Farm Size (hectares)"
-                type="number"
-                value={farmSize}
-                onChange={(e) => setFarmSize(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Available Resources"
-                value={resources}
-                onChange={(e) => setResources(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Farming Practices"
-                value={practices}
-                onChange={(e) => setPractices(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button type="submit" variant="contained" color="primary" disabled={loading}>
-                {loading ? 'Updating...' : 'Update Profile'}
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      </Paper>
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')}>
-        <Alert onClose={() => setError('')} severity="error" sx={{ width: '100%' }}>
-          {error}
-        </Alert>
-      </Snackbar>
-      <Snackbar open={success} autoHideDuration={6000} onClose={() => setSuccess(false)}>
-        <Alert onClose={() => setSuccess(false)} severity="success" sx={{ width: '100%' }}>
-          Profile updated successfully
-        </Alert>
-      </Snackbar>
+    <Box sx={{ maxWidth: 400, margin: 'auto', mt: 4 }}>
+      <Typography variant="h4" gutterBottom>Farmer Profile</Typography>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          fullWidth
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="Email"
+          value={email}
+          disabled
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="Farm Name"
+          value={farmName}
+          onChange={(e) => setFarmName(e.target.value)}
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          margin="normal"
+        />
+        <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+          Update Profile
+        </Button>
+      </form>
     </Box>
   );
 }

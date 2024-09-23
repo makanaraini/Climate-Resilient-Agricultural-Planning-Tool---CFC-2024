@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Box, Paper, TextField, Button, Grid, CircularProgress } from '@mui/material';
 import { supabase } from '../utils/supabaseClient';
+import { getSoilMoisture } from '../utils/weatherApiClient';
 import SoilAnalysisResult from '../components/SoilAnalysisResult';
 
 function SoilAnalysis() {
@@ -14,6 +15,23 @@ function SoilAnalysis() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [soilMoisture, setSoilMoisture] = useState(null);
+
+  useEffect(() => {
+    async function fetchSoilMoisture() {
+      try {
+        // You should replace these with the actual coordinates of the farm
+        const lat = 40.7128;
+        const lon = -74.0060;
+        const data = await getSoilMoisture(lat, lon);
+        setSoilMoisture(data);
+      } catch (error) {
+        console.error('Error fetching soil moisture:', error);
+      }
+    }
+
+    fetchSoilMoisture();
+  }, []);
 
   const handleInputChange = (e) => {
     setSoilData({ ...soilData, [e.target.name]: e.target.value });
@@ -45,16 +63,19 @@ function SoilAnalysis() {
 
   // This is a placeholder function. In a real application, this would be a more complex analysis
   const simulateSoilAnalysis = async (data) => {
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     const pH = parseFloat(data.pH);
     const nutrientLevel = (parseFloat(data.nitrogen) + parseFloat(data.phosphorus) + parseFloat(data.potassium)) / 3;
     
-    if (pH < 6.0) return "Acidic soil. Consider liming.";
-    if (pH > 7.5) return "Alkaline soil. Consider adding sulfur.";
-    if (nutrientLevel < 50) return "Low nutrient levels. Consider fertilizing.";
-    return "Soil conditions are generally good.";
+    let result = '';
+    if (pH < 6.0) result += "Acidic soil. Consider liming. ";
+    if (pH > 7.5) result += "Alkaline soil. Consider adding sulfur. ";
+    if (nutrientLevel < 50) result += "Low nutrient levels. Consider fertilizing. ";
+    if (soilMoisture && soilMoisture.topSoilMoisture < 0.2) result += "Soil is dry. Consider irrigation. ";
+    if (result === '') result = "Soil conditions are generally good.";
+    
+    return result.trim();
   };
 
   return (
@@ -141,6 +162,15 @@ function SoilAnalysis() {
               <Typography>Enter soil data and click "Analyze Soil" to see results.</Typography>
             )}
             {error && <Typography color="error">{error}</Typography>}
+            {soilMoisture && (
+              <Grid item xs={12}>
+                <Paper sx={{ p: 2 }}>
+                  <Typography variant="h6">Estimated Soil Moisture</Typography>
+                  <Typography>Soil Moisture: {soilMoisture.soilMoisture}</Typography>
+                  <Typography>Recent Precipitation: {soilMoisture.precipitation.toFixed(2)} mm</Typography>
+                </Paper>
+              </Grid>
+            )}
           </Paper>
         </Grid>
       </Grid>

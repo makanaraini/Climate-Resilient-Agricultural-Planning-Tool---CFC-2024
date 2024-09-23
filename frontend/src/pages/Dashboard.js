@@ -3,7 +3,7 @@ import { Typography, Box, Grid, Paper, CircularProgress } from '@mui/material';
 import { supabase } from '../utils/supabaseClient';
 import WeatherWidget from '../components/WeatherWidget';
 import DataCard from '../components/DataCard';
-import CropRecommendation from '../components/CropRecommendation';
+import CropRecommendation from '../components/CropRecommendations';
 
 function Dashboard() {
   const [loading, setLoading] = useState(true);
