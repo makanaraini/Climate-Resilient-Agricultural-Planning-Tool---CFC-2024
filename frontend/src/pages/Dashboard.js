@@ -7,6 +7,7 @@ import Notifications from '../components/Notifications';
 import SoilAnalysis from '../components/SoilAnalysis';
 import DataCard from '../components/DataCard';
 import CropRecommendation from '../components/CropRecommendations';
+import DataVisualization from '../components/DataVisualization';
 
 function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,6 @@ function Dashboard() {
   });
   const [weatherData, setWeatherData] = useState([]);
   const [cropData, setCropData] = useState([]);
-  const [soilData, setSoilData] = useState([]);
 
   const fetchWeatherData = useCallback(async () => {
     try {
@@ -53,23 +53,12 @@ function Dashboard() {
     }
   }, []);
 
-  const fetchSoilData = useCallback(async () => {
-    try {
-      const { data, error } = await supabase.from('soil_analysis').select('*').order('date', { ascending: true });
-      if (error) throw error;
-      setSoilData(data);
-    } catch (error) {
-      console.error('Error fetching soil data:', error);
-      setError('Failed to fetch soil data');
-    }
-  }, []);
-
   useEffect(() => {
     setLoading(true);
-    Promise.all([fetchWeatherData(), fetchCropData(), fetchSoilData()])
+    Promise.all([fetchWeatherData(), fetchCropData()])
       .then(() => setLoading(false))
       .catch(() => setLoading(false));
-  }, [fetchWeatherData, fetchCropData, fetchSoilData]);
+  }, [fetchWeatherData, fetchCropData]);
 
   if (loading) return <CircularProgress />;
   if (error) return <Typography color="error">{error}</Typography>;
@@ -112,6 +101,11 @@ function Dashboard() {
         <Grid item xs={12}>
           <Paper sx={{ p: 2 }}>
             <SoilAnalysis />
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2 }}>
+            <DataVisualization agriculturalData={cropData} />
           </Paper>
         </Grid>
       </Grid>
