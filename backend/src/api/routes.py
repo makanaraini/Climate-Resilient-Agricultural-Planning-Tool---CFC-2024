@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models.crop_data import CropData  # Adjust import path as needed
 from ..services.dashboard_service import calculate_kpis
 from ..services.ai_recommendation_service import get_ai_recommendations  # You'll need to create this
+from ..services.database_handler import fetch_data_from_supabase, send_data_to_watsonx
 
 bp = Blueprint('api', __name__)
 
@@ -55,6 +56,15 @@ def ai_recommendations():
         return jsonify(recommendations), 200
     except Exception as e:
         return jsonify({'error': 'Error generating AI recommendations'}), 500
+
+@bp.route('/send-data', methods=['GET'])
+def send_data():
+    try:
+        data = fetch_data_from_supabase()
+        response = send_data_to_watsonx(data)
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({'error': 'Error sending data to Watsonx.ai'}), 500
 
 # Add other API routes here as needed
 

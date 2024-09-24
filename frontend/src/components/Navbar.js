@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Tooltip, Divider, Box } from '@mui/material';
-import { Home, Dashboard, Assessment, EventNote, Terrain, Person, ExitToApp, LockOpen, PersonAdd, Menu, Input, Visibility, Edit } from '@mui/icons-material'; // Changed Input to Edit
+import React from 'react';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Tooltip, Divider, Box } from '@mui/material';
+import { Home, Dashboard, Assessment, EventNote, Terrain, Person, ExitToApp, LockOpen, PersonAdd, Visibility, Edit } from '@mui/icons-material'; // Changed Input to Edit
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { styled } from '@mui/system';

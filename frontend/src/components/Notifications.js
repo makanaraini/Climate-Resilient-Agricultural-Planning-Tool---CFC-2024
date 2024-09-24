@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Typography, Paper, List, ListItem, ListItemText, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
@@ -43,11 +43,7 @@ const NotificationIcon = styled(Box)(({ theme }) => ({
 function Notifications({ weatherData, crops }) {
   const [notifications, setNotifications] = useState([]);
 
-  useEffect(() => {
-    generateNotifications();
-  }, [weatherData, crops]);
-
-  const generateNotifications = () => {
+  const generateNotifications = useCallback(() => {
     const newNotifications = [];
 
     weatherData.forEach(forecast => {
@@ -86,7 +82,11 @@ function Notifications({ weatherData, crops }) {
     });
 
     setNotifications(newNotifications);
-  };
+  }, [weatherData, crops]);
+
+  useEffect(() => {
+    generateNotifications();
+  }, [weatherData, crops, generateNotifications]);
 
   return (
     <StyledPaper>

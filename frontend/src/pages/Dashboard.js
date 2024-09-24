@@ -152,6 +152,19 @@ function Dashboard() {
           <DataVisualization agriculturalData={cropData} />
         </Paper>
       )}
+      <List>
+        <ListItem button onClick={handleClick}>
+          <ListItemText primary="Expand/Collapse" />
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem>
+              <ListItemText primary="Additional Content" />
+            </ListItem>
+          </List>
+        </Collapse>
+      </List>
     </Box>
   );
 }

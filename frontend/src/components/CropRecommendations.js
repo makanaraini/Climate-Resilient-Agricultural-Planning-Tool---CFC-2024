@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Paper, List, ListItem, ListItemText, CircularProgress, Box, Divider } from '@mui/material';
+import { Typography, Paper, List, ListItem, CircularProgress, Box, Divider } from '@mui/material';
 import { styled } from '@mui/system';
 import { getWeatherForecast } from '../utils/weatherApiClient';
 import { supabase } from '../utils/supabaseClient';
@@ -63,7 +63,7 @@ function CropRecommendations() {
     if (location) {
       fetchRecommendations();
     }
-  }, [fetchRecommendations]);
+  }, [location, fetchRecommendations]);
 
   const generateRecommendations = (weatherData, cropData, soilType, region, altitude) => {
     // ... (keep the existing generateRecommendations function)

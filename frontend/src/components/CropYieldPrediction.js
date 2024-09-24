@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Paper, Select, MenuItem, FormControl, InputLabel, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -41,23 +41,7 @@ function CropYieldPrediction({ weatherData }) {
   const [selectedCrop, setSelectedCrop] = useState('');
   const [predictions, setPredictions] = useState([]);
 
-  useEffect(() => {
-    fetchCrops();
-  }, []);
-
-  useEffect(() => {
-    if (selectedCrop && weatherData.length > 0) {
-      predictYield();
-    }
-  }, [selectedCrop, weatherData]);
-
-  async function fetchCrops() {
-    const { data, error } = await supabase.from('crops').select('name');
-    if (error) console.error('Error fetching crops:', error);
-    else setCrops(data.map(crop => crop.name));
-  }
-
-  function predictYield() {
+  const predictYield = useCallback(() => {
     // This is a simplified prediction model. In a real-world scenario, you'd use more sophisticated methods.
     const predictions = weatherData.map(weather => {
       const predictedYield = calculatePredictedYield(weather, selectedCrop);
@@ -67,6 +51,22 @@ function CropYieldPrediction({ weatherData }) {
       };
     });
     setPredictions(predictions);
+  }, [weatherData, selectedCrop]);
+
+  useEffect(() => {
+    fetchCrops();
+  }, []);
+
+  useEffect(() => {
+    if (selectedCrop && weatherData.length > 0) {
+      predictYield();
+    }
+  }, [selectedCrop, weatherData, predictYield]);
+
+  async function fetchCrops() {
+    const { data, error } = await supabase.from('crops').select('name');
+    if (error) console.error('Error fetching crops:', error);
+    else setCrops(data.map(crop => crop.name));
   }
 
   function calculatePredictedYield(weather, crop) {

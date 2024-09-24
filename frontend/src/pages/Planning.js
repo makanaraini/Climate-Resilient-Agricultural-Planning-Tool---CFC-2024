@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, Grid, Paper, TextField, Button, List, ListItem, ListItemText, Tab, Tabs, AppBar } from '@mui/material';
+import { Typography, Box, Paper, List, ListItem, ListItemText, Tab, Tabs, AppBar, TextField, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { supabase } from '../utils/supabaseClient';
 import { getWeatherForecast } from '../utils/weatherApiClient';
-import WeatherWidget from '../components/WeatherWidget';
-import CropRecommendations from '../components/CropRecommendations';
 import CropCalendar from '../components/CropCalendar';
 import PlantingRecommendations from '../components/PlantingRecommendations';
 import Notifications from '../components/Notifications';
@@ -51,6 +49,8 @@ function Planning() {
   const [plans, setPlans] = useState([]);
   const [weatherForecast, setWeatherForecast] = useState([]);
   const [crops, setCrops] = useState([]);
+  const [newPlanName, setNewPlanName] = useState('');
+  const [newPlanDescription, setNewPlanDescription] = useState('');
 
   const fetchPlans = useCallback(async () => {
     try {
@@ -91,6 +91,20 @@ function Planning() {
     setTabValue(newValue);
   };
 
+  const handleAddPlan = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('plans')
+        .insert([{ name: newPlanName, description: newPlanDescription }]);
+      if (error) throw error;
+      setPlans([...plans, ...data]);
+      setNewPlanName('');
+      setNewPlanDescription('');
+    } catch (error) {
+      console.error('Error adding new plan:', error);
+    }
+  };
+
   const renderTabContent = () => {
     switch (tabValue) {
       case 0:
@@ -126,6 +140,25 @@ function Planning() {
                 weatherForecast={weatherForecast}
               />
             )}
+            <Box mt={3}>
+              <TextField
+                label="New Plan Name"
+                value={newPlanName}
+                onChange={(e) => setNewPlanName(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="New Plan Description"
+                value={newPlanDescription}
+                onChange={(e) => setNewPlanDescription(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <Button variant="contained" color="primary" onClick={handleAddPlan}>
+                Add Plan
+              </Button>
+            </Box>
           </StyledPaper>
         );
       default:

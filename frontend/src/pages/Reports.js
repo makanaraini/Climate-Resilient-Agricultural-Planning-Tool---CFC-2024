@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Grid, Paper, CircularProgress, TextField, Container, Divider } from '@mui/material';
+import { Typography, Box, Grid, Paper, CircularProgress, TextField, Divider } from '@mui/material';
 import { styled } from '@mui/system';
 import { supabase } from '../utils/supabaseClient';
 import ChartWrapper from '../components/ChartWrapper';
@@ -41,7 +41,7 @@ function Reports() {
 
   useEffect(() => {
     fetchData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, fetchData]);
 
   async function fetchData() {
     try {
