@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, TimeScale } from 'chart.js';
 import { Bar, Line, Scatter } from 'react-chartjs-2';
 import { Box, Typography, TextField, Button, Select, MenuItem, Paper, Grid } from '@mui/material';
+import { styled } from '@mui/system';
 import 'chartjs-adapter-date-fns';
 
 ChartJS.register(
@@ -15,6 +16,77 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  background: `linear-gradient(to bottom right, ${theme.palette.success.light}, ${theme.palette.primary.light})`,
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[5],
+}));
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  fontWeight: 'bold',
+  marginBottom: theme.spacing(4),
+  textAlign: 'center',
+  animation: 'fadeIn 0.5s ease-in-out',
+  '@keyframes fadeIn': {
+    '0%': { opacity: 0, transform: 'translateY(-20px)' },
+    '100%': { opacity: 1, transform: 'translateY(0)' },
+  },
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: theme.palette.primary.light,
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.dark,
+    },
+  },
+}));
+
+const StyledSelect = styled(Select)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  '& .MuiOutlinedInput-notchedOutline': {
+    borderColor: theme.palette.primary.light,
+  },
+  '&:hover .MuiOutlinedInput-notchedOutline': {
+    borderColor: theme.palette.primary.main,
+  },
+  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+    borderColor: theme.palette.primary.dark,
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.success.main,
+  color: theme.palette.success.contrastText,
+  fontWeight: 'bold',
+  '&:hover': {
+    backgroundColor: theme.palette.success.dark,
+  },
+  transition: 'all 0.3s ease-in-out',
+}));
+
+const ChartBox = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  padding: theme.spacing(3),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[3],
+  marginBottom: theme.spacing(4),
+  transition: 'all 0.3s ease-in-out',
+  '&:hover': {
+    boxShadow: theme.shadows[6],
+  },
+}));
 
 const DataVisualization = ({ agriculturalData }) => {
   const [startDate, setStartDate] = useState('');
@@ -99,59 +171,54 @@ const DataVisualization = ({ agriculturalData }) => {
   };
 
   return (
-    <Paper elevation={3} className="p-8 bg-gradient-to-br from-green-50 to-blue-50">
-      <Typography variant="h4" className="text-center text-green-800 font-bold mb-6">
+    <StyledPaper>
+      <StyledTypography variant="h4">
         Agricultural Data Visualization
-      </Typography>
-      <Grid container spacing={3} className="mb-6">
+      </StyledTypography>
+      <Grid container spacing={4} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
-          <TextField
+          <StyledTextField
             label="Start Date"
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             InputLabelProps={{ shrink: true }}
             fullWidth
-            className="bg-white"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <TextField
+          <StyledTextField
             label="End Date"
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             InputLabelProps={{ shrink: true }}
             fullWidth
-            className="bg-white"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Select
+          <StyledSelect
             value={selectedCrop}
             onChange={(e) => setSelectedCrop(e.target.value)}
             fullWidth
-            className="bg-white"
           >
             {crops.map(crop => (
               <MenuItem key={crop} value={crop}>{crop}</MenuItem>
             ))}
-          </Select>
+          </StyledSelect>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Button 
+          <StyledButton 
             variant="contained" 
-            color="primary" 
             onClick={toggleChartType}
             fullWidth
-            className="h-full bg-green-600 hover:bg-green-700 transition duration-300"
           >
             Toggle Chart Type
-          </Button>
+          </StyledButton>
         </Grid>
       </Grid>
-      <Box className="mb-8 bg-white p-4 rounded-lg shadow-md">
-        <Typography variant="h6" className="mb-4 text-gray-700">
+      <ChartBox>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'medium', color: 'text.secondary' }}>
           {chartType === 'bar' ? 'Yield Over Time' : 'Area Over Time'}
         </Typography>
         {chartType === 'bar' ? (
@@ -159,20 +226,23 @@ const DataVisualization = ({ agriculturalData }) => {
         ) : (
           <Line data={lineData} options={options} />
         )}
-      </Box>
-      <Box className="mb-8 bg-white p-4 rounded-lg shadow-md">
-        <Typography variant="h6" className="mb-4 text-gray-700">
+      </ChartBox>
+      <ChartBox>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'medium', color: 'text.secondary' }}>
           Yield vs Area (Scatter Plot)
         </Typography>
-        <Scatter data={scatterData} options={{
-          ...options,
-          scales: {
-            x: { title: { display: true, text: 'Area' } },
-            y: { title: { display: true, text: 'Yield' } },
-          },
-        }} />
-      </Box>
-    </Paper>
+        <Scatter 
+          data={scatterData} 
+          options={{
+            ...options,
+            scales: {
+              x: { title: { display: true, text: 'Area' } },
+              y: { title: { display: true, text: 'Yield' } },
+            },
+          }} 
+        />
+      </ChartBox>
+    </StyledPaper>
   );
 };
 

@@ -1,11 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Grid, Paper, CircularProgress, TextField, Container } from '@mui/material';
+import { Typography, Box, Grid, Paper, CircularProgress, TextField, Container, Divider } from '@mui/material';
+import { styled } from '@mui/system';
 import { supabase } from '../utils/supabaseClient';
 import ChartWrapper from '../components/ChartWrapper';
 import DataExport from '../components/DataExport';
 import WeatherDetails from '../components/WeatherDetails';
 import SummaryStatistics from '../components/SummaryStatistics';
 import DataTable from '../components/DataTable';
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  backgroundColor: theme.palette.background.default,
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: theme.palette.primary.light,
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.dark,
+    },
+  },
+}));
 
 function Reports() {
   const [weatherData, setWeatherData] = useState([]);
@@ -61,12 +85,13 @@ function Reports() {
 
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom color="primary" fontWeight="bold">
         Farm Reports
       </Typography>
+      <Divider sx={{ mb: 3 }} />
       <Grid container spacing={3} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <StyledTextField
             label="Start Date"
             type="date"
             name="startDate"
@@ -77,11 +102,10 @@ function Reports() {
             }}
             fullWidth
             variant="outlined"
-            sx={{ backgroundColor: 'white', borderRadius: 1 }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <StyledTextField
             label="End Date"
             type="date"
             name="endDate"
@@ -92,24 +116,23 @@ function Reports() {
             }}
             fullWidth
             variant="outlined"
-            sx={{ backgroundColor: 'white', borderRadius: 1 }}
           />
         </Grid>
       </Grid>
       <SummaryStatistics weatherData={weatherData} cropData={cropData} />
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
+          <StyledPaper>
             <ChartWrapper 
               data={weatherData}
               xAxis="date"
               yAxis="temperature_max"
               title="Temperature Trends"
             />
-          </Paper>
+          </StyledPaper>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
+          <StyledPaper>
             <ChartWrapper 
               data={weatherData}
               xAxis="date"
@@ -117,29 +140,27 @@ function Reports() {
               title="Precipitation Trends"
               chartType="bar"
             />
-          </Paper>
+          </StyledPaper>
         </Grid>
         <Grid item xs={12}>
-          <Paper sx={{ p: 2, borderRadius: 2, boxShadow: 3 }}>
-            <WeatherDetails data={weatherData} />
-          </Paper>
+          <WeatherDetails data={weatherData} />
         </Grid>
         <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h6">Weather Data</Typography>
+          <StyledPaper>
+            <Typography variant="h6" color="primary" gutterBottom>Weather Data</Typography>
             <DataTable data={weatherData} columns={['date', 'temperature_max', 'precipitation']} />
-          </Paper>
+          </StyledPaper>
         </Grid>
         <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h6">Crop Data</Typography>
+          <StyledPaper>
+            <Typography variant="h6" color="primary" gutterBottom>Crop Data</Typography>
             <DataTable data={cropData} columns={['crop_name', 'yield', 'date']} />
-          </Paper>
+          </StyledPaper>
         </Grid>
         <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
+          <StyledPaper>
             <DataExport weatherData={weatherData} cropData={cropData} />
-          </Paper>
+          </StyledPaper>
         </Grid>
       </Grid>
     </Box>

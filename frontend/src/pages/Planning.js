@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, Grid, Paper, TextField, Button, List, ListItem, ListItemText, Tab, Tabs } from '@mui/material';
+import { Typography, Box, Grid, Paper, TextField, Button, List, ListItem, ListItemText, Tab, Tabs, AppBar } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { supabase } from '../utils/supabaseClient';
 import { getWeatherForecast } from '../utils/weatherApiClient';
 import WeatherWidget from '../components/WeatherWidget';
@@ -10,6 +11,40 @@ import Notifications from '../components/Notifications';
 import SoilAnalysis from '../components/SoilAnalysis';
 import PestDiseasePrediction from '../components/PestDiseasePrediction';
 import WaterManagement from '../components/WaterManagement';
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  backgroundColor: '#f0f8ff',
+}));
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+}));
+
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
+  boxShadow: 'none',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
+
+const StyledTab = styled(Tab)(({ theme }) => ({
+  textTransform: 'none',
+  minWidth: 72,
+  fontWeight: theme.typography.fontWeightRegular,
+  marginRight: theme.spacing(4),
+  '&:hover': {
+    color: theme.palette.primary.main,
+    opacity: 1,
+  },
+  '&.Mui-selected': {
+    color: theme.palette.primary.main,
+    fontWeight: theme.typography.fontWeightMedium,
+  },
+}));
 
 function Planning() {
   const [tabValue, setTabValue] = useState(0);
@@ -56,31 +91,25 @@ function Planning() {
     setTabValue(newValue);
   };
 
-  return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4" gutterBottom>Crop Planning</Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Notifications weatherData={weatherForecast} crops={crops} />
-        </Grid>
-        <Grid item xs={12}>
-          <PlantingRecommendations weatherForecast={weatherForecast} crops={crops} />
-        </Grid>
-        <Grid item xs={12}>
-          <PestDiseasePrediction />
-        </Grid>
-        <Grid item xs={12}>
-          <WaterManagement />
-        </Grid>
-        <Grid item xs={12}>
-          <SoilAnalysis />
-        </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
+  const renderTabContent = () => {
+    switch (tabValue) {
+      case 0:
+        return <Notifications weatherData={weatherForecast} crops={crops} />;
+      case 1:
+        return <PlantingRecommendations weatherForecast={weatherForecast} crops={crops} />;
+      case 2:
+        return <PestDiseasePrediction />;
+      case 3:
+        return <WaterManagement />;
+      case 4:
+        return <SoilAnalysis />;
+      case 5:
+        return (
+          <StyledPaper>
             <Typography variant="h6" gutterBottom>Crop Plans</Typography>
             <Tabs value={tabValue} onChange={handleTabChange}>
-              <Tab label="List View" />
-              <Tab label="Calendar View" />
+              <StyledTab label="List View" />
+              <StyledTab label="Calendar View" />
             </Tabs>
             {tabValue === 0 ? (
               <List>
@@ -97,10 +126,34 @@ function Planning() {
                 weatherForecast={weatherForecast}
               />
             )}
-          </Paper>
-        </Grid>
-      </Grid>
-    </Box>
+          </StyledPaper>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <StyledBox>
+      <Typography variant="h4" gutterBottom sx={{ color: '#2e7d32', fontWeight: 'bold', mb: 3 }}>
+        Crop Planning
+      </Typography>
+      <StyledPaper>
+        <StyledAppBar position="static">
+          <Tabs value={tabValue} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
+            <StyledTab label="Notifications" />
+            <StyledTab label="Planting Recommendations" />
+            <StyledTab label="Pest & Disease Prediction" />
+            <StyledTab label="Water Management" />
+            <StyledTab label="Soil Analysis" />
+            <StyledTab label="Crop Plans" />
+          </Tabs>
+        </StyledAppBar>
+        <Box sx={{ mt: 2 }}>
+          {renderTabContent()}
+        </Box>
+      </StyledPaper>
+    </StyledBox>
   );
 }
 

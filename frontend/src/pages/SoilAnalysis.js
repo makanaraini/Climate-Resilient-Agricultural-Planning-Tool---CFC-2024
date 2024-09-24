@@ -42,12 +42,9 @@ function SoilAnalysis() {
     setLoading(true);
     setError(null);
     try {
-      // In a real application, you would send this data to a backend for analysis
-      // Here, we're simulating an analysis with a simple calculation
       const analysisResult = await simulateSoilAnalysis(soilData);
       setResult(analysisResult);
       
-      // Save the soil data and analysis result to the database
       const { error } = await supabase
         .from('soil_analyses')
         .insert([{ ...soilData, result: analysisResult }]);
@@ -61,7 +58,6 @@ function SoilAnalysis() {
     }
   };
 
-  // This is a placeholder function. In a real application, this would be a more complex analysis
   const simulateSoilAnalysis = async (data) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
@@ -79,13 +75,13 @@ function SoilAnalysis() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4" gutterBottom>
+    <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f0f8ff' }}>
+      <Typography variant="h4" gutterBottom sx={{ color: '#2e7d32', fontWeight: 'bold', mb: 3 }}>
         Soil Analysis
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2 }}>
+          <Paper sx={{ p: 3, backgroundColor: '#f5f5f5', borderRadius: 2, boxShadow: 3 }}>
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -97,6 +93,7 @@ function SoilAnalysis() {
                     value={soilData.pH}
                     onChange={handleInputChange}
                     required
+                    sx={{ backgroundColor: '#ffffff', borderRadius: 1 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -108,6 +105,7 @@ function SoilAnalysis() {
                     value={soilData.nitrogen}
                     onChange={handleInputChange}
                     required
+                    sx={{ backgroundColor: '#ffffff', borderRadius: 1 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -119,6 +117,7 @@ function SoilAnalysis() {
                     value={soilData.phosphorus}
                     onChange={handleInputChange}
                     required
+                    sx={{ backgroundColor: '#ffffff', borderRadius: 1 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -130,6 +129,7 @@ function SoilAnalysis() {
                     value={soilData.potassium}
                     onChange={handleInputChange}
                     required
+                    sx={{ backgroundColor: '#ffffff', borderRadius: 1 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -141,10 +141,22 @@ function SoilAnalysis() {
                     value={soilData.organicMatter}
                     onChange={handleInputChange}
                     required
+                    sx={{ backgroundColor: '#ffffff', borderRadius: 1 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Button type="submit" variant="contained" color="primary" disabled={loading}>
+                  <Button 
+                    type="submit" 
+                    variant="contained" 
+                    disabled={loading}
+                    sx={{ 
+                      backgroundColor: '#2e7d32', 
+                      color: '#ffffff',
+                      '&:hover': {
+                        backgroundColor: '#1b5e20',
+                      },
+                    }}
+                  >
                     Analyze Soil
                   </Button>
                 </Grid>
@@ -153,23 +165,21 @@ function SoilAnalysis() {
           </Paper>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2 }}>
+          <Paper sx={{ p: 3, backgroundColor: '#f5f5f5', borderRadius: 2, boxShadow: 3 }}>
             {loading ? (
-              <CircularProgress />
+              <CircularProgress sx={{ color: '#2e7d32' }} />
             ) : result ? (
               <SoilAnalysisResult result={result} />
             ) : (
-              <Typography>Enter soil data and click "Analyze Soil" to see results.</Typography>
+              <Typography sx={{ color: '#2e7d32' }}>Enter soil data and click "Analyze Soil" to see results.</Typography>
             )}
             {error && <Typography color="error">{error}</Typography>}
             {soilMoisture && (
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2 }}>
-                  <Typography variant="h6">Estimated Soil Moisture</Typography>
-                  <Typography>Soil Moisture: {soilMoisture.soilMoisture}</Typography>
-                  <Typography>Recent Precipitation: {soilMoisture.precipitation.toFixed(2)} mm</Typography>
-                </Paper>
-              </Grid>
+              <Box sx={{ mt: 2, p: 2, backgroundColor: '#ffffff', borderRadius: 1 }}>
+                <Typography variant="h6" sx={{ color: '#2e7d32', mb: 1 }}>Estimated Soil Moisture</Typography>
+                <Typography>Soil Moisture: {soilMoisture.soilMoisture}</Typography>
+                <Typography>Recent Precipitation: {soilMoisture.precipitation.toFixed(2)} mm</Typography>
+              </Box>
             )}
           </Paper>
         </Grid>

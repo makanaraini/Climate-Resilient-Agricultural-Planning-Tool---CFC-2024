@@ -1,31 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Card, CardContent, Typography, CircularProgress, List, ListItem, ListItemText } from '@mui/material';
+import { getAICropRecommendations } from '../services/aiRecommendationService';
+import { getWeatherForecast } from '../utils/weatherApiClient';
+import { analyzeSoil } from '../utils/soilUtil';
+import { findSuitableCrops } from '../utils/supabaseClient';
+import { generateAIPrompt } from '../utils/generateAIPrompt';
 
-const AICropRecommendations = () => {
+const AICropRecommendations = ({ farmData }) => {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Tailwind classes for styling
-  const containerClasses = "bg-white shadow-lg rounded-lg p-6 mb-8";
-  const titleClasses = "text-2xl font-bold text-gray-800 mb-4";
-  const loadingClasses = "flex justify-center items-center h-40";
-  const errorClasses = "text-red-500 text-center";
-  const listClasses = "divide-y divide-gray-200";
-  const listItemClasses = "py-4";
-  const cropNameClasses = "text-lg font-semibold text-indigo-600";
-  const confidenceClasses = "text-sm text-gray-600";
-  const reasonClasses = "mt-1 text-gray-500";
-
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
-        const token = localStorage.getItem('token'); // Assuming you store the JWT token in localStorage
-        const response = await axios.get('http://localhost:5000/api/ai-recommendations', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setRecommendations(response.data);
+        const weatherData = await getWeatherForecast(farmData.latitude, farmData.longitude);
+        const soilData = analyzeSoil(farmData.soilData);
+        const suitableCrops = findSuitableCrops({ temp: weatherData.avgTemp, rainfall: weatherData.totalRainfall });
+        const prompt = generateAIPrompt(farmData, weatherData, soilData);
+        
+        const aiRecommendations = await getAICropRecommendations(prompt);
+        setRecommendations(aiRecommendations);
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch recommendations. Please try again later.');
@@ -34,7 +29,7 @@ const AICropRecommendations = () => {
     };
 
     fetchRecommendations();
-  }, []);
+  }, [farmData]);
 
   if (loading) {
     return <CircularProgress />;

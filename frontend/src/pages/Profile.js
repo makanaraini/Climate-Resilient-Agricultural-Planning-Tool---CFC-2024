@@ -1,40 +1,72 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, TextField, Button, Box, Avatar, IconButton, List, ListItem, ListItemText, Tooltip } from '@mui/material';
-import { PhotoCamera, Edit } from '@mui/icons-material';
+import { Typography, TextField, Button, Box, Avatar, IconButton, List, ListItem, ListItemText, Tooltip, Paper, Grid } from '@mui/material';
+import { PhotoCamera, Edit, LocationOn, Person, Email, Business } from '@mui/icons-material';
 import { supabase } from '../utils/supabaseClient';
 import { styled } from '@mui/material/styles';
+import SatelliteTwoToneIcon from '@mui/icons-material/SatelliteTwoTone';
 
 const AvatarStyled = styled(Avatar)(({ theme }) => ({
-  width: 100,
-  height: 100,
+  width: 120,
+  height: 120,
   borderRadius: '50%',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
   margin: 'auto',
+  border: `4px solid ${theme.palette.background.paper}`,
 }));
 
 const ProfileContainer = styled(Box)(({ theme }) => ({
-  maxWidth: 600,
+  maxWidth: 800,
   margin: 'auto',
   marginTop: theme.spacing(4),
-  textAlign: 'center',
+  marginBottom: theme.spacing(4),
+  padding: theme.spacing(3),
+}));
+
+const ProfilePaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
 }));
 
 const ProfileDetails = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(3),
 }));
 
 const ProfileText = styled(Typography)(({ theme }) => ({
   fontFamily: 'Roboto, sans-serif',
   fontWeight: 300,
+  display: 'flex',
+  alignItems: 'center',
+  marginBottom: theme.spacing(1),
 }));
 
 const ProfileTextBold = styled(Typography)(({ theme }) => ({
   fontFamily: 'Roboto, sans-serif',
   fontWeight: 500,
+  color: theme.palette.primary.main,
 }));
 
 const EditButton = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(2),
+  borderRadius: 20,
+  padding: '8px 24px',
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
+
+const FarmsList = styled(List)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+}));
+
+const FarmListItem = styled(ListItem)(({ theme }) => ({
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  '&:last-child': {
+    borderBottom: 'none',
+  },
 }));
 
 function Profile() {
@@ -132,85 +164,108 @@ function Profile() {
 
   return (
     <ProfileContainer>
-      <ProfileTextBold variant="h4" gutterBottom>Farmer Profile</ProfileTextBold>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, flexDirection: 'column' }}>
-        <AvatarStyled src={avatarUrl} />
-        <input
-          accept="image/*"
-          style={{ display: 'none' }}
-          id="icon-button-file"
-          type="file"
-          onChange={handleAvatarChange}
-        />
-        <label htmlFor="icon-button-file">
-          <IconButton color="primary" aria-label="upload picture" component="span">
-            <PhotoCamera />
-          </IconButton>
-        </label>
-        <Tooltip title="Edit Profile" placement="right">
-          <IconButton color="primary" aria-label="edit profile" onClick={() => setIsEditing(true)}>
-            <Edit />
-          </IconButton>
-        </Tooltip>
-      </Box>
-      {isEditing ? (
-        <form onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            label="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            margin="normal"
+      <ProfilePaper elevation={3}>
+        <ProfileTextBold variant="h4" gutterBottom align="center">Farmer Profile</ProfileTextBold>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, flexDirection: 'column' }}>
+          <AvatarStyled src={avatarUrl} />
+          <input
+            accept="image/*"
+            style={{ display: 'none' }}
+            id="icon-button-file"
+            type="file"
+            onChange={handleAvatarChange}
           />
-          <TextField
-            fullWidth
-            label="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            margin="normal"
-          />
-          <TextField
-            fullWidth
-            label="Email"
-            value={email}
-            disabled
-            margin="normal"
-          />
-          <TextField
-            fullWidth
-            label="Farm Name"
-            value={farmName}
-            onChange={(e) => setFarmName(e.target.value)}
-            margin="normal"
-          />
-          <TextField
-            fullWidth
-            label="Location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            margin="normal"
-          />
-          <EditButton type="submit" variant="contained" color="primary">
-            Update Profile
-          </EditButton>
-        </form>
-      ) : (
-        <ProfileDetails>
-          <ProfileText variant="body1"><strong>Name:</strong> {name}</ProfileText>
-          <ProfileText variant="body1"><strong>Username:</strong> {username}</ProfileText>
-          <ProfileText variant="body1"><strong>Email:</strong> {email}</ProfileText>
-          <ProfileText variant="body1"><strong>Farm Name:</strong> {farmName}</ProfileText>
-          <ProfileText variant="body1"><strong>Location:</strong> {location}</ProfileText>
-        </ProfileDetails>
-      )}
-      <ProfileTextBold variant="h6" gutterBottom sx={{ mt: 4 }}>Farms</ProfileTextBold>
-      <List>
-        {farms.map((farm, index) => (
-          <ListItem key={index}>
-            <ListItemText primary={farm.name} secondary={farm.location} />
-          </ListItem>
-        ))}
-      </List>
+          <Box sx={{ mt: 2 }}>
+            <label htmlFor="icon-button-file">
+              <IconButton color="primary" aria-label="upload picture" component="span">
+                <PhotoCamera />
+              </IconButton>
+            </label>
+            <Tooltip title="Edit Profile" placement="right">
+              <IconButton color="primary" aria-label="edit profile" onClick={() => setIsEditing(true)}>
+                <Edit />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+        {isEditing ? (
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <StyledTextField
+                  fullWidth
+                  label="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <StyledTextField
+                  fullWidth
+                  label="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <StyledTextField
+                  fullWidth
+                  label="Email"
+                  value={email}
+                  disabled
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <StyledTextField
+                  fullWidth
+                  label="Farm Name"
+                  value={farmName}
+                  onChange={(e) => setFarmName(e.target.value)}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <StyledTextField
+                  fullWidth
+                  label="Location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  variant="outlined"
+                />
+              </Grid>
+            </Grid>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+              <EditButton type="submit" variant="contained" color="primary">
+                Update Profile
+              </EditButton>
+            </Box>
+          </form>
+        ) : (
+          <ProfileDetails>
+            <ProfileText variant="body1"><Person sx={{ mr: 1 }} /> <strong>Name:</strong> {name}</ProfileText>
+            <ProfileText variant="body1"><Person sx={{ mr: 1 }} /> <strong>Username:</strong> {username}</ProfileText>
+            <ProfileText variant="body1"><Email sx={{ mr: 1 }} /> <strong>Email:</strong> {email}</ProfileText>
+            <ProfileText variant="body1"><Business sx={{ mr: 1 }} /> <strong>Farm Name:</strong> {farmName}</ProfileText>
+            <ProfileText variant="body1"><LocationOn sx={{ mr: 1 }} /> <strong>Location:</strong> {location}</ProfileText>
+          </ProfileDetails>
+        )}
+        <Box sx={{ mt: 4 }}>
+          <ProfileTextBold variant="h6" gutterBottom>Farms</ProfileTextBold>
+          <FarmsList>
+            {farms.map((farm, index) => (
+              <FarmListItem key={index}>
+                <ListItemText 
+                  primary={<Typography variant="subtitle1"><SatelliteTwoToneIcon sx={{ mr: 1, verticalAlign: 'middle' }} />{farm.name}</Typography>}
+                  secondary={<Typography variant="body2" color="textSecondary"><LocationOn sx={{ mr: 1, fontSize: 'small', verticalAlign: 'middle' }} />{farm.location}</Typography>}
+                />
+              </FarmListItem>
+            ))}
+          </FarmsList>
+        </Box>
+      </ProfilePaper>
     </ProfileContainer>
   );
 }

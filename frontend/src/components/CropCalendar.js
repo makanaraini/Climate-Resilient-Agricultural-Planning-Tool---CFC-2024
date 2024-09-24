@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Tooltip } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Tooltip, Paper, Typography } from '@mui/material';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import CloudIcon from '@mui/icons-material/Cloud';
+import { styled } from '@mui/material/styles';
 
 const localizer = momentLocalizer(moment);
 
@@ -16,6 +17,37 @@ const cropColors = {
   'Rice': '#87CEFA',
   // Add more crops and colors as needed
 };
+
+const StyledCalendarContainer = styled(Paper)(({ theme }) => ({
+  height: '500px',
+  padding: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[3],
+}));
+
+const StyledCalendar = styled(Calendar)(({ theme }) => ({
+  '& .rbc-header': {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    padding: theme.spacing(1),
+  },
+  '& .rbc-event': {
+    borderRadius: theme.shape.borderRadius,
+  },
+  '& .rbc-today': {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
+
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogTitle-root': {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+  },
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(3),
+  },
+}));
 
 function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -68,7 +100,7 @@ function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
 
   const EventComponent = ({ event }) => {
     if (event.resource.crop) {
-      return <span>{event.title}</span>;
+      return <Typography variant="body2">{event.title}</Typography>;
     }
     return (
       <Tooltip title={event.title}>
@@ -80,8 +112,8 @@ function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
   };
 
   return (
-    <div style={{ height: '500px' }}>
-      <Calendar
+    <StyledCalendarContainer>
+      <StyledCalendar
         localizer={localizer}
         events={allEvents}
         startAccessor="start"
@@ -93,7 +125,7 @@ function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
           event: EventComponent,
         }}
       />
-      <Dialog open={!!selectedEvent} onClose={handleCloseDialog}>
+      <StyledDialog open={!!selectedEvent} onClose={handleCloseDialog}>
         <DialogTitle>Edit Crop Plan</DialogTitle>
         <DialogContent>
           {editedPlan && (
@@ -105,6 +137,7 @@ function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
+                variant="outlined"
               />
               <TextField
                 name="area"
@@ -114,6 +147,7 @@ function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
+                variant="outlined"
               />
               <TextField
                 name="planting_date"
@@ -123,6 +157,7 @@ function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
+                variant="outlined"
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -131,11 +166,11 @@ function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleSaveChanges} color="primary">Save Changes</Button>
+          <Button onClick={handleCloseDialog} color="secondary">Cancel</Button>
+          <Button onClick={handleSaveChanges} color="primary" variant="contained">Save Changes</Button>
         </DialogActions>
-      </Dialog>
-    </div>
+      </StyledDialog>
+    </StyledCalendarContainer>
   );
 }
 

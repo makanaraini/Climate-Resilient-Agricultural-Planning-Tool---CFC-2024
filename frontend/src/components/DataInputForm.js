@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Button, Box, FormControlLabel, Checkbox, MenuItem } from '@mui/material';
+import { TextField, Button, Box, FormControlLabel, Checkbox, MenuItem, Typography } from '@mui/material';
 
 function DataInputForm({ 
   location, setLocation, 
@@ -17,6 +17,9 @@ function DataInputForm({
 }) {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mb: 2, p: 3, backgroundColor: '#f5f5f5', borderRadius: 2, boxShadow: 3 }}>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3, color: '#2e7d32', fontWeight: 'bold' }}>
+        Farm Data Input Form
+      </Typography>
       <TextField
         label="Location"
         value={location}

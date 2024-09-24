@@ -1,9 +1,33 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Paper, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
+import { Typography, Paper, List, ListItem, ListItemText, CircularProgress, Box, Divider } from '@mui/material';
+import { styled } from '@mui/system';
 import { getWeatherForecast } from '../utils/weatherApiClient';
 import { supabase } from '../utils/supabaseClient';
-import { geocodeLocation } from '../utils/geocodeApiClient'; // Import your geocoding API client
-import DataInputForm from './DataInputForm'; // Import DataInputForm
+import { geocodeLocation } from '../utils/geocodeApiClient';
+import DataInputForm from './DataInputForm';
+import { AgricultureOutlined, WbSunnyOutlined, WaterDropOutlined, TerrainOutlined } from '@mui/icons-material';
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  marginTop: theme.spacing(3),
+  backgroundColor: theme.palette.background.default,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+}));
+
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[1],
+}));
+
+const IconWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  marginRight: theme.spacing(2),
+  color: theme.palette.primary.main,
+}));
 
 function CropRecommendations() {
   const [recommendations, setRecommendations] = useState([]);
@@ -17,7 +41,7 @@ function CropRecommendations() {
   const fetchRecommendations = useCallback(async () => {
     try {
       setLoading(true);
-      const { lat, lon } = await geocodeLocation(location); // Get coordinates from location
+      const { lat, lon } = await geocodeLocation(location);
       const weatherData = await getWeatherForecast(lat, lon);
       const { data: cropData, error: cropError } = await supabase
         .from('crops')
@@ -33,7 +57,7 @@ function CropRecommendations() {
     } finally {
       setLoading(false);
     }
-  }, [location, soilType, region, altitude]); // Add dependencies here
+  }, [location, soilType, region, altitude]);
 
   useEffect(() => {
     if (location) {
@@ -42,54 +66,7 @@ function CropRecommendations() {
   }, [fetchRecommendations]);
 
   const generateRecommendations = (weatherData, cropData, soilType, region, altitude) => {
-    const avgTemp = weatherData.list.reduce((sum, item) => sum + item.main.temp, 0) / weatherData.list.length;
-    const totalRain = weatherData.list.reduce((sum, item) => sum + (item.rain ? item.rain['3h'] : 0), 0);
-
-    let recommendations = [];
-
-    if (avgTemp > 25 && totalRain < 10) {
-      recommendations.push('Consider drought-resistant crops');
-      recommendations.push('Implement water conservation techniques');
-    } else if (avgTemp > 20 && totalRain > 20) {
-      recommendations.push('Conditions are suitable for water-intensive crops');
-    } else if (avgTemp < 15) {
-      recommendations.push('Focus on cold-weather crops');
-    }
-
-    if (soilType === 'clay') {
-      recommendations.push('Choose crops that thrive in clay soils, like wheat or beans');
-    } else if (soilType === 'sandy') {
-      recommendations.push('Consider crops that do well in sandy soils, like carrots or potatoes');
-    }
-
-    // Add region-specific recommendations
-    if (region === 'north') {
-      recommendations.push('Consider cold-resistant crops for northern regions');
-    } else if (region === 'south') {
-      recommendations.push('Consider heat-tolerant crops for southern regions');
-    } else if (region === 'east') {
-      recommendations.push('Consider crops that can handle high humidity for eastern regions');
-    } else if (region === 'west') {
-      recommendations.push('Consider drought-resistant crops for western regions');
-    }
-
-    // Add altitude-specific recommendations
-    if (altitude === 'low') {
-      recommendations.push('Consider crops that thrive in low altitude areas');
-    } else if (altitude === 'medium') {
-      recommendations.push('Consider crops suitable for medium altitude areas');
-    } else if (altitude === 'high') {
-      recommendations.push('Consider crops that can grow in high altitude areas');
-    }
-
-    // Add recommendations based on historical crop performance
-    const bestPerformingCrops = cropData
-      .sort((a, b) => b.yield - a.yield)
-      .slice(0, 3)
-      .map(crop => crop.name);
-    recommendations.push(`Based on historical data, consider planting: ${bestPerformingCrops.join(', ')}`);
-
-    return recommendations;
+    // ... (keep the existing generateRecommendations function)
   };
 
   const handleSubmit = (e) => {
@@ -97,12 +74,15 @@ function CropRecommendations() {
     fetchRecommendations();
   };
 
-  if (loading) return <CircularProgress sx={{ color: '#2e7d32' }} />;
+  if (loading) return <CircularProgress sx={{ color: 'primary.main' }} />;
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <Paper elevation={3} sx={{ p: 2, mt: 2, backgroundColor: '#f5f5dc', borderRadius: 2 }}>
-      <Typography variant="h6" gutterBottom sx={{ color: '#2e7d32' }}>Crop Recommendations</Typography>
+    <StyledPaper elevation={3}>
+      <Typography variant="h5" gutterBottom color="primary" fontWeight="bold">
+        Crop Recommendations
+      </Typography>
+      <Divider sx={{ mb: 2 }} />
       <DataInputForm
         location={location}
         setLocation={setLocation}
@@ -116,12 +96,24 @@ function CropRecommendations() {
       />
       <List>
         {recommendations.map((recommendation, index) => (
-          <ListItem key={index} sx={{ backgroundColor: '#e0e0d1', borderRadius: 1, mb: 1 }}>
-            <ListItemText primary={recommendation} sx={{ color: '#2e7d32' }} />
-          </ListItem>
+          <StyledListItem key={index}>
+            <Box>
+              <Box display="flex" alignItems="center" mb={1}>
+                <IconWrapper>
+                  {index % 4 === 0 && <AgricultureOutlined />}
+                  {index % 4 === 1 && <WbSunnyOutlined />}
+                  {index % 4 === 2 && <WaterDropOutlined />}
+                  {index % 4 === 3 && <TerrainOutlined />}
+                </IconWrapper>
+                <Typography variant="body1" color="text.primary">
+                  {recommendation}
+                </Typography>
+              </Box>
+            </Box>
+          </StyledListItem>
         ))}
       </List>
-    </Paper>
+    </StyledPaper>
   );
 }
 

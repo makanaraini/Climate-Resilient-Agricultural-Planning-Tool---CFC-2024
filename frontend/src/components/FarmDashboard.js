@@ -88,26 +88,26 @@ const FarmDashboard = () => {
 
   return (
     <Box className="p-8 bg-gradient-to-br from-green-50 to-blue-50 min-h-screen">
-      <Typography variant="h4" className="mb-6 text-green-800 font-bold">Farm Dashboard</Typography>
+      <Typography variant="h4" className="mb-6 text-green-800 font-bold text-center">Farm Dashboard</Typography>
       
-      <Grid container spacing={3} className="mb-8">
+      <Grid container spacing={4} className="mb-8">
         {kpis && (
           <>
             <Grid item xs={12} sm={4}>
-              <Paper elevation={3} className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <Typography variant="h6" className="text-gray-600 mb-2">Total Yield</Typography>
+              <Paper elevation={3} className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                <Typography variant="h6" className="text-gray-600 mb-2 font-semibold">Total Yield</Typography>
                 <Typography variant="h4" className="text-green-600 font-bold">{kpis.totalYield} kg</Typography>
               </Paper>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Paper elevation={3} className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <Typography variant="h6" className="text-gray-600 mb-2">Total Area</Typography>
+              <Paper elevation={3} className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                <Typography variant="h6" className="text-gray-600 mb-2 font-semibold">Total Area</Typography>
                 <Typography variant="h4" className="text-blue-600 font-bold">{kpis.totalArea} ha</Typography>
               </Paper>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Paper elevation={3} className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <Typography variant="h6" className="text-gray-600 mb-2">Average Yield</Typography>
+              <Paper elevation={3} className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                <Typography variant="h6" className="text-gray-600 mb-2 font-semibold">Average Yield</Typography>
                 <Typography variant="h4" className="text-yellow-600 font-bold">{kpis.averageYield} kg/ha</Typography>
               </Paper>
             </Grid>
@@ -115,12 +115,12 @@ const FarmDashboard = () => {
         )}
       </Grid>
 
-      <Paper elevation={3} className="p-6 mb-8 bg-white rounded-lg shadow-md">
-        <Typography variant="h5" className="mb-4 text-gray-700">Crop Yield Comparison</Typography>
+      <Paper elevation={3} className="p-6 mb-8 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+        <Typography variant="h5" className="mb-4 text-gray-700 font-semibold">Crop Yield Comparison</Typography>
         <Bar data={chartData} options={chartOptions} />
       </Paper>
 
-      <Paper elevation={3} className="mb-8 bg-white rounded-lg shadow-md overflow-hidden">
+      <Paper elevation={3} className="mb-8 bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
         <TableContainer>
           <Table>
             <TableHead>
@@ -132,7 +132,7 @@ const FarmDashboard = () => {
             </TableHead>
             <TableBody>
               {cropData.map((row) => (
-                <TableRow key={row.crop} className="hover:bg-gray-50">
+                <TableRow key={row.crop} className="hover:bg-gray-50 transition-colors duration-150">
                   <TableCell component="th" scope="row" className="font-medium text-gray-900">{row.crop}</TableCell>
                   <TableCell align="right" className="text-gray-700">{row.yield}</TableCell>
                   <TableCell align="right" className="text-gray-700">{row.area}</TableCell>
@@ -143,15 +143,17 @@ const FarmDashboard = () => {
         </TableContainer>
       </Paper>
 
-      <Button 
-        variant="contained" 
-        color="primary" 
-        onClick={exportCSV}
-        startIcon={<CloudDownloadIcon />}
-        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
-      >
-        Export CSV
-      </Button>
+      <Box className="flex justify-center">
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={exportCSV}
+          startIcon={<CloudDownloadIcon />}
+          className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg"
+        >
+          Export CSV
+        </Button>
+      </Box>
     </Box>
   );
 };

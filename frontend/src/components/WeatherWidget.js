@@ -1,7 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { styled } from '@mui/system';
 import { getWeatherForecast } from '../utils/weatherApiClient';
 import { WiDaySunny, WiCloud, WiRain, WiSnow, WiThunderstorm } from 'weather-icons-react';
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(3),
+  backgroundColor: theme.palette.background.default,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+}));
+
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  borderRadius: theme.shape.borderRadius,
+  overflow: 'hidden',
+  marginTop: theme.spacing(2),
+}));
+
+const StyledTableHead = styled(TableHead)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+}));
+
+const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  fontWeight: 'bold',
+  textAlign: 'center',
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected,
+  },
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  textAlign: 'center',
+}));
 
 function WeatherWidget() {
   const [weather, setWeather] = useState(null);
@@ -16,7 +53,6 @@ function WeatherWidget() {
         const lat = 33.74;
         const lon = -84.39;
         const data = await getWeatherForecast(lat, lon);
-        console.log('Received weather data:', data); // Add this line for debugging
         setWeather(data);
       } catch (error) {
         console.error('Error fetching weather:', error);
@@ -39,63 +75,57 @@ function WeatherWidget() {
   const getWeatherIcon = (description) => {
     switch (description) {
       case 'clear sky':
-        return <WiDaySunny size={24} />;
+        return <WiDaySunny size={24} color="#FDB813" />;
       case 'few clouds':
       case 'scattered clouds':
       case 'broken clouds':
-        return <WiCloud size={24} />;
+        return <WiCloud size={24} color="#A9A9A9" />;
       case 'shower rain':
       case 'rain':
-        return <WiRain size={24} />;
+        return <WiRain size={24} color="#4682B4" />;
       case 'thunderstorm':
-        return <WiThunderstorm size={24} />;
+        return <WiThunderstorm size={24} color="#FFD700" />;
       case 'snow':
-        return <WiSnow size={24} />;
+        return <WiSnow size={24} color="#FFFFFF" />;
       default:
-        return <WiCloud size={24} />;
+        return <WiCloud size={24} color="#A9A9A9" />;
     }
   };
 
   return (
-    <Box 
-      sx={{ 
-        p: 3, 
-        backgroundColor: '#f5f5dc', // Light beige background
-        borderRadius: 2, 
-        boxShadow: 3, 
-        color: '#2e7d32' // Dark green text
-      }}
-    >
-      <Typography variant="h6" sx={{ mb: 2 }}>3-Day Weather Forecast</Typography>
-      <TableContainer component={Paper}>
+    <StyledBox>
+      <Typography variant="h5" gutterBottom color="primary" fontWeight="bold">
+        3-Day Weather Forecast
+      </Typography>
+      <StyledTableContainer component={Paper}>
         <Table>
-          <TableHead>
+          <StyledTableHead>
             <TableRow>
-              <TableCell>Day</TableCell>
-              <TableCell>Temperature</TableCell>
-              <TableCell>Feels Like</TableCell>
-              <TableCell>Humidity</TableCell>
-              <TableCell>Description</TableCell>
+              <StyledTableHeadCell>Day</StyledTableHeadCell>
+              <StyledTableHeadCell>Temperature</StyledTableHeadCell>
+              <StyledTableHeadCell>Feels Like</StyledTableHeadCell>
+              <StyledTableHeadCell>Humidity</StyledTableHeadCell>
+              <StyledTableHeadCell>Description</StyledTableHeadCell>
             </TableRow>
-          </TableHead>
+          </StyledTableHead>
           <TableBody>
             {dailyForecasts.map((forecast, index) => (
-              <TableRow key={index}>
-                <TableCell sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
+              <StyledTableRow key={index}>
+                <StyledTableCell sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
                   {new Date(forecast.dt * 1000).toLocaleDateString('en-US', { weekday: 'long' })}
-                </TableCell>
-                <TableCell>{forecast.main.temp}°C</TableCell>
-                <TableCell>{forecast.main.feels_like}°C</TableCell>
-                <TableCell>{forecast.main.humidity}%</TableCell>
-                <TableCell>
+                </StyledTableCell>
+                <StyledTableCell>{forecast.main.temp}°C</StyledTableCell>
+                <StyledTableCell>{forecast.main.feels_like}°C</StyledTableCell>
+                <StyledTableCell>{forecast.main.humidity}%</StyledTableCell>
+                <StyledTableCell>
                   {getWeatherIcon(forecast.weather[0].description)} {forecast.weather[0].description}
-                </TableCell>
-              </TableRow>
+                </StyledTableCell>
+              </StyledTableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
-    </Box>
+      </StyledTableContainer>
+    </StyledBox>
   );
 }
 

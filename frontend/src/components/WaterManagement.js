@@ -3,6 +3,44 @@ import axios from 'axios';
 import { TextField, Button, Typography, Box, Paper, Grid, CircularProgress } from '@mui/material';
 import { WaterDrop, Grass, Straighten, CalendarToday, Cloud } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { styled } from '@mui/material/styles';
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+  background: 'linear-gradient(135deg, #e6f7ff 0%, #e6ffed 100%)',
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: theme.palette.primary.light,
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.dark,
+    },
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+  background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+  '&:hover': {
+    background: `linear-gradient(45deg, ${theme.palette.primary.dark} 30%, ${theme.palette.primary.main} 90%)`,
+  },
+}));
+
+const ResultBox = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(4),
+  padding: theme.spacing(3),
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
+}));
 
 const WaterManagement = () => {
   const { user } = useAuth();
@@ -47,30 +85,29 @@ const WaterManagement = () => {
   };
 
   return (
-    <Paper elevation={3} className="p-8 bg-gradient-to-br from-blue-50 to-green-50 rounded-xl shadow-lg">
-      <Typography variant="h4" className="text-3xl font-bold text-gray-800 mb-6 flex items-center">
-        <WaterDrop className="mr-2 text-blue-600" />
+    <StyledPaper>
+      <Typography variant="h4" gutterBottom sx={{ display: 'flex', alignItems: 'center', color: 'primary.main', fontWeight: 'bold' }}>
+        <WaterDrop sx={{ mr: 1 }} />
         Water Management Plan
       </Typography>
-      {error && <Typography color="error" className="mb-4 p-2 bg-red-100 rounded-md">{error}</Typography>}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {error && <Typography color="error" sx={{ mb: 2, p: 1, bgcolor: 'error.light', borderRadius: 1 }}>{error}</Typography>}
+      <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <TextField
+            <StyledTextField
               label="Crop"
               value={crop}
               onChange={(e) => setCrop(e.target.value)}
               required
               fullWidth
               variant="outlined"
-              className="bg-white"
               InputProps={{
-                startAdornment: <Grass className="mr-2 text-green-600" />,
+                startAdornment: <Grass sx={{ mr: 1, color: 'success.main' }} />,
               }}
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
+            <StyledTextField
               label="Area (hectares)"
               type="number"
               value={area}
@@ -78,14 +115,13 @@ const WaterManagement = () => {
               required
               fullWidth
               variant="outlined"
-              className="bg-white"
               InputProps={{
-                startAdornment: <Straighten className="mr-2 text-yellow-600" />,
+                startAdornment: <Straighten sx={{ mr: 1, color: 'warning.main' }} />,
               }}
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
+            <StyledTextField
               label="Number of Days"
               type="number"
               value={days}
@@ -93,14 +129,13 @@ const WaterManagement = () => {
               required
               fullWidth
               variant="outlined"
-              className="bg-white"
               InputProps={{
-                startAdornment: <CalendarToday className="mr-2 text-purple-600" />,
+                startAdornment: <CalendarToday sx={{ mr: 1, color: 'secondary.main' }} />,
               }}
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
+            <StyledTextField
               label="Expected Rainfall (mm)"
               type="number"
               value={expectedRainfall}
@@ -108,44 +143,41 @@ const WaterManagement = () => {
               required
               fullWidth
               variant="outlined"
-              className="bg-white"
               InputProps={{
-                startAdornment: <Cloud className="mr-2 text-blue-600" />,
+                startAdornment: <Cloud sx={{ mr: 1, color: 'info.main' }} />,
               }}
             />
           </Grid>
         </Grid>
-        <Button 
+        <StyledButton 
           type="submit" 
           variant="contained" 
-          color="primary" 
           disabled={isLoading}
-          className="mt-6 bg-blue-600 hover:bg-blue-700 transition-colors duration-300"
           fullWidth
         >
-          {isLoading ? <CircularProgress size={24} className="text-white" /> : 'Calculate Water Needs'}
-        </Button>
+          {isLoading ? <CircularProgress size={24} /> : 'Calculate Water Needs'}
+        </StyledButton>
       </form>
       {waterPlan && (
-        <Box mt={4} p={3} className="bg-white rounded-lg shadow-md">
-          <Typography variant="h6" className="text-xl font-semibold text-gray-800 mb-3">Water Management Plan Results:</Typography>
+        <ResultBox>
+          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>Water Management Plan Results:</Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <Typography className="text-gray-700"><strong>Total Water Need:</strong> {waterPlan.total_water_need} liters</Typography>
+              <Typography><strong>Total Water Need:</strong> {waterPlan.total_water_need} liters</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography className="text-gray-700"><strong>Expected Rainfall:</strong> {waterPlan.expected_rainfall} liters</Typography>
+              <Typography><strong>Expected Rainfall:</strong> {waterPlan.expected_rainfall} liters</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography className="text-gray-700"><strong>Irrigation Need:</strong> {waterPlan.irrigation_need} liters</Typography>
+              <Typography><strong>Irrigation Need:</strong> {waterPlan.irrigation_need} liters</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography className="text-gray-700"><strong>Daily Irrigation:</strong> {waterPlan.daily_irrigation} liters</Typography>
+              <Typography><strong>Daily Irrigation:</strong> {waterPlan.daily_irrigation} liters</Typography>
             </Grid>
           </Grid>
-        </Box>
+        </ResultBox>
       )}
-    </Paper>
+    </StyledPaper>
   );
 };
 

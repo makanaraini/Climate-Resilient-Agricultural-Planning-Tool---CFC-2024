@@ -1,36 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography, Paper, CircularProgress, Tooltip } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 function DataCard({ title, value, isLoading, error, icon: Icon, tooltip, customStyles }) {
+  const theme = useTheme();
+
   return (
     <Tooltip title={tooltip || ''}>
       <Paper 
         sx={{ 
-          p: 2, 
+          p: 3,
           display: 'flex', 
           flexDirection: 'column', 
-          alignItems: 'center', 
-          backgroundColor: '#f5f5dc', // beige color
-          borderRadius: 2, 
-          transition: 'background-color 0.3s, transform 0.3s',
+          alignItems: 'center',
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: theme.shape.borderRadius,
+          boxShadow: theme.shadows[3],
+          transition: 'all 0.3s ease-in-out',
           '&:hover': {
-            backgroundColor: '#e0e0d1', // lighter beige color on hover
-            transform: 'scale(1.05)',
+            transform: 'translateY(-5px)',
+            boxShadow: theme.shadows[6],
           },
           ...customStyles 
         }}
-        elevation={3}
       >
         {isLoading ? (
-          <CircularProgress />
+          <CircularProgress size={40} thickness={4} />
         ) : error ? (
-          <Typography variant="h6" color="error">{error}</Typography>
+          <Typography variant="body1" color="error" align="center">{error}</Typography>
         ) : (
           <>
-            {Icon && <Icon sx={{ fontSize: 40, mb: 1, color: 'green' }} />} {/* green color for icon */}
-            <Typography variant="h6" gutterBottom>{title}</Typography>
-            <Typography variant="h4" sx={{ color: 'green' }}>{value}</Typography> {/* green color for value */}
+            {Icon && <Icon sx={{ fontSize: 48, mb: 2, color: theme.palette.primary.main }} />}
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: theme.palette.text.secondary }}>{title}</Typography>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}>{value}</Typography>
           </>
         )}
       </Paper>

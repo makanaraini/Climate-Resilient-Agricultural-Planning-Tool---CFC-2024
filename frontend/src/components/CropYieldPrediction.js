@@ -1,7 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Paper, Select, MenuItem, FormControl, InputLabel, Grid } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { supabase } from '../utils/supabaseClient';
+import AgricultureIcon from '@mui/icons-material/Agriculture';
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  marginTop: theme.spacing(3),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+}));
+
+const StyledFormControl = styled(FormControl)(({ theme }) => ({
+  marginBottom: theme.spacing(3),
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.primary.dark,
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+}));
+
+const StyledSelect = styled(Select)(({ theme }) => ({
+  '&.MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+}));
 
 function CropYieldPrediction({ weatherData }) {
   const [crops, setCrops] = useState([]);
@@ -45,11 +78,15 @@ function CropYieldPrediction({ weatherData }) {
   }
 
   return (
-    <Paper sx={{ p: 2 }}>
-      <Typography variant="h6" gutterBottom>Crop Yield Prediction</Typography>
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Select Crop</InputLabel>
-        <Select
+    <StyledPaper elevation={3}>
+      <Typography variant="h5" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+        <AgricultureIcon sx={{ mr: 1 }} />
+        Crop Yield Prediction
+      </Typography>
+      <StyledFormControl fullWidth>
+        <InputLabel id="crop-select-label">Select Crop</InputLabel>
+        <StyledSelect
+          labelId="crop-select-label"
           value={selectedCrop}
           label="Select Crop"
           onChange={(e) => setSelectedCrop(e.target.value)}
@@ -57,8 +94,8 @@ function CropYieldPrediction({ weatherData }) {
           {crops.map(crop => (
             <MenuItem key={crop} value={crop}>{crop}</MenuItem>
           ))}
-        </Select>
-      </FormControl>
+        </StyledSelect>
+      </StyledFormControl>
       {predictions.length > 0 && (
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -75,7 +112,7 @@ function CropYieldPrediction({ weatherData }) {
           </Grid>
         </Grid>
       )}
-    </Paper>
+    </StyledPaper>
   );
 }
 

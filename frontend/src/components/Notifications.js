@@ -1,5 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Paper, List, ListItem, ListItemText } from '@mui/material';
+import { Typography, Paper, List, ListItem, ListItemText, Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import OpacityIcon from '@mui/icons-material/Opacity';
+import SevereColdTwoToneIcon from '@mui/icons-material/SevereColdTwoTone';
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  marginTop: theme.spacing(3),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+}));
+
+const StyledList = styled(List)(({ theme }) => ({
+  '& .MuiListItem-root': {
+    marginBottom: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.05)',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+    },
+  },
+}));
+
+const NotificationIcon = styled(Box)(({ theme }) => ({
+  marginRight: theme.spacing(2),
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 40,
+  height: 40,
+  borderRadius: '50%',
+  backgroundColor: theme.palette.primary.light,
+  color: theme.palette.primary.contrastText,
+}));
 
 function Notifications({ weatherData, crops }) {
   const [notifications, setNotifications] = useState([]);
@@ -19,14 +58,16 @@ function Notifications({ weatherData, crops }) {
       if (temp > 35) {
         newNotifications.push({
           date,
-          message: `Extreme heat alert: Temperature is expected to reach ${temp}°C.`
+          message: `Extreme heat alert: Temperature is expected to reach ${temp}°C.`,
+          icon: <WbSunnyIcon />,
         });
       }
 
       if (rain > 100) {
         newNotifications.push({
           date,
-          message: `Heavy rainfall alert: Precipitation is expected to be ${rain}mm.`
+          message: `Heavy rainfall alert: Precipitation is expected to be ${rain}mm.`,
+          icon: <OpacityIcon />,
         });
       }
 
@@ -37,7 +78,8 @@ function Notifications({ weatherData, crops }) {
         if (Math.abs(temp - optimalTemp) <= 5 && Math.abs(rain - optimalRainfall) <= 10) {
           newNotifications.push({
             date,
-            message: `Optimal planting conditions for ${crop.name} on ${date}: Temperature around ${optimalTemp}°C and rainfall around ${optimalRainfall}mm.`
+            message: `Optimal planting conditions for ${crop.name} on ${date}: Temperature around ${optimalTemp}°C and rainfall around ${optimalRainfall}mm.`,
+            icon: <SevereColdTwoToneIcon />,
           });
         }
       });
@@ -47,23 +89,31 @@ function Notifications({ weatherData, crops }) {
   };
 
   return (
-    <Paper sx={{ p: 2, mt: 2 }}>
-      <Typography variant="h6" gutterBottom>Notifications</Typography>
+    <StyledPaper>
+      <Typography variant="h4" gutterBottom sx={{ display: 'flex', alignItems: 'center', color: 'primary.main', fontWeight: 'bold' }}>
+        <NotificationsActiveIcon sx={{ mr: 1 }} />
+        Notifications
+      </Typography>
       {notifications.length > 0 ? (
-        <List>
+        <StyledList>
           {notifications.map((notification, index) => (
             <ListItem key={index}>
+              <NotificationIcon>
+                {notification.icon}
+              </NotificationIcon>
               <ListItemText
-                primary={notification.message}
-                secondary={`Date: ${notification.date}`}
+                primary={<Typography variant="subtitle1" fontWeight="medium">{notification.message}</Typography>}
+                secondary={<Typography variant="body2" color="text.secondary">{`Date: ${notification.date}`}</Typography>}
               />
             </ListItem>
           ))}
-        </List>
+        </StyledList>
       ) : (
-        <Typography>No notifications at this time.</Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ fontStyle: 'italic', textAlign: 'center', mt: 2 }}>
+          No notifications at this time.
+        </Typography>
       )}
-    </Paper>
+    </StyledPaper>
   );
 }
 

@@ -1,52 +1,97 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box } from '@mui/material';
+import { styled } from '@mui/system';
 import { WbSunny, Cloud, Opacity, Thermostat } from '@mui/icons-material';
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  marginTop: theme.spacing(3),
+  backgroundColor: theme.palette.background.default,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+}));
+
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  borderRadius: theme.shape.borderRadius,
+  overflow: 'hidden',
+  marginTop: theme.spacing(2),
+}));
+
+const StyledTableHead = styled(TableHead)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+}));
+
+const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  fontWeight: 'bold',
+  textAlign: 'center',
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected,
+  },
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  textAlign: 'center',
+}));
+
+const IconWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginRight: theme.spacing(1),
+  color: theme.palette.primary.main,
+}));
 
 const WeatherForecast = ({ forecast }) => {
   return (
-    <Paper elevation={3} className="p-6 bg-gradient-to-br from-blue-50 to-green-50 rounded-xl shadow-lg">
-      <Typography variant="h4" className="text-3xl font-bold text-gray-800 mb-6 flex items-center">
-        <WbSunny className="mr-2 text-yellow-500" />
+    <StyledPaper elevation={3}>
+      <Typography variant="h5" gutterBottom color="primary" fontWeight="bold">
         Weather Forecast
       </Typography>
-      <TableContainer className="overflow-hidden rounded-lg">
-        <Table className="min-w-full">
-          <TableHead>
-            <TableRow className="bg-blue-100">
-              <TableCell className="font-semibold text-gray-700">Date</TableCell>
-              <TableCell className="font-semibold text-gray-700">
-                <div className="flex items-center">
-                  <Thermostat className="mr-1 text-red-500" />
-                  Temperature (°C)
-                </div>
-              </TableCell>
-              <TableCell className="font-semibold text-gray-700">
-                <div className="flex items-center">
-                  <Opacity className="mr-1 text-blue-500" />
-                  Humidity (%)
-                </div>
-              </TableCell>
-              <TableCell className="font-semibold text-gray-700">
-                <div className="flex items-center">
-                  <Cloud className="mr-1 text-gray-500" />
-                  Precipitation (mm)
-                </div>
-              </TableCell>
+      <StyledTableContainer>
+        <Table>
+          <StyledTableHead>
+            <TableRow>
+              <StyledTableHeadCell>Date</StyledTableHeadCell>
+              <StyledTableHeadCell>
+                <IconWrapper>
+                  <Thermostat />
+                </IconWrapper>
+                Temperature (°C)
+              </StyledTableHeadCell>
+              <StyledTableHeadCell>
+                <IconWrapper>
+                  <Opacity />
+                </IconWrapper>
+                Humidity (%)
+              </StyledTableHeadCell>
+              <StyledTableHeadCell>
+                <IconWrapper>
+                  <Cloud />
+                </IconWrapper>
+                Precipitation (mm)
+              </StyledTableHeadCell>
             </TableRow>
-          </TableHead>
+          </StyledTableHead>
           <TableBody>
             {forecast.map((day, index) => (
-              <TableRow key={day.date} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                <TableCell className="text-gray-800">{day.date}</TableCell>
-                <TableCell className="text-gray-800">{day.temperature}</TableCell>
-                <TableCell className="text-gray-800">{day.humidity}</TableCell>
-                <TableCell className="text-gray-800">{day.precipitation}</TableCell>
-              </TableRow>
+              <StyledTableRow key={day.date}>
+                <StyledTableCell>{day.date}</StyledTableCell>
+                <StyledTableCell>{day.temperature}</StyledTableCell>
+                <StyledTableCell>{day.humidity}</StyledTableCell>
+                <StyledTableCell>{day.precipitation}</StyledTableCell>
+              </StyledTableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
-    </Paper>
+      </StyledTableContainer>
+    </StyledPaper>
   );
 };
 

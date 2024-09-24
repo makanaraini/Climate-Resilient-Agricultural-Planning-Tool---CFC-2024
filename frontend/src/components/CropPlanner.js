@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { TextField, Button, Grid } from '@mui/material';
+import { TextField, Button, Grid, Typography, Paper, Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  margin: theme.spacing(3, 0),
+  backgroundColor: theme.palette.background.default,
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+}));
 
 function CropPlanner({ onAddCrop }) {
   const [newCrop, setNewCrop] = useState({
@@ -25,57 +36,68 @@ function CropPlanner({ onAddCrop }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label="Crop Type"
-            name="crop_type"
-            value={newCrop.crop_type}
-            onChange={handleInputChange}
-            required
-          />
+    <StyledPaper elevation={3}>
+      <Typography variant="h4" gutterBottom>
+        Add New Crop
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Crop Type"
+              name="crop_type"
+              value={newCrop.crop_type}
+              onChange={handleInputChange}
+              required
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Growth Cycle (days)"
+              name="growth_cycle"
+              type="number"
+              value={newCrop.growth_cycle}
+              onChange={handleInputChange}
+              required
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Water Requirements (L)"
+              name="water_requirements"
+              type="number"
+              value={newCrop.water_requirements}
+              onChange={handleInputChange}
+              required
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Nutrient Requirements"
+              name="nutrient_requirements"
+              value={newCrop.nutrient_requirements}
+              onChange={handleInputChange}
+              required
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="flex-end">
+              <StyledButton type="submit" variant="contained" color="primary" size="large">
+                Add Crop
+              </StyledButton>
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label="Growth Cycle (days)"
-            name="growth_cycle"
-            type="number"
-            value={newCrop.growth_cycle}
-            onChange={handleInputChange}
-            required
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label="Water Requirements (L)"
-            name="water_requirements"
-            type="number"
-            value={newCrop.water_requirements}
-            onChange={handleInputChange}
-            required
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label="Nutrient Requirements"
-            name="nutrient_requirements"
-            value={newCrop.nutrient_requirements}
-            onChange={handleInputChange}
-            required
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Button type="submit" variant="contained" color="primary">
-            Add Crop
-          </Button>
-        </Grid>
-      </Grid>
-    </form>
+      </form>
+    </StyledPaper>
   );
 }
 

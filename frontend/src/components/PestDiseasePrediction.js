@@ -1,8 +1,61 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Box, List, ListItem, ListItemText, Alert, Paper } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { useAuth } from '../contexts/AuthContext';
 import BugReportIcon from '@mui/icons-material/BugReport';
+import ErrorIcon from '@mui/icons-material/Error';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  margin: theme.spacing(3, 0),
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+}));
+
+const StyledForm = styled('form')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(3),
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    backgroundColor: theme.palette.background.paper,
+    '&:hover fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  padding: theme.spacing(1.5),
+  fontWeight: 'bold',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+  },
+}));
+
+const StyledList = styled(List)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  overflow: 'hidden',
+}));
+
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  '&:last-child': {
+    borderBottom: 'none',
+  },
+  transition: 'background-color 0.3s ease',
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
 
 const PestDiseasePrediction = () => {
   const { user } = useAuth();
@@ -47,15 +100,15 @@ const PestDiseasePrediction = () => {
   };
 
   return (
-    <Box className="p-6 bg-gradient-to-br from-green-50 to-blue-50">
-      <Paper elevation={3} className="p-6 rounded-lg shadow-lg bg-white">
-        <Typography variant="h4" className="text-3xl font-bold text-gray-800 mb-6 flex items-center">
-          <BugReportIcon className="mr-2 text-green-600" />
+    <Box sx={{ maxWidth: 800, margin: 'auto', padding: 3 }}>
+      <StyledPaper elevation={3}>
+        <Typography variant="h4" gutterBottom sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'primary.main', fontWeight: 'bold', mb: 4 }}>
+          <BugReportIcon sx={{ fontSize: 40, mr: 2 }} />
           Pest and Disease Prediction
         </Typography>
-        {error && <Alert severity="error" className="mt-4 mb-4">{error}</Alert>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <TextField
+        {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+        <StyledForm onSubmit={handleSubmit}>
+          <StyledTextField
             label="Crop"
             name="crop"
             value={formData.crop}
@@ -63,9 +116,8 @@ const PestDiseasePrediction = () => {
             required
             fullWidth
             variant="outlined"
-            className="bg-gray-50"
           />
-          <TextField
+          <StyledTextField
             label="Temperature (°C)"
             name="temperature"
             type="number"
@@ -74,9 +126,8 @@ const PestDiseasePrediction = () => {
             required
             fullWidth
             variant="outlined"
-            className="bg-gray-50"
           />
-          <TextField
+          <StyledTextField
             label="Humidity (%)"
             name="humidity"
             type="number"
@@ -85,49 +136,55 @@ const PestDiseasePrediction = () => {
             required
             fullWidth
             variant="outlined"
-            className="bg-gray-50"
           />
-          <Button 
+          <StyledButton 
             type="submit" 
             variant="contained" 
             color="primary"
             disabled={isLoading}
-            className="w-full py-3 bg-green-600 hover:bg-green-700 transition-colors duration-300"
+            fullWidth
           >
             {isLoading ? 'Predicting...' : 'Predict Risks'}
-          </Button>
-        </form>
+          </StyledButton>
+        </StyledForm>
         {predictions.length > 0 && (
-          <Box className="mt-6">
-            <Typography variant="h6" className="text-xl font-semibold text-gray-700 mb-4">
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'text.primary', mb: 2 }}>
               Potential Risks:
             </Typography>
-            <List className="bg-gray-50 rounded-md">
+            <StyledList>
               {predictions.map((prediction, index) => (
-                <ListItem key={index} className="border-b border-gray-200 last:border-b-0">
+                <StyledListItem key={index}>
                   <ListItemText 
                     primary={
-                      <Typography variant="subtitle1" className="font-medium text-gray-800">
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'medium', color: 'text.primary' }}>
                         {prediction.name}
                       </Typography>
                     }
                     secondary={
-                      <Typography variant="body2" className={`mt-1 ${prediction.risk_level === 1 ? 'text-red-600' : 'text-yellow-600'}`}>
-                        Risk Level: {prediction.risk_level === 1 ? 'High' : 'Medium'}
-                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                        {prediction.risk_level === 1 ? (
+                          <ErrorIcon sx={{ color: 'error.main', mr: 1 }} />
+                        ) : (
+                          <CheckCircleIcon sx={{ color: 'warning.main', mr: 1 }} />
+                        )}
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', color: prediction.risk_level === 1 ? 'error.main' : 'warning.main' }}>
+                          Risk Level: {prediction.risk_level === 1 ? 'High' : 'Medium'}
+                        </Typography>
+                      </Box>
                     }
                   />
-                </ListItem>
+                </StyledListItem>
               ))}
-            </List>
+            </StyledList>
           </Box>
         )}
         {predictions.length === 0 && !isLoading && (
-          <Typography className="mt-4 text-gray-600 italic">
+          <Typography sx={{ mt: 3, textAlign: 'center', fontStyle: 'italic', color: 'text.secondary' }}>
             No significant risks predicted.
           </Typography>
         )}
-      </Paper>
+      </StyledPaper>
     </Box>
   );
 };

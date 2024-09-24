@@ -1,5 +1,29 @@
 import React from 'react';
-import { Typography, Paper, List, ListItem, ListItemText } from '@mui/material';
+import { Typography, Paper, List, ListItem, ListItemText, Box, Divider } from '@mui/material';
+import { styled } from '@mui/system';
+import { CalendarToday, Info } from '@mui/icons-material';
+import SolarPowerTwoToneIcon from '@mui/icons-material/SolarPowerTwoTone';
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  marginTop: theme.spacing(3),
+  backgroundColor: theme.palette.background.default,
+  borderRadius: theme.shape.borderRadius,
+}));
+
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[1],
+}));
+
+const IconWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  marginRight: theme.spacing(2),
+  color: theme.palette.primary.main,
+}));
 
 function PlantingRecommendations({ weatherForecast, crops }) {
   const generateRecommendations = () => {
@@ -31,23 +55,50 @@ function PlantingRecommendations({ weatherForecast, crops }) {
   const recommendations = generateRecommendations();
 
   return (
-    <Paper elevation={3} sx={{ p: 2, mt: 2 }}>
-      <Typography variant="h6" gutterBottom>Planting Recommendations</Typography>
+    <StyledPaper elevation={3}>
+      <Typography variant="h5" gutterBottom color="primary">
+        Planting Recommendations
+      </Typography>
+      <Divider sx={{ mb: 2 }} />
       {recommendations.length > 0 ? (
         <List>
           {recommendations.map((rec, index) => (
-            <ListItem key={index}>
-              <ListItemText
-                primary={`${rec.crop}: Plant on ${rec.date}`}
-                secondary={rec.reason}
-              />
-            </ListItem>
+            <StyledListItem key={index}>
+              <Box>
+                <Box display="flex" alignItems="center" mb={1}>
+                  <IconWrapper>
+                    <SolarPowerTwoToneIcon/>
+                  </IconWrapper>
+                  <Typography variant="h6" color="primary">
+                    {rec.crop}
+                  </Typography>
+                </Box>
+                <Box display="flex" alignItems="center" mb={1}>
+                  <IconWrapper>
+                    <CalendarToday />
+                  </IconWrapper>
+                  <Typography variant="body1">
+                    Plant on {rec.date}
+                  </Typography>
+                </Box>
+                <Box display="flex" alignItems="center">
+                  <IconWrapper>
+                    <Info />
+                  </IconWrapper>
+                  <Typography variant="body2" color="text.secondary">
+                    {rec.reason}
+                  </Typography>
+                </Box>
+              </Box>
+            </StyledListItem>
           ))}
         </List>
       ) : (
-        <Typography>No recommendations available at this time.</Typography>
+        <Typography variant="body1" color="text.secondary">
+          No recommendations available at this time.
+        </Typography>
       )}
-    </Paper>
+    </StyledPaper>
   );
 }
 
