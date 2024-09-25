@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useCropRecommendations } from '../contexts/CropRecommendationsContext';
 import { getAICropRecommendations } from '../services/aiRecommendationService';
 import { getWeatherForecast } from '../utils/weatherUtil';
-import analyzeSoil from '../utils/soilUtil';
+import analyzeSoil from '../utils/SoilUtil';
 import { findSuitableCrops } from '../utils/cropDatabaseUtil';
 import { generateAIPrompt } from '../utils/promptGeneratorUtil';
 

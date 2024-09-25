@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, CircularProgress, List, ListItem, ListItemText } from '@mui/material';
 import { getAICropRecommendations } from '../services/aiRecommendationService';
 import { getWeatherForecast } from '../utils/weatherApiClient';
-import { analyzeSoil } from '../utils/soilUtil';
+import { analyzeSoil } from '../utils/SoilUtil';
 import { findSuitableCrops } from '../utils/supabaseClient';
 import { generateAIPrompt } from '../utils/generateAIPrompt';
 
