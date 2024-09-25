@@ -32,7 +32,7 @@ const fetchSoilData = async (latitude, longitude) => {
 
 const processSoilData = (soilData) => {
   // Extract relevant soil properties
-  const properties = soilData.properties;
+  const { properties } = soilData; // Destructure properties from soilData
   
   return {
     bulkDensity: properties.BLDFIE.mean,

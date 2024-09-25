@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Paper, List, ListItem, CircularProgress, Box, Divider } from '@mui/material';
+import { Typography, Paper, List, ListItem,  Box, Divider } from '@mui/material';
 import { styled } from '@mui/system';
 import { getWeatherForecast } from '../utils/weatherApiClient';
 import { supabase } from '../utils/supabaseClient';
@@ -74,8 +74,9 @@ function CropRecommendations() {
     fetchRecommendations();
   };
 
-  if (loading) return <CircularProgress sx={{ color: 'primary.main' }} />;
-  if (error) return <Typography color="error">{error}</Typography>;
+  if (loading && error) {
+    return <Typography color="error">{error}</Typography>;
+  }
 
   return (
     <StyledPaper elevation={3}>
