@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, send_file
-from flask_cors import CORS
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_cors import CORS # type: ignore
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity # type: ignore
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import random
@@ -10,8 +10,8 @@ from io import StringIO
 import logging
 import io
 import pandas as pd
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas # type: ignore
+from reportlab.lib.pagesizes import letter # type: ignore
 
 import os
 from ibm_watson import AssistantV2
@@ -30,13 +30,10 @@ supabase: Client = create_client(url, key)
 # Replace the users dictionary with a function to fetch users from Supabase
 def get_user(username):
     response = supabase.table('users').select('*').eq('username', username).execute()
-    if response.data:
-        return response.data[0]  # Return the first matching user
-    return None
+    return response.data[0] if response.data else None  # Return the first matching user or None
 
 # Example usage
-user = get_user("MAKANA")
-if user:
+if (user := get_user("MAKANA")):  # Use named expression
     password = user['password']  # Access the hashed password
 
 app = Flask(__name__)
@@ -116,39 +113,6 @@ sustainability_metrics = get_sustainability_metrics()
 weather_data = get_weather_data()
 
 # Mock database of crops and their optimal conditions
-crops_db = [
-    {"name": "Wheat", "optimal_temp": 21, "optimal_humidity": 50, "optimal_soil_ph": 6.5, "suitable_soil_types": {"loamy": 1, "sandy": 1}, "optimal_rainfall": 400},
-    {"name": "Rice", "optimal_temp": 27, "optimal_humidity": 70, "optimal_soil_ph": 6.0, "suitable_soil_types": {"clay": 1}, "optimal_rainfall": 600},
-    {"name": "Corn", "optimal_temp": 24, "optimal_humidity": 60, "optimal_soil_ph": 6.8, "suitable_soil_types": {"loamy": 1}, "optimal_rainfall": 500},
-    {"name": "Soybeans", "optimal_temp": 26, "optimal_humidity": 65, "optimal_soil_ph": 6.3, "suitable_soil_types": {"loamy": 1}, "optimal_rainfall": 450},
-    {"name": "Potatoes", "optimal_temp": 18, "optimal_humidity": 55, "optimal_soil_ph": 6.0, "suitable_soil_types": {"loamy": 1}, "optimal_rainfall": 300},
-]
-
-# Mock database of crops and their water needs (mm per day)
-crops_water_needs = {
-    "Wheat": 4,
-    "Rice": 8,
-    "Corn": 6,
-    "Soybeans": 5,
-    "Potatoes": 5.5
-}
-
-# Mock database of pest/disease risks based on weather conditions
-pest_disease_risks = {
-    "Wheat": {
-        "Rust": {"temp_range": (15, 25), "humidity_range": (60, 80)},
-        "Aphids": {"temp_range": (20, 30), "humidity_range": (50, 70)},
-    },
-    "Rice": {
-        "Blast": {"temp_range": (22, 28), "humidity_range": (85, 100)},
-        "Brown Planthopper": {"temp_range": (25, 35), "humidity_range": (70, 90)},
-    },
-    "Corn": {
-        "Blight": {"temp_range": (18, 27), "humidity_range": (80, 100)},
-        "Armyworm": {"temp_range": (20, 30), "humidity_range": (60, 80)},
-    },
-}
-
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -242,14 +206,84 @@ def health_check():
     return jsonify({"status": "healthy"}), 200
 
 @app.route('/api/weather', methods=['GET'])
-@jwt_required()  # This route now requires authentication
+@jwt_required()
 def get_weather():
-    weather_data = {
-        "temperature": 25,
-        "humidity": 60,
-        "precipitation": 10
-    }
-    return jsonify(weather_data), 200
+    response = supabase.table('weather_data').select('*').execute()
+    if response.error:
+        return jsonify({"msg": "Error fetching weather data"}), 500
+    return jsonify(response.data), 200
+
+@app.route('/api/soil', methods=['GET'])
+@jwt_required()
+def get_soil_data():
+    response = supabase.table('soil_data').select('*').execute()
+    if response.error:
+        return jsonify({"msg": "Error fetching soil data"}), 500
+    return jsonify(response.data), 200
+
+@app.route('/api/crops', methods=['GET'])
+@jwt_required()
+def get_crops():
+    response = supabase.table('crop_data').select('*').execute()
+    if response.error:
+        return jsonify({"msg": "Error fetching crop data"}), 500
+    return jsonify(response.data), 200
+
+@app.route('/api/pests', methods=['GET'])
+@jwt_required()
+def get_pests():
+    response = supabase.table('pest_and_disease_data').select('*').execute()
+    if response.error:
+        return jsonify({"msg": "Error fetching pest and disease data"}), 500
+    return jsonify(response.data), 200
+
+@app.route('/api/irrigation', methods=['GET'])
+@jwt_required()
+def get_irrigation_data():
+    response = supabase.table('irrigation_data').select('*').execute()
+    if response.error:
+        return jsonify({"msg": "Error fetching irrigation data"}), 500
+    return jsonify(response.data), 200
+
+@app.route('/api/climate-trends', methods=['GET'])
+@jwt_required()
+def get_climate_trends():
+    response = supabase.table('climate_trends').select('*').execute()
+    if response.error:
+        return jsonify({"msg": "Error fetching climate trends"}), 500
+    return jsonify(response.data), 200
+
+@app.route('/api/historical-yield', methods=['GET'])
+@jwt_required()
+def get_historical_yield_data():
+    response = supabase.table('historical_yield_data').select('*').execute()
+    if response.error:
+        return jsonify({"msg": "Error fetching historical yield data"}), 500
+    return jsonify(response.data), 200
+
+@app.route('/api/market-data', methods=['GET'])
+@jwt_required()
+def get_market_data():
+    response = supabase.table('market_data').select('*').execute()
+    if response.error:
+        return jsonify({"msg": "Error fetching market data"}), 500
+    return jsonify(response.data), 200
+
+@app.route('/api/farmer-profiles', methods=['GET'])
+@jwt_required()
+def get_farmer_profiles():
+    response = supabase.table('farmer_profiles').select('*').execute()
+    if response.error:
+        return jsonify({"msg": "Error fetching farmer profiles"}), 500
+    return jsonify(response.data), 200
+
+@app.route('/api/sustainability-metrics', methods=['GET'])
+@jwt_required()
+def get_sustainability_metrics():
+    response = supabase.table('sustainability_metrics').select('*').execute()
+    if response.error:
+        return jsonify({"msg": "Error fetching sustainability metrics"}), 500
+    return jsonify(response.data), 200
 
 @app.route('/api/weather-forecast', methods=['GET'])
 @jwt_required()
@@ -266,16 +300,6 @@ def get_weather_forecast():
             "precipitation": round(random.uniform(0, 20), 1)
         })
     return jsonify(forecast), 200
-
-@app.route('/api/crops', methods=['GET'])
-@jwt_required()  # This route now requires authentication
-def get_crops():
-    crops = [
-        {"id": 1, "name": "Wheat", "optimal_temp": 20, "water_needs": "moderate"},
-        {"id": 2, "name": "Corn", "optimal_temp": 25, "water_needs": "high"},
-        {"id": 3, "name": "Rice", "optimal_temp": 30, "water_needs": "very high"}
-    ]
-    return jsonify(crops), 200
 
 @app.route('/api/agricultural-data', methods=['GET'])
 @jwt_required()
@@ -374,6 +398,44 @@ def get_water_management_plan():
         "loamy": 1.0,
         "clay": 0.8
     }
+
+@app.route('/api/generate-report', methods=['GET'])
+@jwt_required()
+def generate_report():
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    p.drawString(100, 750, "Agricultural Data Report")
+    
+    # Add more content to the PDF
+    y = 730
+    for data in agricultural_data:  # Assuming agricultural_data is a list of dicts
+        p.drawString(100, y, f"Date: {data['date']}, Crop: {data['crop']}, Yield: {data['yield']}")
+        y -= 20
+
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name='agricultural_report.pdf', mimetype='application/pdf')
+
+@app.route('/api/crop-yield-analysis', methods=['GET'])
+@jwt_required()
+def crop_yield_analysis():
+    df = pd.DataFrame(historical_yield_data)  # Assuming historical_yield_data is a list of dicts
+    yield_summary = df.groupby('crop')['yield'].agg(['mean', 'sum']).reset_index()
+    return jsonify(yield_summary.to_dict(orient='records')), 200
+
+@app.route('/api/export-agricultural-data', methods=['GET'])
+@jwt_required()
+def export_agricultural_data():
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Date', 'Crop', 'Yield', 'Area'])  # Header
+
+    for data in agricultural_data:  # Assuming agricultural_data is a list of dicts
+        writer.writerow([data['date'], data['crop'], data['yield'], data['area']])
+
+    output.seek(0)
+    return send_file(io.BytesIO(output.getvalue().encode()), mimetype='text/csv', as_attachment=True, download_name='agricultural_data.csv')
 
 if __name__ == '__main__':
     app.run(debug=os.getenv('FLASK_ENV') == 'development')
