@@ -17,45 +17,103 @@ import os
 from ibm_watson import AssistantV2
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from dotenv import load_dotenv
+from supabase import create_client, Client
 
-load_dotenv()
+# Load environment variables from .env file
+load_dotenv(dotenv_path='../frontend/.env')
+
+# Initialize Supabase client with credentials from .env
+url = os.getenv("SUPABASE_URL")
+key = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(url, key)
+
+# Replace the users dictionary with a function to fetch users from Supabase
+def get_user(username):
+    response = supabase.table('users').select('*').eq('username', username).execute()
+    if response.data:
+        return response.data[0]  # Return the first matching user
+    return None
+
+# Example usage
+user = get_user("MAKANA")
+if user:
+    password = user['password']  # Access the hashed password
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this!
+app.config['JWT_SECRET_KEY'] = 'EEE2062rm!Ask73/RM'  # Change this!
 jwt = JWTManager(app)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
 # Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = "your-secret-key"  # Change this!
+app.config["JWT_SECRET_KEY"] = "EEE2062rm!Ask73/RM"  # Change this!
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
 app.config['JWT_HEADER_NAME'] = 'Authorization'
 app.config['JWT_HEADER_TYPE'] = 'Bearer'
 jwt = JWTManager(app)
 
-# This should be replaced with a database in a real application
-users = {
-    "MAKANA": {
-        "password": generate_password_hash("16814KS/makana"),
-        "name": "",
-        "email": "",
-        "location": "",
-        "preferred_units": "metric"
-    },
-    "admin": {
-        "password": generate_password_hash("Ask73/RM"),
-        "name": "Admin",
-        "email": "admin@example.com",
-        "location": "",
-        "preferred_units": "metric"
-    }
-}
+# Fetch data from Supabase for all relevant tables
+def get_climate_trends():
+    response = supabase.table('climate_trends').select('*').execute()
+    return response.data if response.data else []
 
-agricultural_data = [
-    {"date": "2023-01-01", "crop": "Wheat", "yield": 5.2, "area": 100},
-    {"date": "2023-02-01", "crop": "Corn", "yield": 7.8, "area": 150},
-    {"date": "2023-03-01", "crop": "Soybeans", "yield": 3.5, "area": 80},
-]
+def get_crop_data():
+    response = supabase.table('crop_data').select('*').execute()
+    return response.data if response.data else []
+
+def get_farmer_profiles():
+    response = supabase.table('farmer_profiles').select('*').execute()
+    return response.data if response.data else []
+
+def get_geographical_data():
+    response = supabase.table('geographical_data').select('*').execute()
+    return response.data if response.data else []
+
+def get_historical_yield_data():
+    response = supabase.table('historical_yield_data').select('*').execute()
+    return response.data if response.data else []
+
+def get_irrigation_data():
+    response = supabase.table('irrigation_data').select('*').execute()
+    return response.data if response.data else []
+
+def get_market_data():
+    response = supabase.table('market_data').select('*').execute()
+    return response.data if response.data else []
+
+def get_pest_and_disease_data():
+    response = supabase.table('pest_and_disease_data').select('*').execute()
+    return response.data if response.data else []
+
+def get_projected_climate_changes():
+    response = supabase.table('projected_climate_changes').select('*').execute()
+    return response.data if response.data else []
+
+def get_soil_data():
+    response = supabase.table('soil_data').select('*').execute()
+    return response.data if response.data else []
+
+def get_sustainability_metrics():
+    response = supabase.table('sustainability_metrics').select('*').execute()
+    return response.data if response.data else []
+
+def get_weather_data():
+    response = supabase.table('weather_data').select('*').execute()
+    return response.data if response.data else []
+
+# Example usage
+climate_trends = get_climate_trends()
+crop_data = get_crop_data()
+farmer_profiles = get_farmer_profiles()
+geographical_data = get_geographical_data()
+historical_yield_data = get_historical_yield_data()
+irrigation_data = get_irrigation_data()
+market_data = get_market_data()
+pest_and_disease_data = get_pest_and_disease_data()
+projected_climate_changes = get_projected_climate_changes()
+soil_data = get_soil_data()
+sustainability_metrics = get_sustainability_metrics()
+weather_data = get_weather_data()
 
 # Mock database of crops and their optimal conditions
 crops_db = [
@@ -117,17 +175,18 @@ def register():
     if not username or not password:
         return jsonify({"msg": "Missing username or password"}), 400
     
-    if username in users:
+    if get_user(username):
         return jsonify({"msg": "Username already exists"}), 400
     
     hashed_password = generate_password_hash(password)
-    users[username] = {
+    supabase.table('users').insert({
+        "username": username,
         "password": hashed_password,
         "name": "",
         "email": "",
         "location": "",
         "preferred_units": "metric"
-    }
+    }).execute()
     return jsonify({"msg": "User created successfully"}), 201
 
 @app.route('/api/login', methods=['POST'])
@@ -144,11 +203,12 @@ def login():
             print("Error: Missing username or password")
             return jsonify({"msg": "Missing username or password"}), 400
 
-        if username not in users:
+        user = get_user(username)
+        if not user:
             print(f"Error: User {username} not found")
             return jsonify({"msg": "User not found"}), 401
 
-        if check_password_hash(users[username]['password'], password):
+        if check_password_hash(user['password'], password):
             access_token = create_access_token(identity=username)
             print(f"Token generated: {access_token}")
             print(f"Login successful for user: {username}")
@@ -247,14 +307,17 @@ def submit_agricultural_data():
     agricultural_data.append(new_data)
     return jsonify({"msg": "Data submitted successfully"}), 201
 
+# Get admin username from environment variable
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")  # Default to 'admin' if not set
+
 @app.route('/api/clear-users', methods=['POST'])
 @jwt_required()
 def clear_users():
     current_user = get_jwt_identity()
-    if current_user != 'admin':  # Replace 'admin' with your admin username
+    if current_user != ADMIN_USERNAME:  # Use the environment variable
         return jsonify({"msg": "Unauthorized"}), 403
 
-    users.clear()
+    supabase.table('users').delete().execute()
     return jsonify({"msg": "All users cleared"}), 200
 
 @app.route('/api/crop-recommendation', methods=['POST'])
