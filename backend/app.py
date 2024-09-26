@@ -23,8 +23,8 @@ from supabase import create_client, Client # type: ignore
 load_dotenv(dotenv_path='../frontend/.env')
 
 # Initialize Supabase client with credentials from .env
-url = os.getenv("SUPABASE_URL")
-key = os.getenv("SUPABASE_KEY")
+url = os.getenv("REACT_APP_SUPABASE_URL")
+key = os.getenv("REACT_APP_SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
 # Replace the users dictionary with a function to fetch users from Supabase
