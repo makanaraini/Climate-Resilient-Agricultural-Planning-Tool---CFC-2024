@@ -52,51 +52,51 @@ jwt = JWTManager(app)
 # Fetch data from Supabase for all relevant tables
 def get_climate_trends():
     response = supabase.table('climate_trends').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_crop_data():
     response = supabase.table('crop_data').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_farmer_profiles():
     response = supabase.table('farmer_profiles').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_geographical_data():
     response = supabase.table('geographical_data').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_historical_yield_data():
     response = supabase.table('historical_yield_data').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_irrigation_data():
     response = supabase.table('irrigation_data').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_market_data():
     response = supabase.table('market_data').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_pest_and_disease_data():
     response = supabase.table('pest_and_disease_data').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_projected_climate_changes():
     response = supabase.table('projected_climate_changes').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_soil_data():
     response = supabase.table('soil_data').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_sustainability_metrics():
     response = supabase.table('sustainability_metrics').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 def get_weather_data():
     response = supabase.table('weather_data').select('*').execute()
-    return response.data if response.data else []
+    return response.data or []
 
 # Example usage
 climate_trends = get_climate_trends()
