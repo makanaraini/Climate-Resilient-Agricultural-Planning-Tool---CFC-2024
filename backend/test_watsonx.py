@@ -1,5 +1,5 @@
 import os
-from ibm_watson_machine_learning import APIClient
+from ibm_watson_machine_learning import APIClient # type: ignore
 from dotenv import load_dotenv
 
 # Load environment variables

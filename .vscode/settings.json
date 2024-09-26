@@ -1,11 +1,13 @@
 {
     "cSpell.words": [
+        "apikey",
         "dotenv",
         "jsonify",
         "MAKANA",
         "pagesizes",
         "pdfgen",
         "SUPABASE",
+        "WATSONX",
         "werkzeug"
     ]
 }

@@ -17,7 +17,7 @@ import os
 from ibm_watson import AssistantV2
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from dotenv import load_dotenv
-from supabase import create_client, Client
+from supabase import create_client, Client # type: ignore
 
 # Load environment variables from .env file
 load_dotenv(dotenv_path='../frontend/.env')
@@ -29,7 +29,7 @@ supabase: Client = create_client(url, key)
 
 # Replace the users dictionary with a function to fetch users from Supabase
 def get_user(username):
-    response = supabase.table('users').select('*').eq('username', username).execute()
+    response = supabase.table('profiles').select('*').eq('username', username).execute()
     return response.data[0] if response.data else None  # Return the first matching user or None
 
 # Example usage
@@ -136,22 +136,35 @@ def register():
 
     username = request.json.get('username', None)
     password = request.json.get('password', None)
-    if not username or not password:
-        return jsonify({"msg": "Missing username or password"}), 400
+    email = request.json.get('email', None)
+    name = request.json.get('name', '')
+    location = request.json.get('location', '')
+    preferred_units = request.json.get('preferred_units', 'metric')
+
+    if not username or not password or not email:
+        return jsonify({"msg": "Missing required fields"}), 400
     
     if get_user(username):
         return jsonify({"msg": "Username already exists"}), 400
     
     hashed_password = generate_password_hash(password)
-    supabase.table('users').insert({
-        "username": username,
-        "password": hashed_password,
-        "name": "",
-        "email": "",
-        "location": "",
-        "preferred_units": "metric"
-    }).execute()
-    return jsonify({"msg": "User created successfully"}), 201
+    
+    try:
+        response = supabase.table('profiles').insert({
+            "username": username,
+            "password": hashed_password,
+            "email": email,
+            "name": name,
+            "location": location,
+            "preferred_units": preferred_units
+        }).execute()
+        
+        if response.data:
+            return jsonify({"msg": "User created successfully"}), 201
+        else:
+            return jsonify({"msg": "Error creating user"}), 500
+    except Exception as e:
+        return jsonify({"msg": f"Error creating user: {str(e)}"}), 500
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -173,10 +186,18 @@ def login():
             return jsonify({"msg": "User not found"}), 401
 
         if check_password_hash(user['password'], password):
+            # Query the profiles table for additional user information
+            profile_response = supabase.table('profiles').select('*').eq('username', username).execute()
+            if profile_response.error:
+                print(f"Error fetching profile for user: {username}")
+                return jsonify({"msg": "Error fetching user profile"}), 500
+
+            user_profile = profile_response.data[0] if profile_response.data else {}
+
             access_token = create_access_token(identity=username)
             print(f"Token generated: {access_token}")
             print(f"Login successful for user: {username}")
-            return jsonify(access_token=access_token), 200
+            return jsonify(access_token=access_token, user_profile=user_profile), 200
         else:
             print(f"Error: Incorrect password for user: {username}")
             return jsonify({"msg": "Invalid username or password"}), 401
