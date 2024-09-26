@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Box, Grid, Paper, CircularProgress, TextField, Divider } from '@mui/material';
 import { styled } from '@mui/system';
 import { supabase } from '../utils/supabaseClient';
