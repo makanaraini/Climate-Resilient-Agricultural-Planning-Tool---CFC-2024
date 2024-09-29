@@ -1,10 +1,10 @@
 import React from 'react.js';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Tooltip, Divider, Box } from '@mui/material.js';
-import { Home, Dashboard, Assessment, EventNote, Terrain, Person, ExitToApp, LockOpen, PersonAdd, Visibility, Edit } from '@mui/icons-material.js'; // Changed Input to Edit
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Tooltip, Divider, Box } from '@mui/material/index.js';
+import { Home, Dashboard, Assessment, EventNote, Terrain, Person, ExitToApp, LockOpen, PersonAdd, Visibility, Edit } from '@mui/icons-material/index.js'; // Changed Input to Edit
 import { Link, useLocation } from 'react-router-dom.js';
-import { useAuth } from '../contexts/AuthContext.js.js';
-import { styled } from '@mui/system.js';
-import mpanziLogo from '../assets/mpanzi-logo.png.js'; // Import the Mpanzi logo
+import { useAuth } from '../contexts/AuthContext.js';
+import { styled } from '@mui/system/index.js';
+import mpanziLogo from '../assets/mpanzi-logo.png'; // Import the Mpanzi logo
 
 const HoverDrawer = styled(Drawer)(({ theme }) => ({
   width: 60,
