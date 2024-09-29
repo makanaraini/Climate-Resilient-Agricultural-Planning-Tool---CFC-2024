@@ -1,7 +1,7 @@
 import React from 'react.js';
 import { Line, Bar } from 'react-chartjs-2.js';
-import { Paper, Typography } from '@mui/material.js';
-import { styled } from '@mui/material/styles.js';
+import { Paper, Typography } from '@mui/material/index.js';
+import { styled } from '@mui/material/styles/index.js';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),

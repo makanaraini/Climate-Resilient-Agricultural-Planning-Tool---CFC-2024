@@ -1,5 +1,5 @@
 import React from 'react.js';
-import { Typography, Paper, Box } from '@mui/material.js';
+import { Typography, Paper, Box } from '@mui/material/styles.js';
 
 function SoilAnalysisResult({ result }) {
   return (
