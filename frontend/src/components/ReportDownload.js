@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Button, CircularProgress, Typography, Box, Paper } from '@mui/material';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import TableChartIcon from '@mui/icons-material/TableChart';
+import React, { useState } from 'react.js';
+import axios from 'axios.js';
+import { Button, CircularProgress, Typography, Box, Paper } from '@mui/material.js';
+import FileDownloadIcon from '@mui/icons-material/FileDownload.js';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf.js';
+import TableChartIcon from '@mui/icons-material/TableChart.js';
 
 const ReportDownload = () => {
   const [loading, setLoading] = useState(false);

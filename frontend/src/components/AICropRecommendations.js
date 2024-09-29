@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, CircularProgress, List, ListItem, ListItemText } from '@mui/material';
-import { getAICropRecommendations } from '../services/aiRecommendationService';
-import { getWeatherForecast } from '../utils/weatherApiClient';
-import { analyzeSoil } from '../utils/SoilUtil';
-import { findSuitableCrops } from '../utils/supabaseClient';
-import { generateAIPrompt } from '../utils/generateAIPrompt';
+import { getAICropRecommendations } from '../services/aiRecommendationService.js';
+import { getWeatherForecast } from '../utils/weatherApiClient.js';
+import { analyzeSoil } from '../utils/SoilUtil.js';
+import { findSuitableCrops } from '../utils/supabaseClient.js';
+import { generateAIPrompt } from '../utils/generateAIPrompt.js';
 
 const AICropRecommendations = ({ farmData }) => {
   const [recommendations, setRecommendations] = useState([]);

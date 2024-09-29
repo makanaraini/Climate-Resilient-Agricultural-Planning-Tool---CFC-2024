@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Paper, List, ListItem,  Box, Divider } from '@mui/material';
 import { styled } from '@mui/system';
-import { getWeatherForecast } from '../utils/weatherApiClient';
-import { supabase } from '../utils/supabaseClient';
-import { geocodeLocation } from '../utils/geocodeApiClient';
-import DataInputForm from './DataInputForm';
+import { getWeatherForecast } from '../utils/weatherApiClient.js';
+import { supabase } from '../utils/supabaseClient.js';
+import { geocodeLocation } from '../utils/geocodeApiClient.js';
+import DataInputForm from './DataInputForm.js';
 import { AgricultureOutlined, WbSunnyOutlined, WaterDropOutlined, TerrainOutlined } from '@mui/icons-material';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

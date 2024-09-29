@@ -2,23 +2,23 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { AuthProvider } from './contexts/AuthContext';
-import PrivateRoute from './components/PrivateRoute';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Login from './components/Login';
-import Register from './components/Register';
-import Profile from './pages/Profile';
-import Reports from './pages/Reports';
-import Planning from './pages/Planning';
-import Dashboard from './pages/Dashboard';
-import SoilAnalysis from './pages/SoilAnalysis';
-import MarketTrends from './components/MarketTrends'; // Ensure this path is correct
-import DataInputForm from './components/DataInputForm'; // Ensure this path is correct
-import './App.css'; // Import the CSS file
-import CropRecommendationsProvider from './contexts/CropRecommendationsContext';
-import { fetchWeatherData } from './utils/supabaseService';
-import ErrorBoundary from './components/ErrorBoundary'; // Import the ErrorBoundary
+import { AuthProvider } from './contexts/AuthContext.js';
+import PrivateRoute from './components/PrivateRoute.js';
+import Navbar from './components/Navbar.js';
+import Home from './pages/Home.js';
+import Login from './components/Login.js';
+import Register from './components/Register.js';
+import Profile from './pages/Profile.js';
+import Reports from './pages/Reports.js';
+import Planning from './pages/Planning.js';
+import Dashboard from './pages/Dashboard.js';
+import SoilAnalysis from './pages/SoilAnalysis.js';
+import MarketTrends from './components/MarketTrends.js';
+import DataInputForm from './components/DataInputForm.js';
+import './App.css';
+import CropRecommendationsProvider from './contexts/CropRecommendationsContext.js';
+import { fetchWeatherData } from './utils/supabaseService.js';
+import ErrorBoundary from './components/ErrorBoundary.js';
 
 const theme = createTheme();
 
@@ -32,7 +32,7 @@ function App() {
   }, []);
 
   return (
-    <ErrorBoundary> {/* Wrap your application in ErrorBoundary */}
+    <ErrorBoundary>
       <CropRecommendationsProvider>
         <ThemeProvider theme={theme}>
           <CssBaseline />

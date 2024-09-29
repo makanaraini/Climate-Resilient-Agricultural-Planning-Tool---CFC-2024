@@ -1,7 +1,7 @@
-import React from 'react';
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Divider } from '@mui/material';
-import { styled } from '@mui/system';
-import { WiThermometer, WiRaindrop, WiHumidity, WiStrongWind } from 'weather-icons-react';
+import React from 'react.js';
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Divider } from '@mui/material.js';
+import { styled } from '@mui/system.js';
+import { WiThermometer, WiRaindrop, WiHumidity, WiStrongWind } from 'weather-icons-react.js';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),

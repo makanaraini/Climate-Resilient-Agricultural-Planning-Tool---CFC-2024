@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { TextField, Button, Typography, Box, List, ListItem, ListItemText, Alert, Paper } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { useAuth } from '../contexts/AuthContext';
-import BugReportIcon from '@mui/icons-material/BugReport';
-import ErrorIcon from '@mui/icons-material/Error';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import React, { useState } from 'react.js';
+import axios from 'axios.js';
+import { TextField, Button, Typography, Box, List, ListItem, ListItemText, Alert, Paper } from '@mui/material.js';
+import { styled } from '@mui/material/styles.js';
+import { useAuth } from '../contexts/AuthContext.js';
+import BugReportIcon from '@mui/icons-material/BugReport.js';
+import ErrorIcon from '@mui/icons-material/Error.js';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle.js';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),

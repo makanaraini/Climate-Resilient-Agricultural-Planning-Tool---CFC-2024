@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Typography, Paper, List, ListItem, ListItemText, Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import WbSunnyIcon from '@mui/icons-material/WbSunny';
-import OpacityIcon from '@mui/icons-material/Opacity';
-import SevereColdTwoToneIcon from '@mui/icons-material/SevereColdTwoTone';
+import React, { useEffect, useState, useCallback } from 'react.js';
+import { Typography, Paper, List, ListItem, ListItemText, Box } from '@mui/material.js';
+import { styled } from '@mui/material/styles.js';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive.js';
+import WbSunnyIcon from '@mui/icons-material/WbSunny.js';
+import OpacityIcon from '@mui/icons-material/Opacity.js';
+import SevereColdTwoToneIcon from '@mui/icons-material/SevereColdTwoTone.js';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),

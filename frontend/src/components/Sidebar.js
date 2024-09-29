@@ -1,17 +1,17 @@
-import React from 'react';
-import { Drawer, List, Divider, IconButton, useTheme } from '@mui/material';
-import { Link } from 'react-router-dom';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import AgricultureIcon from '@mui/icons-material/Agriculture';
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import CloudIcon from '@mui/icons-material/Cloud';
-import BugReportIcon from '@mui/icons-material/BugReport';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import PersonIcon from '@mui/icons-material/Person';
+import React from 'react.js';
+import { Drawer, List, Divider, IconButton, useTheme } from '@mui/material.js';
+import { Link } from 'react-router-dom.js';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft.js';
+import ListItemButton from '@mui/material/ListItemButton.js';
+import ListItemIcon from '@mui/material/ListItemIcon.js';
+import ListItemText from '@mui/material/ListItemText.js';
+import DashboardIcon from '@mui/icons-material/Dashboard.js';
+import AgricultureIcon from '@mui/icons-material/Agriculture.js';
+import WaterDropIcon from '@mui/icons-material/WaterDrop.js';
+import CloudIcon from '@mui/icons-material/Cloud.js';
+import BugReportIcon from '@mui/icons-material/BugReport.js';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp.js';
+import PersonIcon from '@mui/icons-material/Person.js';
 import DownloadIcon from '@mui/icons-material/Download';
 
 const Sidebar = ({ open, onClose }) => {

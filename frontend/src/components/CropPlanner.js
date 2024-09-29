@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { TextField, Button, Grid, Typography, Paper, Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import React, { useState } from 'react.js';
+import { TextField, Button, Grid, Typography, Paper, Box } from '@mui/material.js';
+import { styled } from '@mui/material/styles.js';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),

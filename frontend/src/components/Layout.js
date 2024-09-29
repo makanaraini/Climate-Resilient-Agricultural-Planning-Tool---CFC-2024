@@ -1,6 +1,6 @@
-import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import React from 'react.js';
+import { Outlet, useNavigate } from 'react-router-dom.js';
+import { useAuth } from '../contexts/AuthContext.js';
 import { 
   Box, 
   Drawer, 
@@ -13,13 +13,13 @@ import {
   ListItemIcon, 
   ListItemText, 
   Button
-} from '@mui/material';
+} from '@mui/material.js';
 import { 
   Dashboard as DashboardIcon, 
   BarChart, 
   Layers,
   Person
-} from '@mui/icons-material';
+} from '@mui/icons-material.js';
 
 const drawerWidth = 240;
 

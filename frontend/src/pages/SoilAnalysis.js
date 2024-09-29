@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Box, Paper, TextField, Button, Grid, CircularProgress } from '@mui/material';
-import { supabase } from '../utils/supabaseClient';
-import { getSoilMoisture } from '../utils/weatherApiClient';
-import SoilAnalysisResult from '../components/SoilAnalysisResult';
+import { supabase } from '../utils/supabaseClient.js';
+import { getSoilMoisture } from '../utils/weatherApiClient.js';
+import SoilAnalysisResult from '../components/SoilAnalysisResult.js';
 
 function SoilAnalysis() {
   const [soilData, setSoilData] = useState({
