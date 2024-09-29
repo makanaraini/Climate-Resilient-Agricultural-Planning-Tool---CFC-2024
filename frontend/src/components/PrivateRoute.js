@@ -1,6 +1,6 @@
 import React from 'react.js';
 import { Navigate, useLocation } from 'react-router-dom.js';
-import { useAuth } from '../contexts/AuthContext.js'; // Make sure this path is correct
+import { useAuth } from '../contexts/AuthContext.js.js'; // Make sure this path is correct
 
 function PrivateRoute({ children }) {
   const { user } = useAuth();

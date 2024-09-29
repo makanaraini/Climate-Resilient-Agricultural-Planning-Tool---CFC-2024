@@ -1,11 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client'; // Change this import
-import App from './App.js'; // Added .js extension
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import React from 'react.js';
+import ReactDOM from 'react-dom/client.js'; // Change this import
+import App from './App.js.js'; // Added .js extension
+import { ThemeProvider, createTheme } from '@mui/material/styles.js';
 import CssBaseline from '@mui/material/CssBaseline.js'; // Added .js extension
 import './index.css';
-import '@fontsource/roboto'; // Import Roboto font
-import reportWebVitals from './reportWebVitals.js'; // Added .js extension
+import '@fontsource/roboto.js'; // Import Roboto font
+import reportWebVitals from './reportWebVitals.js.js'; // Added .js extension
 
 const theme = createTheme({
   palette: {

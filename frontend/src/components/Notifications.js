@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react.js';
-import { Typography, Paper, List, ListItem, ListItemText, Box } from '@mui/material.js';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Typography, Paper, List, ListItem, ListItemText, Box } from '@mui/material/index.js';
 import { styled } from '@mui/material/styles.js';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive.js';
 import WbSunnyIcon from '@mui/icons-material/WbSunny.js';

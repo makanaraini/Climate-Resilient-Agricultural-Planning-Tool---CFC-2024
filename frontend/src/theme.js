@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from '@mui/material.js/styles';
 
 const theme = createTheme({
   // You can customize your theme here

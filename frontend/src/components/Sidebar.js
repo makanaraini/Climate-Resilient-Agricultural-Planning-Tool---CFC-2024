@@ -12,7 +12,7 @@ import CloudIcon from '@mui/icons-material/Cloud.js';
 import BugReportIcon from '@mui/icons-material/BugReport.js';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp.js';
 import PersonIcon from '@mui/icons-material/Person.js';
-import DownloadIcon from '@mui/icons-material/Download';
+import DownloadIcon from '@mui/icons-material.js/Download';
 
 const Sidebar = ({ open, onClose }) => {
   const theme = useTheme();

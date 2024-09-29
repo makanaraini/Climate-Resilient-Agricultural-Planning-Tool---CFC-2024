@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, TimeScale } from 'chart.js';
-import { Bar, Line, Scatter } from 'react-chartjs-2';
+import { Bar, Line, Scatter } from 'react.js-chartjs-2';
 import { Box, Typography, TextField, Button, Select, MenuItem, Paper, Grid } from '@mui/material';
 import { styled } from '@mui/system';
 import 'chartjs-adapter-date-fns';

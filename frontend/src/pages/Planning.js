@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Box, Paper, List, ListItem, ListItemText, Tab, Tabs, AppBar, TextField, Button } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { supabase } from '../utils/supabaseClient.js';
-import { getWeatherForecast } from '../utils/weatherApiClient.js';
-import CropCalendar from '../components/CropCalendar.js';
-import PlantingRecommendations from '../components/PlantingRecommendations.js';
-import Notifications from '../components/Notifications.js';
-import SoilAnalysis from '../components/SoilAnalysis.js';
-import PestDiseasePrediction from '../components/PestDiseasePrediction.js';
-import WaterManagement from '../components/WaterManagement.js';
+import { styled } from '@mui/material.js/styles';
+import { supabase } from '../utils/supabaseClient.js.js';
+import { getWeatherForecast } from '../utils/weatherApiClient.js.js';
+import CropCalendar from '../components/CropCalendar.js.js';
+import PlantingRecommendations from '../components/PlantingRecommendations.js.js';
+import Notifications from '../components/Notifications.js.js';
+import SoilAnalysis from '../components/SoilAnalysis.js.js';
+import PestDiseasePrediction from '../components/PestDiseasePrediction.js.js';
+import WaterManagement from '../components/WaterManagement.js.js';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   flexGrow: 1,

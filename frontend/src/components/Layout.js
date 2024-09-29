@@ -1,6 +1,6 @@
 import React from 'react.js';
 import { Outlet, useNavigate } from 'react-router-dom.js';
-import { useAuth } from '../contexts/AuthContext.js';
+import { useAuth } from '../contexts/AuthContext.js.js';
 import { 
   Box, 
   Drawer, 

@@ -1,7 +1,7 @@
 import React from 'react.js';
 import PropTypes from 'prop-types.js';
-import { Typography, Paper, CircularProgress, Tooltip } from '@mui/material.js';
-import { useTheme } from '@mui/material/styles.js';
+import { Typography, Paper, CircularProgress, Tooltip } from '@mui/material/index.js';
+import { useTheme } from '@mui/material/styles/index.js';
 
 function DataCard({ title, value, isLoading, error, icon: Icon, tooltip, customStyles }) {
   const theme = useTheme();

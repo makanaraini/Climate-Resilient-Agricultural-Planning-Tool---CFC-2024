@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient.js'; // Use import instead of require
+import { supabase } from './supabaseClient.js.js'; // Use import instead of require
 
 const testSignIn = async () => {
   const email = 'danielraini871@gmail.com'; // Replace with a valid email

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react.js';
 import { Typography, Paper, Select, MenuItem, FormControl, InputLabel, Grid } from '@mui/material.js';
 import { styled } from '@mui/material/styles.js';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts.js';
-import { supabase } from '../utils/supabaseClient.js';
+import { supabase } from '../utils/supabaseClient.js.js';
 import AgricultureIcon from '@mui/icons-material/Agriculture.js';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

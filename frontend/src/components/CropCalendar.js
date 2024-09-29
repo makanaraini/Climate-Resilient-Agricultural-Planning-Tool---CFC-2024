@@ -2,10 +2,10 @@ import React, { useState } from 'react.js';
 import { Calendar, momentLocalizer } from 'react-big-calendar.js';
 import moment from 'moment.js';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Tooltip, Paper, Typography } from '@mui/material.js';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Tooltip, Paper, Typography } from '@mui/material/index.js';
 import WbSunnyIcon from '@mui/icons-material/WbSunny.js';
 import CloudIcon from '@mui/icons-material/Cloud.js';
-import { styled } from '@mui/material/styles.js';
+import { styled } from '@mui/material/styles/index.js';
 
 const localizer = momentLocalizer(moment);
 

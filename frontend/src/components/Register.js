@@ -1,9 +1,9 @@
 import React, { useState } from 'react.js';
 import { useNavigate, Link } from 'react-router-dom.js';
 import { TextField, Button, Typography, Box, Container, Alert } from '@mui/material.js';
-import { useAuth } from '../contexts/AuthContext.js';
+import { useAuth } from '../contexts/AuthContext.js.js';
 import { LockOutlined as LockOutlinedIcon } from '@mui/icons-material.js';
-import { supabase } from '../utils/supabaseClient.js'; // Import Supabase client
+import { supabase } from '../utils/supabaseClient.js.js'; // Import Supabase client
 
 function Register() {
   const { login } = useAuth();

@@ -2,7 +2,7 @@ import React, { useState } from 'react.js';
 import axios from 'axios.js';
 import { TextField, Button, Typography, Box, Paper, Grid, CircularProgress } from '@mui/material.js';
 import { WaterDrop, Grass, Straighten, CalendarToday, Cloud } from '@mui/icons-material.js';
-import { useAuth } from '../contexts/AuthContext.js';
+import { useAuth } from '../contexts/AuthContext.js.js';
 import { styled } from '@mui/material/styles.js';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

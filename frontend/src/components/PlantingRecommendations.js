@@ -1,7 +1,7 @@
-import React from 'react.js';
-import { Typography, Paper, List, ListItem, Box, Divider } from '@mui/material.js';
-import { styled } from '@mui/system.js';
-import { CalendarToday, Info } from '@mui/icons-material.js';
+import React from 'react';
+import { Typography, Paper, List, ListItem, Box, Divider } from '@mui/material/index.js';
+import { styled } from '@mui/system/index.js';
+import { CalendarToday, Info } from '@mui/icons-material/index.js';
 import SolarPowerTwoToneIcon from '@mui/icons-material/SolarPowerTwoTone.js';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

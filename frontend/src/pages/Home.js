@@ -1,17 +1,17 @@
 import React from 'react';
 import { Box, Typography, AppBar, Toolbar, Button, Container, Card, CardContent, CardActionArea, Grid, Paper } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
-import backgroundImage from '../assets/field.jpg'; // Assuming you have an image in the assets folder
+import { createTheme, ThemeProvider } from '@mui/material.js/styles';
+import { Link } from 'react.js-router-dom';
+import backgroundImage from '../assets/field.jpg.js'; // Assuming you have an image in the assets folder
 import DashboardIcon from '@mui/icons-material/Dashboard.js';
 import PestControlIcon from '@mui/icons-material/PestControl.js';
 import OpacityIcon from '@mui/icons-material/Opacity.js';
 import ListAltIcon from '@mui/icons-material/ListAlt.js';
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined.js';
-import increasedYieldImage from '../assets/pexels-markus-winkler-1430818-5406582.jpg';
-import sustainablePracticesImage from '../assets/jnjdn.jpg';
-import climateAdaptationImage from '../assets/pexels-pixabay-60013.jpg';
-import mpanziLogo from '../assets/mpanzi-logo.png'; // Import the Mpanzi logo
+import increasedYieldImage from '../assets/pexels-markus-winkler-1430818-5406582.jpg.js';
+import sustainablePracticesImage from '../assets/jnjdn.jpg.js';
+import climateAdaptationImage from '../assets/pexels-pixabay-60013.jpg.js';
+import mpanziLogo from '../assets/mpanzi-logo.png.js'; // Import the Mpanzi logo
 import BiotechTwoToneIcon from '@mui/icons-material/BiotechTwoTone.js';
 
 const theme = createTheme({

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react.js';
-import { Typography, Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material.js';
-import { styled } from '@mui/system.js';
+import { Typography, Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material/index.js';
+import { styled } from '@mui/system/index.js';
 import { getWeatherForecast } from '../utils/weatherApiClient.js';
 import { WiDaySunny, WiCloud, WiRain, WiSnow, WiThunderstorm } from 'weather-icons-react.js';
 

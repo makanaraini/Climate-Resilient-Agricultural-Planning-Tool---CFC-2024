@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider, createTheme } from '@mui/material/styles.js';
+import CssBaseline from '@mui/material/CssBaseline.js';
 import { AuthProvider } from './contexts/AuthContext.js';
 import PrivateRoute from './components/PrivateRoute.js';
 import Navbar from './components/Navbar.js';
@@ -19,6 +19,7 @@ import './App.css';
 import CropRecommendationsProvider from './contexts/CropRecommendationsContext.js';
 import { fetchWeatherData } from './utils/supabaseService.js';
 import ErrorBoundary from './components/ErrorBoundary.js';
+import reportWebVitals from './reportWebVitals.js';
 
 const theme = createTheme();
 
