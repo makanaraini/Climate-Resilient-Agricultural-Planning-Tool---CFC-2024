@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import { 
   Box, 
   Button, 
@@ -12,22 +11,30 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
+import { supabase } from '../utils/supabaseClient'; // Import Supabase client
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
     try {
-      setError('');
-      setLoading(true);
-      await login(email, password);
-      navigate('/dashboard');
+      // Use Supabase signIn method
+      const { user, error: signInError } = await supabase.auth.signIn({
+        email,
+        password,
+      });
+
+      if (signInError) throw signInError; // Handle sign-in error
+
+      console.log('User logged in:', user);
+      navigate('/dashboard'); // Navigate to dashboard on successful login
     } catch (error) {
       setError(error.message || 'Failed to log in');
     } finally {

@@ -134,76 +134,44 @@ def register():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
 
-    username = request.json.get('username', None)
-    password = request.json.get('password', None)
     email = request.json.get('email', None)
-    name = request.json.get('name', '')
-    location = request.json.get('location', '')
-    preferred_units = request.json.get('preferred_units', 'metric')
+    password = request.json.get('password', None)
 
-    if not username or not password or not email:
+    if not email or not password:
         return jsonify({"msg": "Missing required fields"}), 400
-    
-    if get_user(username):
-        return jsonify({"msg": "Username already exists"}), 400
-    
-    hashed_password = generate_password_hash(password)
-    
-    try:
-        response = supabase.table('profiles').insert({
-            "username": username,
-            "password": hashed_password,
-            "email": email,
-            "name": name,
-            "location": location,
-            "preferred_units": preferred_units
-        }).execute()
-        
-        if response.data:
-            return jsonify({"msg": "User created successfully"}), 201
-        else:
-            return jsonify({"msg": "Error creating user"}), 500
-    except Exception as e:
-        return jsonify({"msg": f"Error creating user: {str(e)}"}), 500
+
+    # Use Supabase to create a new user
+    response = supabase.auth.signUp({
+        'email': email,
+        'password': password
+    })
+
+    if response.error:
+        return jsonify({"msg": response.error.message}), 400
+
+    return jsonify({"msg": "User created successfully"}), 201
 
 @app.route('/api/login', methods=['POST'])
 def login():
-    try:
-        if not request.is_json:
-            return jsonify({"msg": "Missing JSON in request"}), 400
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
 
-        username = request.json.get('username', None)
-        password = request.json.get('password', None)
-        print(f"Login attempt for user: {username}")
+    email = request.json.get('email', None)
+    password = request.json.get('password', None)
 
-        if not username or not password:
-            print("Error: Missing username or password")
-            return jsonify({"msg": "Missing username or password"}), 400
+    if not email or not password:
+        return jsonify({"msg": "Missing required fields"}), 400
 
-        user = get_user(username)
-        if not user:
-            print(f"Error: User {username} not found")
-            return jsonify({"msg": "User not found"}), 401
+    # Use Supabase to log in the user
+    response = supabase.auth.signIn({
+        'email': email,
+        'password': password
+    })
 
-        if check_password_hash(user['password'], password):
-            # Query the profiles table for additional user information
-            profile_response = supabase.table('profiles').select('*').eq('username', username).execute()
-            if profile_response.error:
-                print(f"Error fetching profile for user: {username}")
-                return jsonify({"msg": "Error fetching user profile"}), 500
+    if response.error:
+        return jsonify({"msg": response.error.message}), 401
 
-            user_profile = profile_response.data[0] if profile_response.data else {}
-
-            access_token = create_access_token(identity=username)
-            print(f"Token generated: {access_token}")
-            print(f"Login successful for user: {username}")
-            return jsonify(access_token=access_token, user_profile=user_profile), 200
-        else:
-            print(f"Error: Incorrect password for user: {username}")
-            return jsonify({"msg": "Invalid username or password"}), 401
-    except Exception as e:
-        print(f"Login error: {str(e)}")
-        return jsonify({"msg": "An error occurred during login"}), 500
+    return jsonify({"access_token": response.data.access_token}), 200
 
 # Once a user is successfully logged in:
 # 1. An access token is generated for the user using create_access_token()

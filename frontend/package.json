@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
@@ -20,6 +21,7 @@
     "chartjs-adapter-date-fns": "^3.0.0",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
+    "dotenv": "^16.4.5",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.3",
     "moment": "^2.30.1",
