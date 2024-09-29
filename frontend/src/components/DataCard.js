@@ -1,4 +1,4 @@
-import React from 'react.js';
+import React from 'react';
 import PropTypes from 'prop-types.js';
 import { Typography, Paper, CircularProgress, Tooltip } from '@mui/material/index.js';
 import { useTheme } from '@mui/material/styles/index.js';

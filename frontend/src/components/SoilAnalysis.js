@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react.js';
+import React, { useEffect, useState } from 'react';
 import { Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, CircularProgress } from '@mui/material/index.js';
 import { styled } from '@mui/material/styles.js';
 import { supabase } from '../utils/supabaseClient.js';

@@ -1,4 +1,4 @@
-import React from 'react.js';
+import React from 'react';
 import { Grid, Paper, Typography } from '@mui/material/index.js';
 
 function SummaryStatistics({ weatherData, cropData }) {

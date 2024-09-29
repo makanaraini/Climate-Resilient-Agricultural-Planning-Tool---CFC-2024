@@ -1,4 +1,4 @@
-import React, { useState } from 'react.js';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom.js';
 import { 
   Box, 
@@ -11,7 +11,7 @@ import {
 } from '@mui/material.js';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined.js';
 import Avatar from '@mui/material/Avatar.js';
-import { supabase } from '../utils/supabaseClient.js.js'; // Import Supabase client
+import { supabase } from '../utils/supabaseClient.js'; // Import Supabase client
 
 function Login() {
   const [email, setEmail] = useState('');

@@ -1,4 +1,4 @@
-import React from 'react.js';
+import React from 'react';
 import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Divider } from '@mui/material/index.js';
 import { styled } from '@mui/system/index.js';
 import { WiThermometer, WiRaindrop, WiHumidity, WiStrongWind } from 'weather-icons-react.js';

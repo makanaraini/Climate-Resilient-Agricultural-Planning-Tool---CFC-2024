@@ -1,4 +1,4 @@
-import React from 'react.js';
+import React from 'react';
 import { Drawer, List, Divider, IconButton, useTheme } from '@mui/material.js';
 import { Link } from 'react-router-dom.js';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft.js';
@@ -12,7 +12,7 @@ import CloudIcon from '@mui/icons-material/Cloud.js';
 import BugReportIcon from '@mui/icons-material/BugReport.js';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp.js';
 import PersonIcon from '@mui/icons-material/Person.js';
-import DownloadIcon from '@mui/icons-material/Download.js';
+import DownloadIcon from '@mui/icons-material/Download';
 
 const Sidebar = ({ open, onClose }) => {
   const theme = useTheme();

@@ -1,4 +1,4 @@
-import React from 'react.js';
+import React from 'react';
 import { createContext, useState, useContext } from 'react.js';
 
 const CropRecommendationsContext = createContext();

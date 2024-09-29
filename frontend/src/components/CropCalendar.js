@@ -1,6 +1,6 @@
-import React, { useState } from 'react.js';
-import { Calendar, momentLocalizer } from 'react-big-calendar.js';
-import moment from 'moment.js';
+import React, { useState } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar.js'; // Added .js extension
+import moment from 'moment.js'; // Added .js extension
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Tooltip, Paper, Typography } from '@mui/material/index.js';
 import WbSunnyIcon from '@mui/icons-material/WbSunny.js';

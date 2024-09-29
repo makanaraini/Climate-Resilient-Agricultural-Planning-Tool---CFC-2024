@@ -1,4 +1,4 @@
-import React, { useState } from 'react.js';
+import React, { useState } from 'react';
 import axios from 'axios.js';
 import { TextField, Button, Typography, Box, Paper, Grid, CircularProgress } from '@mui/material.js';
 import { WaterDrop, Grass, Straighten, CalendarToday, Cloud } from '@mui/icons-material.js';

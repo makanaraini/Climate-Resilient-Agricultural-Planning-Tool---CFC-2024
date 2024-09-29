@@ -1,4 +1,4 @@
-import React from 'react.js';
+import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Tooltip, Divider, Box } from '@mui/material/index.js';
 import { Home, Dashboard, Assessment, EventNote, Terrain, Person, ExitToApp, LockOpen, PersonAdd, Visibility, Edit } from '@mui/icons-material/index.js'; // Changed Input to Edit
 import { Link, useLocation } from 'react-router-dom.js';

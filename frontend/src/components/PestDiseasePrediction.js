@@ -1,8 +1,8 @@
-import React, { useState } from 'react.js';
+import React, { useState } from 'react';
 import axios from 'axios.js';
 import { TextField, Button, Typography, Box, List, ListItem, ListItemText, Alert, Paper } from '@mui/material.js';
 import { styled } from '@mui/material/styles.js';
-import { useAuth } from '../contexts/AuthContext.js.js';
+import { useAuth } from '../contexts/AuthContext.js';
 import BugReportIcon from '@mui/icons-material/BugReport.js';
 import ErrorIcon from '@mui/icons-material/Error.js';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle.js';

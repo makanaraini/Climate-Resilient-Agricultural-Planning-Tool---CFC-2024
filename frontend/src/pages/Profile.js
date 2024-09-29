@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, TextField, Button, Box, Avatar, IconButton, List, ListItem, ListItemText, Tooltip, Paper, Grid } from '@mui/material';
 import { PhotoCamera, Edit, LocationOn, Person, Email, Business } from '@mui/icons-material';
-import { supabase } from '../utils/supabaseClient.js.js';
-import { styled } from '@mui/material.js/styles';
-import SatelliteTwoToneIcon from '@mui/icons-material/SatelliteTwoTone.js';
+import { supabase } from '../utils/supabaseClient';
+import { styled } from '@mui/material/styles';
+import SatelliteTwoToneIcon from '@mui/icons-material/SatelliteTwoTone';
 
 const AvatarStyled = styled(Avatar)(({ theme }) => ({
   width: 120,

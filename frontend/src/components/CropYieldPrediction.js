@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react.js';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Paper, Select, MenuItem, FormControl, InputLabel, Grid } from '@mui/material.js';
 import { styled } from '@mui/material/styles.js';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts.js';
