@@ -1,25 +1,25 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { AuthProvider } from './contexts/AuthContext';
-import PrivateRoute from './components/PrivateRoute';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Login from './components/Login';
-import Register from './components/Register';
-import Profile from './pages/Profile';
-import Reports from './pages/Reports';
-import Planning from './pages/Planning';
-import Dashboard from './pages/Dashboard';
-import SoilAnalysis from './pages/SoilAnalysis';
-import MarketTrends from './components/MarketTrends';
-import DataInputForm from './components/DataInputForm';
+import { ThemeProvider, createTheme } from '@mui/material/styles.js'; // Add .js extension
+import CssBaseline from '@mui/material/CssBaseline.js'; // Add .js extension
+import { AuthProvider } from './contexts/AuthContext.js'; // Add .js extension
+import PrivateRoute from './components/PrivateRoute.js'; // Add .js extension
+import Navbar from './components/Navbar.js'; // Add .js extension
+import Home from './pages/Home.js'; // Add .js extension
+import Login from './components/Login.js'; // Add .js extension
+import Register from './components/Register.js'; // Add .js extension
+import Profile from './pages/Profile.js'; // Add .js extension
+import Reports from './pages/Reports.js'; // Add .js extension
+import Planning from './pages/Planning.js'; // Add .js extension
+import Dashboard from './pages/Dashboard.js'; // Add .js extension
+import SoilAnalysis from './pages/SoilAnalysis.js'; // Add .js extension
+import MarketTrends from './components/MarketTrends.js'; // Add .js extension
+import DataInputForm from './components/DataInputForm.js'; // Add .js extension
 import './App.css';
-import CropRecommendationsProvider from './contexts/CropRecommendationsContext';
-import { fetchWeatherData } from './utils/supabaseService';
-import ErrorBoundary from './components/ErrorBoundary';
-import reportWebVitals from './reportWebVitals';
+import CropRecommendationsProvider from './contexts/CropRecommendationsContext.js'; // Add .js extension
+import { fetchWeatherData } from './utils/supabaseService.js'; // Add .js extension
+import ErrorBoundary from './components/ErrorBoundary.js'; // Add .js extension
+import reportWebVitals from './reportWebVitals.js'; // Add .js extension
 
 const theme = createTheme();
 
