@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react.js';
-import axios from 'axios.js';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { 
   Typography, Box, Grid, Paper, Button, CircularProgress, 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow 
-} from '@mui/material.js';
-import { Bar } from 'react-chartjs-2.js';
+} from '@mui/material';
+import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { useAuth } from '../contexts/AuthContext.js.js';
-import { CloudDownload as CloudDownloadIcon } from '@mui/icons-material.js';
+import { useAuth } from '../contexts/AuthContext';
+import { CloudDownload as CloudDownloadIcon } from '@mui/icons-material';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 

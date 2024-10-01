@@ -1,5 +1,5 @@
 import React from 'react';
-import { Line, Bar } from 'react-chartjs-2.js'; // Added .js extension
+import { Line, Bar } from 'react-chartjs-2'; // Added .js extension
 import { Paper, Typography } from '@mui/material/index.js';
 import { styled } from '@mui/material/styles/index.js';
 

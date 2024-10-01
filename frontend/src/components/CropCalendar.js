@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar.js'; // Added .js extension
-import moment from 'moment.js'; // Added .js extension
+import { Calendar, momentLocalizer } from 'react-big-calendar'; // Removed .js extension
+import moment from 'moment'; // Removed .js extension
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Tooltip, Paper, Typography } from '@mui/material/index.js';
-import WbSunnyIcon from '@mui/icons-material/WbSunny.js';
-import CloudIcon from '@mui/icons-material/Cloud.js';
-import { styled } from '@mui/material/styles/index.js';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Tooltip, Paper, Typography } from '@mui/material/index';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import CloudIcon from '@mui/icons-material/Cloud';
+import { styled } from '@mui/material/styles';
 
 const localizer = momentLocalizer(moment);
 

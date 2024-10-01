@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Button, Box, FormControlLabel, Checkbox, MenuItem, Typography } from '@mui/material/index.js';
+import { TextField, Button, Box, FormControlLabel, Checkbox, MenuItem, Typography } from '@mui/material/index';
 
 function DataInputForm({ 
   location, setLocation, 
