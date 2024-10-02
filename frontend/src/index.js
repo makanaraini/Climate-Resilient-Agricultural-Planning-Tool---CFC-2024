@@ -6,6 +6,12 @@ import CssBaseline from '@mui/material/CssBaseline'; // Add .js extension
 import './index.css'; // Ensure this is correct
 import '@fontsource/roboto'; // Keep as is
 import reportWebVitals from './reportWebVitals.js'; // Add .js extension
+import { Buffer } from 'buffer';
+import process from 'process/browser.js'; // Explicitly specify the extension
+
+window.Buffer = Buffer;
+window.process = process;
+
 
 const theme = createTheme({
   palette: {
