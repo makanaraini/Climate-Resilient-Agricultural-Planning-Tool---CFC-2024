@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import { useCropRecommendations } from '../contexts/CropRecommendationsContext.js';
-import { getAICropRecommendations } from '../services/aiRecommendationService.js';
-import { getWeatherForecast } from '../utils/weatherUtil.js';
-import analyzeSoil from '../utils/SoilUtil.js';
-import { findSuitableCrops } from '../utils/cropDatabaseUtil.js';
-import { generateAIPrompt } from '../utils/promptGeneratorUtil.js';
+import { useCropRecommendations } from '../contexts/CropRecommendationsContext';
+import { getAICropRecommendations } from '../services/aiRecommendationService';
+import { getWeatherForecast } from '../utils/weatherUtil';
+import analyzeSoil from '../utils/SoilUtil';
+import { findSuitableCrops } from '../utils/cropDatabaseUtil';
+import { generateAIPrompt } from '../utils/promptGeneratorUtil';
 
 export const useAICropRecommendations = (farmData) => {
   const { 

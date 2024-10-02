@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Snackbar, IconButton, List, ListItem, ListItemText, Drawer, Badge } from '@mui/material/index.js';
-import CloseIcon from '@mui/icons-material/Close.js';
-import NotificationsIcon from '@mui/icons-material/Notifications.js';
-import axios from 'axios.js';
+import { Snackbar, IconButton, List, ListItem, ListItemText, Drawer, Badge } from '@mui/material/index';
+import CloseIcon from '@mui/icons-material/Close';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import axios from 'axios';
 
 const NotificationSystem = () => {
   const [notifications, setNotifications] = useState([]);

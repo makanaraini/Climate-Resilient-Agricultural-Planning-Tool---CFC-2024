@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
-import { TextField, Button, Typography, Box, Select, MenuItem, FormControl, InputLabel, Paper, Grid } from '@mui/material/index.js';
-import { Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon } from '@mui/icons-material/index.js';
+import { TextField, Button, Typography, Box, Select, MenuItem, FormControl, InputLabel, Paper, Grid } from '@mui/material/index';
+import { Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon } from '@mui/icons-material/index';
 
 const UserProfile = () => {
   const [profile, setProfile] = useState({

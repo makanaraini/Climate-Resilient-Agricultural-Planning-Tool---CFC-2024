@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.js'; // Ensure .js extension is added
 import { ThemeProvider, createTheme } from '@mui/material/styles'; // Keep as is
-import CssBaseline from '@mui/material/CssBaseline.js'; // Add .js extension
+import CssBaseline from '@mui/material/CssBaseline'; // Add .js extension
 import './index.css'; // Ensure this is correct
 import '@fontsource/roboto'; // Keep as is
 import reportWebVitals from './reportWebVitals.js'; // Add .js extension

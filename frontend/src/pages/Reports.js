@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Box, Grid, Paper, CircularProgress, TextField, Divider } from '@mui/material';
 import { styled } from '@mui/system';
-import { supabase } from '../utils/supabaseClient.js';
-import ChartWrapper from '../components/ChartWrapper.js';
-import DataExport from '../components/DataExport.js';
-import WeatherDetails from '../components/WeatherDetails.js';
-import SummaryStatistics from '../components/SummaryStatistics.js';
-import DataTable from '../components/DataTable.js';
+import { supabase } from '../utils/supabaseClient';
+import ChartWrapper from '../components/ChartWrapper';
+import DataExport from '../components/DataExport';
+import WeatherDetails from '../components/WeatherDetails';
+import SummaryStatistics from '../components/SummaryStatistics';
+import DataTable from '../components/DataTable';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),

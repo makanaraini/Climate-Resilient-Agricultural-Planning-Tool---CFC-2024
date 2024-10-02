@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Paper, Typography } from '@mui/material/index.js';
+import { Grid, Paper, Typography } from '@mui/material/index';
 
 function SummaryStatistics({ weatherData, cropData }) {
   const averageTemperature = weatherData.reduce((sum, data) => sum + data.temperature_max, 0) / weatherData.length;

@@ -1,13 +1,13 @@
 import React from 'react';
-import ListItemButton from '@mui/material/ListItemButton.js';
-import ListItemIcon from '@mui/material/ListItemIcon.js';
-import ListItemText from '@mui/material/ListItemText.js';
-import DashboardIcon from '@mui/icons-material/Dashboard.js';
-import WaterDropIcon from '@mui/icons-material/WaterDrop.js';
-import GrassIcon from '@mui/icons-material/Grass.js';
-import WbSunnyIcon from '@mui/icons-material/WbSunny.js';
-import AssessmentIcon from '@mui/icons-material/Assessment.js';
-import PersonIcon from '@mui/icons-material/Person.js';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
+import GrassIcon from '@mui/icons-material/Grass';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import PersonIcon from '@mui/icons-material/Person';
 
 export const mainListItems = (
   <React.Fragment>

@@ -1,4 +1,4 @@
-import { useAuth } from '../contexts/AuthContext.js';
+import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 
 export const useApi = () => {

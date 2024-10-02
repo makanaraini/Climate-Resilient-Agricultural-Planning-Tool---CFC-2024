@@ -1,7 +1,7 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box } from '@mui/material.js';
-import { styled } from '@mui/system.js';
-import { Cloud, Opacity, Thermostat } from '@mui/icons-material.js';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box } from '@mui/material';
+import { styled } from '@mui/system';
+import { Cloud, Opacity, Thermostat } from '@mui/icons-material';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),

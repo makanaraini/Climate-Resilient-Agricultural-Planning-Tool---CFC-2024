@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Box, Grid, Paper, CircularProgress, List, ListItem, ListItemText, Collapse, Tabs, Tab } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { supabase } from '../utils/supabaseClient.js';
-import WeatherWidget from '../components/WeatherWidget.js';
-import CropYieldPrediction from '../components/CropYieldPrediction.js';
-import Notifications from '../components/Notifications.js';
-import SoilAnalysis from '../components/SoilAnalysis.js';
-import DataCard from '../components/DataCard.js';
-import CropRecommendation from '../components/CropRecommendations.js';
-import DataVisualization from '../components/DataVisualization.js';
+import { supabase } from '../utils/supabaseClient';
+import WeatherWidget from '../components/WeatherWidget';
+import CropYieldPrediction from '../components/CropYieldPrediction';
+import Notifications from '../components/Notifications';
+import SoilAnalysis from '../components/SoilAnalysis';
+import DataCard from '../components/DataCard';
+import CropRecommendation from '../components/CropRecommendations';
+import DataVisualization from '../components/DataVisualization';
 
 function Dashboard() {
   const [loading, setLoading] = useState(true);
