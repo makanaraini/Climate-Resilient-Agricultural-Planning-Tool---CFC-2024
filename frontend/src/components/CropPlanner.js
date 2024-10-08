@@ -49,7 +49,7 @@ function CropPlanner({ onAddCrop }) {
               name="crop_type"
               value={newCrop.crop_type}
               onChange={handleInputChange}
-              required
+              required="true"
               variant="outlined"
             />
           </Grid>
@@ -61,7 +61,7 @@ function CropPlanner({ onAddCrop }) {
               type="number"
               value={newCrop.growth_cycle}
               onChange={handleInputChange}
-              required
+              required="true"
               variant="outlined"
             />
           </Grid>
@@ -73,7 +73,7 @@ function CropPlanner({ onAddCrop }) {
               type="number"
               value={newCrop.water_requirements}
               onChange={handleInputChange}
-              required
+              required="true"
               variant="outlined"
             />
           </Grid>
@@ -84,7 +84,7 @@ function CropPlanner({ onAddCrop }) {
               name="nutrient_requirements"
               value={newCrop.nutrient_requirements}
               onChange={handleInputChange}
-              required
+              required="true"
               variant="outlined"
             />
           </Grid>

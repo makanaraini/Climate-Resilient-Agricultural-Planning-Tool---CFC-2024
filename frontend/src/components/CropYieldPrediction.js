@@ -66,12 +66,13 @@ function CropYieldPrediction({ weatherData }) {
   async function fetchCrops() {
     try {
       const { data, error } = await supabase
-        .from('crops')
-        .select('name');
+        .from('crop_data')
+        .select('crop_type')
+        .distinct();
       
       if (error) throw error;
       
-      setCrops(data.map(crop => crop.name));
+      setCrops(data.map(crop => crop.crop_type));
     } catch (error) {
       console.error('Error fetching crops:', error.message);
       // You might want to set an error state here and display it to the user

@@ -20,7 +20,7 @@ const Sidebar = ({ open, onClose }) => {
   return (
     <Drawer
       variant="permanent"
-      open={open}
+      open={open.toString()}
       sx={{
         '& .MuiDrawer-paper': {
           position: 'relative',

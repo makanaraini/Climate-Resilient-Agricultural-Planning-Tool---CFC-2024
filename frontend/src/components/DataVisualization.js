@@ -203,7 +203,7 @@ const DataVisualization = ({ agriculturalData }) => {
             fullWidth
           >
             {crops.map(crop => (
-              <MenuItem key={crop} value={crop}>{crop}</MenuItem>
+              <MenuItem key={`crop-${crop}`} value={crop}>{crop}</MenuItem>
             ))}
           </StyledSelect>
         </Grid>

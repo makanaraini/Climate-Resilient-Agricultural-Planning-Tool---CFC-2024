@@ -33,9 +33,8 @@ function PlantingRecommendations({ weatherForecast, crops }) {
       const optimalTemp = crop.optimal_temperature;
       const optimalRainfall = crop.optimal_rainfall;
 
-      const suitableDays = weatherForecast.filter(forecast => {
-        const temp = forecast.main.temp;
-        const rainfall = forecast.rain ? forecast.rain['3h'] : 0;
+      const suitableDays = weatherForecast.filter(({ main: { temp }, rain }) => {
+        const rainfall = rain ? rain['3h'] : 0;
         return Math.abs(temp - optimalTemp) <= 5 && Math.abs(rainfall - optimalRainfall) <= 10;
       });
 

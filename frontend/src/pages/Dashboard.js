@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, Grid, Paper, CircularProgress, List, ListItem, ListItemText, Collapse, Tabs, Tab } from '@mui/material';
+import { Typography, Box, Grid, Paper, CircularProgress, List, ListItemButton, ListItemText, Collapse, Tabs, Tab } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { supabase } from '../utils/supabaseClient'; // Adjust the path if necessary
 import WeatherWidget from '../components/WeatherWidget';
@@ -40,7 +40,7 @@ function Dashboard() {
   const fetchCropData = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('crops')
+        .from('crop_data')
         .select('*');
       if (error) throw error;
       setCropData(data);
@@ -167,15 +167,15 @@ function Dashboard() {
         </Paper>
       )}
       <List>
-        <ListItem button onClick={handleClick}>
+        <ListItemButton onClick={handleClick}>
           <ListItemText primary="Expand/Collapse" />
           {open ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
+        </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItem>
+            <ListItemButton>
               <ListItemText primary="Additional Content" />
-            </ListItem>
+            </ListItemButton>
           </List>
         </Collapse>
       </List>

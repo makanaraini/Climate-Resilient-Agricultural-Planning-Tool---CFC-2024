@@ -46,8 +46,8 @@ const ReportDownload = () => {
           className="bg-green-600 hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
           startIcon={<PictureAsPdfIcon />}
           onClick={() => handleDownload('pdf')}
-          disabled={loading}
-          fullWidth
+          disabled={loading.toString()}
+          fullWidth="true"
           size="large"
         >
           Download PDF
@@ -57,8 +57,8 @@ const ReportDownload = () => {
           className="bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
           startIcon={<TableChartIcon />}
           onClick={() => handleDownload('xlsx')}
-          disabled={loading}
-          fullWidth
+          disabled={loading.toString()}
+          fullWidth="true"
           size="large"
         >
           Download Excel

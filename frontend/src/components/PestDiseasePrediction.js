@@ -113,8 +113,8 @@ const PestDiseasePrediction = () => {
             name="crop"
             value={formData.crop}
             onChange={handleChange}
-            required
-            fullWidth
+            required="true"
+            fullWidth="true"
             variant="outlined"
           />
           <StyledTextField
@@ -123,8 +123,8 @@ const PestDiseasePrediction = () => {
             type="number"
             value={formData.temperature}
             onChange={handleChange}
-            required
-            fullWidth
+            required="true"
+            fullWidth="true"
             variant="outlined"
           />
           <StyledTextField
@@ -133,16 +133,16 @@ const PestDiseasePrediction = () => {
             type="number"
             value={formData.humidity}
             onChange={handleChange}
-            required
-            fullWidth
+            required="true"
+            fullWidth="true"
             variant="outlined"
           />
           <StyledButton 
             type="submit" 
             variant="contained" 
             color="primary"
-            disabled={isLoading}
-            fullWidth
+            disabled={isLoading.toString()}
+            fullWidth="true"
           >
             {isLoading ? 'Predicting...' : 'Predict Risks'}
           </StyledButton>

@@ -22,7 +22,7 @@ class ErrorBoundary extends React.Component {
         <Box className="flex items-center justify-center h-full">
           <Paper elevation={3} className="p-8 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg shadow-lg">
             <Box className="flex flex-col items-center space-y-4">
-              <ErrorOutlineIcon className="text-red-500" style={{ fontSize: 60 }} />
+              <ErrorOutlineIcon className="text-red-500" style={{ fontSize: '60' }} />
               <Typography variant="h5" className="text-red-700 font-bold text-center">
                 Oops! Something went wrong with the chart.
               </Typography>

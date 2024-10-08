@@ -5,6 +5,7 @@ import { getWeatherForecast } from '../utils/weatherApiClient.js';
 import { analyzeSoil } from '../utils/SoilUtil.js';
 import { findSuitableCrops } from '../utils/supabaseClient.js';
 import { generateAIPrompt } from '../utils/generateAIPrompt.js';
+
 const AICropRecommendations = ({ farmData }) => {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -3,11 +3,19 @@ import PropTypes from 'prop-types';
 import { Typography, Paper, CircularProgress, Tooltip } from '@mui/material/index';
 import { useTheme } from '@mui/material/styles';
 
-function DataCard({ title, value, isLoading, error, icon: Icon, tooltip, customStyles }) {
+function DataCard({ 
+  title = 'Default Title', 
+  value = 'N/A', 
+  isLoading = false, 
+  error = null, 
+  icon: Icon = null, 
+  tooltip = '', 
+  customStyles = {} 
+}) {
   const theme = useTheme();
 
   return (
-    <Tooltip title={tooltip || ''}>
+    <Tooltip title={tooltip}>
       <Paper 
         sx={{ 
           p: 3,
@@ -51,14 +59,15 @@ DataCard.propTypes = {
   customStyles: PropTypes.object,
 };
 
-DataCard.defaultProps = {
-  title: 'Default Title',
-  value: 'N/A',
-  isLoading: false,
-  error: null,
-  icon: null,
-  tooltip: '',
-  customStyles: {},
-};
+// Remove defaultProps
+// DataCard.defaultProps = {
+//   title: 'Default Title',
+//   value: 'N/A',
+//   isLoading: false,
+//   error: null,
+//   icon: null,
+//   tooltip: '',
+//   customStyles: {},
+// };
 
 export default DataCard;

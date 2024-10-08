@@ -35,7 +35,7 @@ function SoilAnalysis() {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('soil_analysis')
+        .from('soil_data')
         .select('*')
         .order('date', { ascending: true });
 

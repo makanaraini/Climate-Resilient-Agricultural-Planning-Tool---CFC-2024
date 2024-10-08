@@ -8,15 +8,15 @@ function DataTable({ data, columns }) {
         <TableHead>
           <TableRow>
             {columns.map((column) => (
-              <TableCell key={column}>{column}</TableCell>
+              <TableCell key={column.toString()}>{column}</TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((row, index) => (
-            <TableRow key={index}>
+            <TableRow key={index.toString()}>
               {columns.map((column) => (
-                <TableCell key={column}>{row[column]}</TableCell>
+                <TableCell key={column.toString()}>{row[column]}</TableCell>
               ))}
             </TableRow>
           ))}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar'; // Removed .js extension
-import moment from 'moment'; // Removed .js extension
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Tooltip, Paper, Typography } from '@mui/material/index';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
@@ -135,7 +135,7 @@ function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
                 label="Crop"
                 value={editedPlan.crop}
                 onChange={handleInputChange}
-                fullWidth
+                fullWidth="true"
                 margin="normal"
                 variant="outlined"
               />
@@ -145,7 +145,7 @@ function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
                 type="number"
                 value={editedPlan.area}
                 onChange={handleInputChange}
-                fullWidth
+                fullWidth="true"
                 margin="normal"
                 variant="outlined"
               />
@@ -155,7 +155,7 @@ function CropCalendar({ plans, onUpdatePlan, weatherForecast }) {
                 type="date"
                 value={editedPlan.planting_date}
                 onChange={handleInputChange}
-                fullWidth
+                fullWidth="true"
                 margin="normal"
                 variant="outlined"
                 InputLabelProps={{

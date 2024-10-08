@@ -97,7 +97,7 @@ function Notifications({ weatherData, crops }) {
       {notifications.length > 0 ? (
         <StyledList>
           {notifications.map((notification, index) => (
-            <ListItem key={index}>
+            <ListItem key={index.toString()}>
               <NotificationIcon>
                 {notification.icon}
               </NotificationIcon>

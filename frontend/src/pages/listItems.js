@@ -11,31 +11,31 @@ import PersonIcon from '@mui/icons-material/Person';
 
 export const mainListItems = (
   <React.Fragment>
-    <ListItemButton>
+    <ListItemButton component="a" href="#dashboard">
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItemButton>
-    <ListItemButton>
+    <ListItemButton component="a" href="#water-management">
       <ListItemIcon>
         <WaterDropIcon />
       </ListItemIcon>
       <ListItemText primary="Water Management" />
     </ListItemButton>
-    <ListItemButton>
+    <ListItemButton component="a" href="#soil-analysis">
       <ListItemIcon>
         <GrassIcon />
       </ListItemIcon>
       <ListItemText primary="Soil Analysis" />
     </ListItemButton>
-    <ListItemButton>
+    <ListItemButton component="a" href="#weather-details">
       <ListItemIcon>
         <WbSunnyIcon />
       </ListItemIcon>
       <ListItemText primary="Weather Details" />
     </ListItemButton>
-    <ListItemButton>
+    <ListItemButton component="a" href="#reports">
       <ListItemIcon>
         <AssessmentIcon />
       </ListItemIcon>
@@ -46,7 +46,7 @@ export const mainListItems = (
 
 export const secondaryListItems = (
   <React.Fragment>
-    <ListItemButton>
+    <ListItemButton component="a" href="#user-profile">
       <ListItemIcon>
         <PersonIcon />
       </ListItemIcon>

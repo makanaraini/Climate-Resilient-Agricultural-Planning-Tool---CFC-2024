@@ -27,6 +27,15 @@ module.exports = {
         }),
       ];
 
+      // Add setupMiddlewares to handle middleware setup
+      webpackConfig.devServer = {
+        ...webpackConfig.devServer,
+        setupMiddlewares: (middlewares, devServer) => {
+          // Your middleware setup code here (if any)
+          return middlewares;
+        },
+      };
+
       return webpackConfig;
     },
   },

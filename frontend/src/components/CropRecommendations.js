@@ -101,7 +101,7 @@ function CropRecommendations() {
       />
       <List>
         {recommendations.map((recommendation, index) => (
-          <StyledListItem key={index}>
+          <StyledListItem key={index.toString()}>
             <Box>
               <Box display="flex" alignItems="center" mb={1}>
                 <IconWrapper>

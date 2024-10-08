@@ -47,7 +47,7 @@ function Navbar() {
         </Box>
         <List>
           <Tooltip title="Home" placement="right">
-            <ListItem button component={Link} to="/" sx={{ backgroundColor: isActive('/') ? 'lightgreen' : 'inherit' }}>
+            <ListItem button="true" component={Link} to="/" sx={{ backgroundColor: isActive('/') ? 'lightgreen' : 'inherit' }}>
               <ListItemIcon>
                 <Home />
               </ListItemIcon>
@@ -55,7 +55,7 @@ function Navbar() {
             </ListItem>
           </Tooltip>
           <Tooltip title="Dashboard" placement="right">
-            <ListItem button component={Link} to="/dashboard" sx={{ backgroundColor: isActive('/dashboard') ? 'lightgreen' : 'inherit' }}>
+            <ListItem button="true" component={Link} to="/dashboard" sx={{ backgroundColor: isActive('/dashboard') ? 'lightgreen' : 'inherit' }}>
               <ListItemIcon>
                 <Dashboard />
               </ListItemIcon>
@@ -63,7 +63,7 @@ function Navbar() {
             </ListItem>
           </Tooltip>
           <Tooltip title="Reports" placement="right">
-            <ListItem button component={Link} to="/reports" sx={{ backgroundColor: isActive('/reports') ? 'lightgreen' : 'inherit' }}>
+            <ListItem button="true" component={Link} to="/reports" sx={{ backgroundColor: isActive('/reports') ? 'lightgreen' : 'inherit' }}>
               <ListItemIcon>
                 <Assessment />
               </ListItemIcon>
@@ -71,7 +71,7 @@ function Navbar() {
             </ListItem>
           </Tooltip>
           <Tooltip title="Planning" placement="right">
-            <ListItem button component={Link} to="/planning" sx={{ backgroundColor: isActive('/planning') ? 'lightgreen' : 'inherit' }}>
+            <ListItem button="true" component={Link} to="/planning" sx={{ backgroundColor: isActive('/planning') ? 'lightgreen' : 'inherit' }}>
               <ListItemIcon>
                 <EventNote />
               </ListItemIcon>
@@ -79,7 +79,7 @@ function Navbar() {
             </ListItem>
           </Tooltip>
           <Tooltip title="Soil Analysis" placement="right">
-            <ListItem button component={Link} to="/soil-analysis" sx={{ backgroundColor: isActive('/soil-analysis') ? 'lightgreen' : 'inherit' }}>
+            <ListItem button="true" component={Link} to="/soil-analysis" sx={{ backgroundColor: isActive('/soil-analysis') ? 'lightgreen' : 'inherit' }}>
               <ListItemIcon>
                 <Terrain />
               </ListItemIcon>
@@ -89,7 +89,7 @@ function Navbar() {
           {!user && (
             <>
               <Tooltip title="Login" placement="right">
-                <ListItem button component={Link} to="/login" sx={{ backgroundColor: isActive('/login') ? 'lightgreen' : 'inherit' }}>
+                <ListItem button="true" component={Link} to="/login" sx={{ backgroundColor: isActive('/login') ? 'lightgreen' : 'inherit' }}>
                   <ListItemIcon>
                     <LockOpen />
                   </ListItemIcon>
@@ -97,7 +97,7 @@ function Navbar() {
                 </ListItem>
               </Tooltip>
               <Tooltip title="Register" placement="right">
-                <ListItem button component={Link} to="/register" sx={{ backgroundColor: isActive('/register') ? 'lightgreen' : 'inherit' }}>
+                <ListItem button="true" component={Link} to="/register" sx={{ backgroundColor: isActive('/register') ? 'lightgreen' : 'inherit' }}>
                   <ListItemIcon>
                     <PersonAdd />
                   </ListItemIcon>
@@ -113,7 +113,7 @@ function Navbar() {
           <Divider />
           <List>
             <Tooltip title="Profile" placement="right">
-              <ListItem button component={Link} to="/profile" sx={{ backgroundColor: isActive('/profile') ? 'lightgreen' : 'inherit' }}>
+              <ListItem button="true" component={Link} to="/profile" sx={{ backgroundColor: isActive('/profile') ? 'lightgreen' : 'inherit' }}>
                 <ListItemIcon>
                   <Person />
                 </ListItemIcon>
@@ -121,7 +121,7 @@ function Navbar() {
               </ListItem>
             </Tooltip>
             <Tooltip title="Input Data" placement="right">
-              <ListItem button component={Link} to="/data-input" sx={{ backgroundColor: isActive('/data-input') ? 'lightgreen' : 'inherit' }}>
+              <ListItem button="true" component={Link} to="/data-input" sx={{ backgroundColor: isActive('/data-input') ? 'lightgreen' : 'inherit' }}>
                 <ListItemIcon>
                   <Edit /> {/* Changed icon from Input to Edit */}
                 </ListItemIcon>
@@ -129,7 +129,7 @@ function Navbar() {
               </ListItem>
             </Tooltip>
             <Tooltip title="View Data" placement="right">
-              <ListItem button component={Link} to="/view-data" sx={{ backgroundColor: isActive('/view-data') ? 'lightgreen' : 'inherit' }}>
+              <ListItem button="true" component={Link} to="/view-data" sx={{ backgroundColor: isActive('/view-data') ? 'lightgreen' : 'inherit' }}>
                 <ListItemIcon>
                   <Visibility />
                 </ListItemIcon>
@@ -137,7 +137,7 @@ function Navbar() {
               </ListItem>
             </Tooltip>
             <Tooltip title="Logout" placement="right">
-              <ListItem button onClick={logout} sx={{ backgroundColor: isActive('/logout') ? 'lightgreen' : 'inherit' }}>
+              <ListItem button="true" onClick={logout} sx={{ backgroundColor: isActive('/logout') ? 'lightgreen' : 'inherit' }}>
                 <ListItemIcon>
                   <ExitToApp />
                 </ListItemIcon>

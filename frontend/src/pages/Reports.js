@@ -34,6 +34,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 function Reports() {
   const [weatherData, setWeatherData] = useState([]);
   const [cropData, setCropData] = useState([]);
+  const [soilData, setSoilData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [startDate, setStartDate] = useState('');
@@ -50,24 +51,37 @@ function Reports() {
         let cropQuery = supabase
           .from('crops')
           .select('*');
+        let soilQuery = supabase
+          .from('soil_data')
+          .select('*')
+          .order('date', { ascending: true });
 
         if (startDate) {
           weatherQuery = weatherQuery.gte('date', startDate);
+          soilQuery = soilQuery.gte('date', startDate);
         }
         if (endDate) {
           weatherQuery = weatherQuery.lte('date', endDate);
+          soilQuery = soilQuery.lte('date', endDate);
         }
 
-        const [{ data: weatherData, error: weatherError }, { data: cropData, error: cropError }] = await Promise.all([
+        const [
+          { data: weatherData, error: weatherError },
+          { data: cropData, error: cropError },
+          { data: soilData, error: soilError }
+        ] = await Promise.all([
           weatherQuery,
-          cropQuery
+          cropQuery,
+          soilQuery
         ]);
 
         if (weatherError) throw weatherError;
         if (cropError) throw cropError;
+        if (soilError) throw soilError;
 
         setWeatherData(weatherData);
         setCropData(cropData);
+        setSoilData(soilData);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Failed to fetch data');
@@ -127,7 +141,7 @@ function Reports() {
           />
         </Grid>
       </Grid>
-      <SummaryStatistics weatherData={weatherData} cropData={cropData} />
+      <SummaryStatistics weatherData={weatherData} cropData={cropData} soilData={soilData} />
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <StyledPaper>
@@ -167,7 +181,13 @@ function Reports() {
         </Grid>
         <Grid item xs={12}>
           <StyledPaper>
-            <DataExport weatherData={weatherData} cropData={cropData} />
+            <Typography variant="h6" color="primary" gutterBottom>Soil Data</Typography>
+            <DataTable data={soilData} columns={['date', 'ph', 'nitrogen', 'phosphorus', 'potassium']} />
+          </StyledPaper>
+        </Grid>
+        <Grid item xs={12}>
+          <StyledPaper>
+            <DataExport weatherData={weatherData} cropData={cropData} soilData={soilData} />
           </StyledPaper>
         </Grid>
       </Grid>
