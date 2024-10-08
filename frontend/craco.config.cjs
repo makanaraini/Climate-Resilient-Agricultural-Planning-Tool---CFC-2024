@@ -9,8 +9,14 @@ module.exports = {
         path: require.resolve('path-browserify'),
         os: require.resolve('os-browserify/browser'),
         vm: require.resolve('vm-browserify'),
-        process: require.resolve('process/browser'), // Polyfill for process
-        crypto: require.resolve('crypto-browserify'), // If you need crypto
+        process: require.resolve('process/browser'),
+        crypto: require.resolve('crypto-browserify'),
+      };
+
+      // Update resolve.alias to ensure explicit module resolution
+      webpackConfig.resolve.alias = {
+        ...webpackConfig.resolve.alias,
+        'process/browser': require.resolve('process/browser.js'), // Add the extension explicitly
       };
 
       // Add the ProvidePlugin to make process available in all modules

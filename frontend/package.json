@@ -7,8 +7,8 @@
     "@emotion/react": "11.13.3",
     "@emotion/styled": "11.13.0",
     "@fontsource/roboto": "5.1.0",
-    "@mui/icons-material": "6.1.1",
-    "@mui/material": "6.1.1",
+    "@mui/icons-material": "^6.1.2",
+    "@mui/material": "^6.1.2",
     "@supabase/supabase-js": "2.45.4",
     "@testing-library/jest-dom": "6.5.0",
     "@testing-library/react": "16.0.1",
@@ -16,13 +16,14 @@
     "@types/react-router-dom": "5.3.3",
     "axios": "^1.7.7",
     "buffer": "^6.0.3",
+    "canvg": "^4.0.2",
     "chart.js": "4.4.4",
     "chartjs-adapter-date-fns": "3.0.0",
     "cors": "2.8.5",
     "crypto-browserify": "^3.12.0",
     "crypto-js": "4.2.0",
     "date-fns": "4.1.0",
-    "jspdf": "2.5.2",
+    "jspdf": "^2.5.2",
     "jspdf-autotable": "3.8.3",
     "luxon": "3.5.0",
     "moment": "^2.30.1",
@@ -46,7 +47,8 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "clean-cache": "npm cache clean --force"
   },
   "eslintConfig": {
     "extends": [
