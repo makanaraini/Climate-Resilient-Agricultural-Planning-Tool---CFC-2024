@@ -18,6 +18,7 @@ from ibm_watson import AssistantV2
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from dotenv import load_dotenv
 from supabase import create_client, Client # type: ignore
+from supabaseClient import fetch_all_data # Display all fetched data
 
 # Load environment variables from .env file
 load_dotenv(dotenv_path='../frontend/.env')
