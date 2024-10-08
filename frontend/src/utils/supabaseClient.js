@@ -105,5 +105,5 @@ if (require.main === module) {
     fetchAllData().then(allData => console.log(allData)).catch(err => console.error(err));
 }
 
-// Export the supabase client
-export { supabase, fetchAllData }; // Ensure supabase is exported
+// Export the supabase client and fetchAllData
+export { supabase };
