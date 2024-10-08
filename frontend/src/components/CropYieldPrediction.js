@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Paper, Select, MenuItem, FormControl, InputLabel, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient'; // Ensure this path is correct
 import AgricultureIcon from '@mui/icons-material/Agriculture';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -64,9 +64,18 @@ function CropYieldPrediction({ weatherData }) {
   }, [selectedCrop, weatherData, predictYield]);
 
   async function fetchCrops() {
-    const { data, error } = await supabase.from('crops').select('name');
-    if (error) console.error('Error fetching crops:', error);
-    else setCrops(data.map(crop => crop.name));
+    try {
+      const { data, error } = await supabase
+        .from('crops')
+        .select('name');
+      
+      if (error) throw error;
+      
+      setCrops(data.map(crop => crop.name));
+    } catch (error) {
+      console.error('Error fetching crops:', error.message);
+      // You might want to set an error state here and display it to the user
+    }
   }
 
   function calculatePredictedYield(weather, crop) {

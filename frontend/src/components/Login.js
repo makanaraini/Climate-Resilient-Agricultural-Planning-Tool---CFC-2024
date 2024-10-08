@@ -25,15 +25,15 @@ function Login() {
     setError('');
     setLoading(true);
     try {
-      // Use Supabase signIn method
-      const { user, error: signInError } = await supabase.auth.signIn({
+      // Use Supabase signInWithPassword method
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (signInError) throw signInError; // Handle sign-in error
 
-      console.log('User logged in:', user);
+      console.log('User logged in:', data.user);
       navigate('/dashboard'); // Navigate to dashboard on successful login
     } catch (error) {
       setError(error.message || 'Failed to log in');

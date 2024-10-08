@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Paper, List, ListItem, Box, Divider } from '@mui/material/index';
 import { styled } from '@mui/system/index';
 import { getWeatherForecast } from '../utils/weatherApiClient';
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient'; // Adjust the path if necessary
 import { geocodeLocation } from '../utils/geocodeApiClient';
 import DataInputForm from './DataInputForm';
 import { AgricultureOutlined, WbSunnyOutlined, WaterDropOutlined, TerrainOutlined } from '@mui/icons-material/index';
@@ -74,7 +74,11 @@ function CropRecommendations() {
     fetchRecommendations();
   };
 
-  if (loading && error) {
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (error) {
     return <Typography color="error">{error}</Typography>;
   }
 

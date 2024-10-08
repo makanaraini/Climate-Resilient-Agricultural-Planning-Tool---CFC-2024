@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Box, Grid, Paper, CircularProgress, List, ListItem, ListItemText, Collapse, Tabs, Tab } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient'; // Adjust the path if necessary
 import WeatherWidget from '../components/WeatherWidget';
 import CropYieldPrediction from '../components/CropYieldPrediction';
 import Notifications from '../components/Notifications';
@@ -25,7 +25,10 @@ function Dashboard() {
 
   const fetchWeatherData = useCallback(async () => {
     try {
-      const { data, error } = await supabase.from('weather_data').select('*').order('date', { ascending: true });
+      const { data, error } = await supabase
+        .from('weather_data')
+        .select('*')
+        .order('date', { ascending: true });
       if (error) throw error;
       setWeatherData(data);
     } catch (error) {
@@ -36,7 +39,9 @@ function Dashboard() {
 
   const fetchCropData = useCallback(async () => {
     try {
-      const { data, error } = await supabase.from('crops').select('*');
+      const { data, error } = await supabase
+        .from('crops')
+        .select('*');
       if (error) throw error;
       setCropData(data);
 
@@ -57,10 +62,19 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-    Promise.all([fetchWeatherData(), fetchCropData()])
-      .then(() => setLoading(false))
-      .catch(() => setLoading(false));
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([fetchWeatherData(), fetchCropData()]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Failed to fetch data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [fetchWeatherData, fetchCropData]);
 
   const handleTabChange = (event, newIndex) => {

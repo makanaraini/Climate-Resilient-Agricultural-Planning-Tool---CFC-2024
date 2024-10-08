@@ -19,8 +19,6 @@ import './App.css';
 import CropRecommendationsProvider from './contexts/CropRecommendationsContext'; // Removed .js extension
 import { fetchWeatherData } from './utils/supabaseService'; // Removed .js extension
 import ErrorBoundary from './components/ErrorBoundary'; // Removed .js extension
-import reportWebVitals from './reportWebVitals'; // Removed .js extension
-
 const theme = createTheme();
 
 function App() {

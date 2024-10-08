@@ -104,3 +104,6 @@ const getWeatherData = async () => {
 if (require.main === module) {
     fetchAllData().then(allData => console.log(allData)).catch(err => console.error(err));
 }
+
+// Export the supabase client
+export { supabase, fetchAllData }; // Ensure supabase is exported

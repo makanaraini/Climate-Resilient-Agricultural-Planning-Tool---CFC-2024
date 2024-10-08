@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Box, Paper, List, ListItem, ListItemText, Tab, Tabs, AppBar, TextField, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient'; // Adjust the path if necessary
 import { getWeatherForecast } from '../utils/weatherApiClient';
 import CropCalendar from '../components/CropCalendar';
 import PlantingRecommendations from '../components/PlantingRecommendations';
@@ -54,7 +54,10 @@ function Planning() {
 
   const fetchPlans = useCallback(async () => {
     try {
-      const { data, error } = await supabase.from('plans').select('*');
+      const { data, error } = await supabase
+        .from('plans')
+        .select('*')
+        .order('created_at', { ascending: false });
       if (error) throw error;
       setPlans(data);
     } catch (error) {
@@ -73,7 +76,10 @@ function Planning() {
 
   const fetchCrops = useCallback(async () => {
     try {
-      const { data, error } = await supabase.from('crops').select('*');
+      const { data, error } = await supabase
+        .from('crops')
+        .select('*')
+        .order('name', { ascending: true });
       if (error) throw error;
       setCrops(data);
     } catch (error) {
@@ -95,9 +101,10 @@ function Planning() {
     try {
       const { data, error } = await supabase
         .from('plans')
-        .insert([{ name: newPlanName, description: newPlanDescription }]);
+        .insert([{ name: newPlanName, description: newPlanDescription }])
+        .select();
       if (error) throw error;
-      setPlans([...plans, ...data]);
+      setPlans([...data, ...plans]);
       setNewPlanName('');
       setNewPlanDescription('');
     } catch (error) {

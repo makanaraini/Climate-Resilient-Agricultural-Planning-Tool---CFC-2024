@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, TextField, Button, Box, Avatar, IconButton, List, ListItem, ListItemText, Tooltip, Paper, Grid } from '@mui/material';
 import { PhotoCamera, Edit, LocationOn, Person, Email, Business } from '@mui/icons-material';
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient'; // Adjust the path if necessary
 import { styled } from '@mui/material/styles';
 import SatelliteTwoToneIcon from '@mui/icons-material/SatelliteTwoTone';
 
@@ -80,7 +80,11 @@ function Profile() {
   const [isEditing, setIsEditing] = useState(false);
 
   const fetchFarmerProfile = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      console.error('Error fetching user:', userError);
+      return;
+    }
     if (user) {
       const { data, error } = await supabase
         .from('farmers')
@@ -112,7 +116,7 @@ function Profile() {
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `${fileName}`;
 
-    let { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(filePath, file);
 
@@ -121,7 +125,7 @@ function Profile() {
       return;
     }
 
-    const { publicURL, error: urlError } = supabase
+    const { data: publicUrlData, error: urlError } = supabase
       .storage
       .from('avatars')
       .getPublicUrl(filePath);
@@ -131,9 +135,14 @@ function Profile() {
       return;
     }
 
+    const publicURL = publicUrlData.publicUrl;
     setAvatarUrl(publicURL);
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      console.error('Error fetching user:', userError);
+      return;
+    }
     if (user) {
       const { error } = await supabase
         .from('farmers')
@@ -147,7 +156,11 @@ function Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      console.error('Error fetching user:', userError);
+      return;
+    }
     if (user) {
       const { error } = await supabase
         .from('farmers')

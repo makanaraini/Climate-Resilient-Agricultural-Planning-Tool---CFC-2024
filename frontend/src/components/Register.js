@@ -3,13 +3,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Container, Alert } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 import { LockOutlined as LockOutlinedIcon } from '@mui/icons-material';
-import { supabase } from '../utils/supabaseClient'; // Import Supabase client
+import { supabase } from '../utils/supabaseClient';
 
 function Register() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState(''); // Change username to email
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
@@ -17,26 +17,25 @@ function Register() {
     e.preventDefault();
     setError('');
     try {
-      // Use Supabase signUp method
-      const { user, error: signUpError } = await supabase.auth.signUp({
-        email, // Use email instead of username
-        password,
-      });
-
-      if (signUpError) throw signUpError; // Handle sign-up error
-
-      console.log('Registration successful:', user);
-
-      // Automatically log in after successful registration
-      const { data: loginResponse, error: loginError } = await supabase.auth.signIn({
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
       });
 
-      if (loginError) throw loginError; // Handle login error
+      if (signUpError) throw signUpError;
 
-      console.log('Auto-login response:', loginResponse);
-      login(loginResponse.access_token); // Assuming login function accepts access_token
+      console.log('Registration successful:', data.user);
+
+      // Automatically log in after successful registration
+      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (loginError) throw loginError;
+
+      console.log('Auto-login response:', loginData);
+      login(loginData.session.access_token);
       navigate('/dashboard');
     } catch (error) {
       console.error('Registration error:', error.message);
@@ -61,13 +60,13 @@ function Register() {
             margin="normal"
             required
             fullWidth
-            id="email" // Change id to email
-            label="Email" // Change label to Email
-            name="email" // Change name to email
-            autoComplete="email" // Change autoComplete to email
+            id="email"
+            label="Email"
+            name="email"
+            autoComplete="email"
             autoFocus
-            value={email} // Use email state
-            onChange={(e) => setEmail(e.target.value)} // Update email state
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             variant="outlined"
             className="mb-4"
           />

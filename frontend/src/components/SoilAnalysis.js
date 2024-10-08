@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, CircularProgress } from '@mui/material/index';
 import { styled } from '@mui/material/styles';
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient'; // Adjust the path if necessary
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -34,7 +34,10 @@ function SoilAnalysis() {
   async function fetchSoilData() {
     try {
       setLoading(true);
-      const { data, error } = await supabase.from('soil_analysis').select('*').order('date', { ascending: true });
+      const { data, error } = await supabase
+        .from('soil_analysis')
+        .select('*')
+        .order('date', { ascending: true });
 
       if (error) throw error;
       setSoilData(data);

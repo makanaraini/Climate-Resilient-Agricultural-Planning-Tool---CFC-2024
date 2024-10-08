@@ -9,30 +9,30 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
       if (error) console.error('Error fetching session:', error);
-      setUser(session?.user ?? null);
+      setUser(data.session?.user ?? null);
       setLoading(false);
     };
 
     fetchSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
     return () => {
-      if (authListener && authListener.unsubscribe) {
-        authListener.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
       }
     };
   }, []);
 
   const login = async (email, password) => {
-    const { user, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    return user;
+    return data.user;
   };
 
   const logout = async () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Box, Grid, Paper, CircularProgress, TextField, Divider } from '@mui/material';
 import { styled } from '@mui/system';
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient'; // Adjust the path if necessary
 import ChartWrapper from '../components/ChartWrapper';
 import DataExport from '../components/DataExport';
 import WeatherDetails from '../components/WeatherDetails';
@@ -43,8 +43,13 @@ function Reports() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        let weatherQuery = supabase.from('weather_data').select('*').order('date', { ascending: true });
-        let cropQuery = supabase.from('crops').select('*');
+        let weatherQuery = supabase
+          .from('weather_data')
+          .select('*')
+          .order('date', { ascending: true });
+        let cropQuery = supabase
+          .from('crops')
+          .select('*');
 
         if (startDate) {
           weatherQuery = weatherQuery.gte('date', startDate);
@@ -53,13 +58,16 @@ function Reports() {
           weatherQuery = weatherQuery.lte('date', endDate);
         }
 
-        const [weatherResponse, cropResponse] = await Promise.all([weatherQuery, cropQuery]);
+        const [{ data: weatherData, error: weatherError }, { data: cropData, error: cropError }] = await Promise.all([
+          weatherQuery,
+          cropQuery
+        ]);
 
-        if (weatherResponse.error) throw weatherResponse.error;
-        if (cropResponse.error) throw cropResponse.error;
+        if (weatherError) throw weatherError;
+        if (cropError) throw cropError;
 
-        setWeatherData(weatherResponse.data);
-        setCropData(cropResponse.data);
+        setWeatherData(weatherData);
+        setCropData(cropData);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Failed to fetch data');
@@ -69,7 +77,7 @@ function Reports() {
     };
 
     fetchData();
-  }, [startDate, endDate]); // Removed fetchData from dependencies
+  }, [startDate, endDate]);
 
   const handleDateChange = (event) => {
     const { name, value } = event.target;

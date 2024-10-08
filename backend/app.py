@@ -1,3 +1,10 @@
+import sys
+import os
+
+# Add the path to the frontend/src/utils directory
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../frontend/src/utils')))
+print(sys.path)  # Debugging line to check the Python pathfrom supabaseClient import fetchAllData  # Now you can import your function
+
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS # type: ignore
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity # type: ignore
@@ -18,14 +25,17 @@ from ibm_watson import AssistantV2
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from dotenv import load_dotenv
 from supabase import create_client, Client # type: ignore
-from supabaseClient import fetch_all_data # Display all fetched data
-
 # Load environment variables from .env file
 load_dotenv(dotenv_path='../frontend/.env')
 
 # Initialize Supabase client with credentials from .env
 url = os.getenv("REACT_APP_SUPABASE_URL")
-key = os.getenv("REACT_APP_SUPABASE_KEY")
+key = os.getenv("REACT_APP_SUPABASE_ANON_KEY")  # Change this line to use the correct variable name
+
+# Debugging lines to check if the environment variables are loaded correctly
+print("Supabase URL:", url)
+print("Supabase Key:", key)
+
 supabase: Client = create_client(url, key)
 
 # Replace the users dictionary with a function to fetch users from Supabase
