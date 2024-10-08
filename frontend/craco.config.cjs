@@ -10,6 +10,7 @@ module.exports = {
         os: require.resolve('os-browserify/browser'),
         vm: require.resolve('vm-browserify'),
         process: require.resolve('process/browser'), // Polyfill for process
+        crypto: require.resolve('crypto-browserify'), // If you need crypto
       };
 
       // Add the ProvidePlugin to make process available in all modules
