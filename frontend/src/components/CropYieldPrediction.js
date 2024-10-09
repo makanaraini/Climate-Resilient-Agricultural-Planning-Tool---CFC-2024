@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Paper, Select, MenuItem, FormControl, InputLabel, Grid } from '@mui/material';
+import { Typography, Paper, Select, MenuItem, FormControl, InputLabel, Grid, Alert } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { supabase } from '../utils/supabaseClient'; // Ensure this path is correct
@@ -46,18 +46,36 @@ function CropYieldPrediction({ weatherData }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isWeatherDataLoading, setIsWeatherDataLoading] = useState(true);
 
+  // Fetch historical yield data
+  const fetchHistoricalYieldData = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('historical_yield_data')
+        .select('year, crop_id, yield, factors_affecting_yield')
+        .order('year', { ascending: true });
+
+      if (error) throw error;
+
+      return data;
+    } catch (error) {
+      console.error('Error fetching historical yield data:', error.message);
+      setError('Failed to fetch historical yield data. Please try again later.');
+      return []; // Return an empty array in case of an error
+    }
+  }, []); // Wrap in useCallback
+
   // Fetch historical data from Supabase
-  const fetchHistoricalData = async () => {
+  const fetchHistoricalData = useCallback(async () => {
     try {
       // Fetch weather data
       const { data: weatherData, error: weatherError } = await supabase
         .from('weather_data')
         .select('date, temperature, precipitation');
       
-      // Fetch crop data (Ensure field names match your table)
+      // Fetch crop data
       const { data: cropData, error: cropError } = await supabase
         .from('crop_data')
-        .select('crop_type, growth_cycle_days, water_requirements'); // Use 'crop_type' instead of 'crop_name'
+        .select('crop_type, growth_cycle_days, water_requirements');
 
       // Fetch historical yield data
       const yieldData = await fetchHistoricalYieldData();
@@ -76,30 +94,13 @@ function CropYieldPrediction({ weatherData }) {
 
     } catch (error) {
       console.error('Error querying historical data:', error);
+      setError('Failed to fetch historical data. Please try again later.');
       return null; // Ensure the function returns null in case of an error
     }
-  };
-
-  // Fetch historical yield data
-  async function fetchHistoricalYieldData() {
-    try {
-      const { data, error } = await supabase
-        .from('historical_yield_data')
-        .select('year, crop_id, location, yield, factors_affecting_yield')
-        .order('year', { ascending: true });
-
-      if (error) throw error;
-
-      return data;
-    } catch (error) {
-      console.error('Error fetching historical yield data:', error.message);
-      return []; // Return an empty array in case of an error
-    }
-  }
+  }, [fetchHistoricalYieldData]); // Add fetchHistoricalYieldData as a dependency
 
   // Preprocess data before sending it to Watsonx.ai
   const preprocessData = (data) => {
-    // Handle missing values, remove duplicates, normalize
     return data.map(item => ({
       date: item.date,
       temperature: parseFloat(item.temperature) || 25,  // Default values
@@ -107,7 +108,7 @@ function CropYieldPrediction({ weatherData }) {
     }));
   };
 
-  const predictYieldFromWatson = async (processedData) => {
+  const predictYieldFromWatson = useCallback(async (processedData) => {
     try {
       const response = await axios.post('https://eu-gb.ml.cloud.ibm.com', {
         data: processedData
@@ -117,7 +118,7 @@ function CropYieldPrediction({ weatherData }) {
         }
       });
       
-      // Assuming the API returns predictions, we'll adjust them based on temperature
+      // Adjust predictions based on temperature
       const adjustedPredictions = response.data.predictions.map(pred => {
         const tempFactor = calculateTemperatureFactor(pred.temperature, processedData.cropData.optimal_temperature);
         return {
@@ -129,9 +130,9 @@ function CropYieldPrediction({ weatherData }) {
       setPredictions(adjustedPredictions);
     } catch (error) {
       console.error('Error fetching predictions from Watsonx.ai:', error);
-      setError('Failed to fetch predictions.');
+      setError('Failed to fetch predictions. Please try again later.');
     }
-  };
+  }, []); // Add any dependencies if needed
 
   const calculateTemperatureFactor = (actualTemp, optimalTemp) => {
     const tempDiff = Math.abs(actualTemp - optimalTemp);
@@ -143,17 +144,28 @@ function CropYieldPrediction({ weatherData }) {
 
   // Function to initiate the prediction process
   const initiatePrediction = useCallback(async () => {
-    const historicalData = await fetchHistoricalData();
-    if (historicalData) {
-      const processedWeatherData = preprocessData(historicalData.weatherData);
-      const processedYieldData = preprocessData(historicalData.yieldData);
-      await predictYieldFromWatson({
-        weatherData: processedWeatherData,
-        yieldData: processedYieldData,
-        cropData: historicalData.cropData.find(crop => crop.crop_type === selectedCrop)
-      });
+    setIsLoading(true);
+    setError(null);
+    try {
+      const historicalData = await fetchHistoricalData();
+      if (historicalData) {
+        const processedWeatherData = preprocessData(historicalData.weatherData);
+        const processedYieldData = preprocessData(historicalData.yieldData);
+        await predictYieldFromWatson({
+          weatherData: processedWeatherData,
+          yieldData: processedYieldData,
+          cropData: historicalData.cropData.find(crop => crop.crop_type === selectedCrop)
+        });
+      } else {
+        throw new Error('Failed to fetch historical data');
+      }
+    } catch (error) {
+      console.error('Error during prediction process:', error);
+      setError('An error occurred during the prediction process. Please try again later.');
+    } finally {
+      setIsLoading(false);
     }
-  }, [selectedCrop]);
+  }, [selectedCrop, fetchHistoricalData, predictYieldFromWatson]); // Include missing dependencies
 
   // Fetch crops from Supabase
   const fetchCrops = async () => {
@@ -170,7 +182,7 @@ function CropYieldPrediction({ weatherData }) {
       setCrops(uniqueCrops);
     } catch (error) {
       console.error('Error fetching crops:', error);
-      setError('Failed to fetch crops.');
+      setError('Failed to fetch crops. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -203,9 +215,9 @@ function CropYieldPrediction({ weatherData }) {
         Crop Yield Prediction
       </Typography>
       {error && (
-        <Typography color="error" gutterBottom>
+        <Alert severity="error" sx={{ mb: 2 }}>
           {error}
-        </Typography>
+        </Alert>
       )}
       {/* Crop Selection */}
       {isLoading ? (

@@ -3,7 +3,6 @@ import os
 
 # Add the path to the frontend/src/utils directory
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../frontend/src/utils')))
-print(sys.path)  # Debugging line to check the Python pathfrom supabaseClient import fetchAllData  # Now you can import your function
 
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS # type: ignore
@@ -32,10 +31,6 @@ load_dotenv(dotenv_path='../frontend/.env')
 url = os.getenv("REACT_APP_SUPABASE_URL")
 key = os.getenv("REACT_APP_SUPABASE_ANON_KEY")  # Change this line to use the correct variable name
 
-# Debugging lines to check if the environment variables are loaded correctly
-print("Supabase URL:", url)
-print("Supabase Key:", key)
-
 supabase: Client = create_client(url, key)
 
 # Replace the users dictionary with a function to fetch users from Supabase
@@ -50,11 +45,24 @@ if (user := get_user("MAKANA")):  # Use named expression
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = 'EEE2062rm!Ask73/RM'  # Change this!
 jwt = JWTManager(app)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+
+# Configure CORS
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "http://localhost:3000",
+            "http://localhost:5000",  # Add this line if your frontend runs on port 5000
+            "https://your-production-domain.com",
+            "https://api.watsonx.ai"
+        ],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+}, supports_credentials=True)
 
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = "EEE2062rm!Ask73/RM"  # Change this!
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)  # Changed to 30 days
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
 app.config['JWT_HEADER_NAME'] = 'Authorization'
 app.config['JWT_HEADER_TYPE'] = 'Bearer'
@@ -140,6 +148,12 @@ assistant = AssistantV2(
 )
 assistant.set_service_url(WATSON_URL)
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
 @app.route('/api/register', methods=['POST'])
 def register():
     if not request.is_json:
@@ -152,7 +166,7 @@ def register():
         return jsonify({"msg": "Missing required fields"}), 400
 
     # Use Supabase to create a new user
-    response = supabase.auth.signUp({
+    response = supabase.auth.sign_up({
         'email': email,
         'password': password
     })
@@ -174,24 +188,26 @@ def login():
         return jsonify({"msg": "Missing required fields"}), 400
 
     # Use Supabase to log in the user
-    response = supabase.auth.signIn({
+    response = supabase.auth.sign_in_with_password({
         'email': email,
         'password': password
     })
 
     if response.error:
+        logging.error(f"Login error: {response.error.message}")
         return jsonify({"msg": response.error.message}), 401
 
-    return jsonify({"access_token": response.data.access_token}), 200
+    # Create a JWT token
+    access_token = create_access_token(identity=email)
+    logging.info(f"Access token created for user {email}: {access_token}")
 
-# Once a user is successfully logged in:
-# 1. An access token is generated for the user using create_access_token()
-# 2. This token is returned to the client in the response
-# 3. The client should store this token (usually in local storage or a cookie)
-# 4. For subsequent requests to protected routes, the client should include this token in the Authorization header
-# 5. The server will use this token to authenticate the user for protected routes
-# 6. The token expires after the time specified in JWT_ACCESS_TOKEN_EXPIRES (1 hour in this case)
-# 7. The user can now access protected routes and perform actions specific to their account
+    supabase_token = response.session.access_token
+    logging.info(f"Supabase token for user {email}: {supabase_token}")
+
+    return jsonify({
+        "access_token": access_token,
+        "supabase_token": supabase_token
+    }), 200
 
 @app.route('/api/protected', methods=['GET'])
 @jwt_required()
@@ -552,6 +568,13 @@ def get_water_management_plan():
         "loamy": 1.0,
         "clay": 0.8
     }
+    irrigation_need *= soil_adjustment.get(soil_type, 1.0)
+
+    return jsonify({
+        "total_water_need": total_water_need,
+        "expected_rainfall": total_rainfall,
+        "irrigation_need": irrigation_need
+    }), 200
 
 @app.route('/api/generate-report', methods=['GET'])
 @jwt_required()
@@ -590,6 +613,44 @@ def export_agricultural_data():
 
     output.seek(0)
     return send_file(io.BytesIO(output.getvalue().encode()), mimetype='text/csv', as_attachment=True, download_name='agricultural_data.csv')
+
+# New endpoint to interact with Watsonx.ai model
+@app.route('/api/watsonx-prediction', methods=['POST'])
+@jwt_required()
+def watsonx_prediction():
+    data = request.json
+    # Here you would typically send the data to your Watsonx.ai model and get a prediction
+    # For this example, we'll just return a mock prediction
+    mock_prediction = {
+        "crop": data.get('crop'),
+        "predicted_yield": random.uniform(0.8, 1.2) * data.get('average_yield', 100),
+        "confidence": random.uniform(0.7, 0.95)
+    }
+    return jsonify(mock_prediction), 200
+
+# Add this function to fetch weather data from Supabase
+def fetch_weather_data():
+    try:
+        response = supabase.table('weather_data').select('*').execute()
+        
+        if response.error:
+            app.logger.error(f"Error fetching weather data: {response.error}")
+            return {"error": str(response.error)}
+        
+        return response.data
+    except Exception as e:
+        app.logger.error(f"Exception occurred while fetching weather data: {str(e)}")
+        return {"error": str(e)}
+
+@app.route('/api/weather-data', methods=['GET'])
+@jwt_required()
+def get_weather_data():
+    weather_data = fetch_weather_data()
+    
+    if "error" in weather_data:
+        return jsonify({"msg": "Error fetching weather data", "error": weather_data["error"]}), 500
+    
+    return jsonify(weather_data), 200
 
 if __name__ == '__main__':
     app.run(debug=os.getenv('FLASK_ENV') == 'development')
