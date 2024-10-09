@@ -36,14 +36,17 @@ function SoilAnalysis() {
       setLoading(true);
       const { data, error } = await supabase
         .from('soil_data')
-        .select('*')
-        .order('date', { ascending: true });
+        .select('location, soil_type, soil_ph, nutrient_content, soil_moisture, soil_temperature')
+        .order('location', { ascending: true });
 
       if (error) throw error;
-      setSoilData(data);
+      
+      // Get unique soil data entries
+      const uniqueSoilData = data.filter((v, i, a) => a.findIndex(t => (t.location === v.location)) === i);
+      setSoilData(uniqueSoilData);
     } catch (error) {
       console.error('Error fetching soil data:', error);
-      setError('Failed to fetch soil data');
+      setError('Failed to fetch soil data: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -70,23 +73,23 @@ function SoilAnalysis() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>pH</TableCell>
-              <TableCell>Nitrogen (N)</TableCell>
-              <TableCell>Phosphorus (P)</TableCell>
-              <TableCell>Potassium (K)</TableCell>
-              <TableCell>Organic Matter (%)</TableCell>
+              <TableCell>Location</TableCell>
+              <TableCell>Soil Type</TableCell>
+              <TableCell>Soil pH</TableCell>
+              <TableCell>Nutrient Content</TableCell>
+              <TableCell>Soil Moisture</TableCell>
+              <TableCell>Soil Temperature</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {soilData.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
-                <TableCell>{row.ph}</TableCell>
-                <TableCell>{row.nitrogen}</TableCell>
-                <TableCell>{row.phosphorus}</TableCell>
-                <TableCell>{row.potassium}</TableCell>
-                <TableCell>{row.organic_matter}</TableCell>
+            {soilData.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{row.location}</TableCell>
+                <TableCell>{row.soil_type}</TableCell>
+                <TableCell>{row.soil_ph}</TableCell>
+                <TableCell>{row.nutrient_content}</TableCell>
+                <TableCell>{row.soil_moisture}</TableCell>
+                <TableCell>{row.soil_temperature}</TableCell>
               </TableRow>
             ))}
           </TableBody>

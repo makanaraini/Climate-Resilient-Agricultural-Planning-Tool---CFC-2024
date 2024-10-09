@@ -43,9 +43,11 @@ function CropRecommendations() {
       setLoading(true);
       const { lat, lon } = await geocodeLocation(location);
       const weatherData = await getWeatherForecast(lat, lon);
+      
+      // Fetch crop data from Supabase
       const { data: cropData, error: cropError } = await supabase
         .from('crops')
-        .select('*');
+        .select('crop_type, growth_cycle_days, optimal_planting_time, water_requirements, nutrient_requirements, disease_resistance');
 
       if (cropError) throw cropError;
 
@@ -53,7 +55,7 @@ function CropRecommendations() {
       setRecommendations(newRecommendations);
     } catch (error) {
       console.error('Error fetching recommendations:', error);
-      setError('Failed to fetch crop recommendations');
+      setError('Failed to fetch crop recommendations: ' + error.message);
     } finally {
       setLoading(false);
     }
