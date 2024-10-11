@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 // Replace with your actual Watsonx API endpoint
+// eslint-disable-next-line no-unused-vars
 const WATSON_API_URL = 'https://eu-gb.ml.cloud.ibm.com/ml/v4/deployments/8be0910c-47f3-48a6-b1ed-6eec41b7d324/predictions?version=2021-05-01';
 
 export const predictYield = async (data) => {

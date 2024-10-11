@@ -25,7 +25,7 @@ const theme = createTheme();
 // Configure axios defaults for CORS
 axios.defaults.withCredentials = true;
 
-// PrivateRoute component outside of App
+// PrivateRoute component to protect routes
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
@@ -37,7 +37,7 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
-  const { token } = useAuth();  // Now it's properly within AuthProvider
+  const { token, user } = useAuth();  // Now it's properly within AuthProvider
   const { data: weatherData, error: weatherError } = useWeatherData();
 
   useEffect(() => {
@@ -47,8 +47,6 @@ function App() {
         if (token) {
           config.headers['Authorization'] = `Bearer ${token}`;
         }
-        // Ensure that the 'Origin' header is set
-        config.headers['Origin'] = window.location.origin;
         return config;
       },
       (error) => {
@@ -82,9 +80,10 @@ function App() {
               </div>
               <div className="main-content">
                 <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
+                  <Route path="/" element={user ? <Navigate to="/home" /> : <Navigate to="/login" />} />
+                  <Route path="/login" element={user ? <Navigate to="/home" /> : <Login />} />
+                  <Route path="/register" element={user ? <Navigate to="/home" /> : <Register />} />
+                  <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
                   <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
                   <Route path="/reports" element={<PrivateRoute><Reports /></PrivateRoute>} />
                   <Route path="/planning" element={<PrivateRoute><Planning /></PrivateRoute>} />
