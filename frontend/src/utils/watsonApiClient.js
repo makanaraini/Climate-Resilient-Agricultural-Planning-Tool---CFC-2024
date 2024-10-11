@@ -5,7 +5,7 @@ const WATSON_API_URL = 'https://eu-gb.ml.cloud.ibm.com/ml/v4/deployments/8be0910
 
 export const predictYield = async (data) => {
     try {
-        const response = await axios.post(WATSON_API_URL, {
+        const response = await axios.post('/api/watson-predict', {
             data: data,
         }, {
             headers: {
