@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Box, Paper, List, ListItem, ListItemText, Tab, Tabs, AppBar, TextField, Button } from '@mui/material';
+import { Typography, Box, Paper, List, ListItem, ListItemText, Tab, Tabs, AppBar, TextField, Button, Snackbar } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { supabase } from '../utils/supabaseClient'; // Adjust the path if necessary
 import { getWeatherForecast } from '../utils/weatherApiClient';
 import CropCalendar from '../components/CropCalendar';
 import PlantingRecommendations from '../components/PlantingRecommendations';
-import Notifications from '../components/Notifications';
 import SoilAnalysis from '../components/SoilAnalysis';
 import PestDiseasePrediction from '../components/PestDiseasePrediction';
 import WaterManagement from '../components/WaterManagement';
+import Chatbot from '../components/Chatbot'; // Import the Chatbot component
 
 const StyledBox = styled(Box)(({ theme }) => ({
   flexGrow: 1,
@@ -51,6 +51,8 @@ function Planning() {
   const [crops, setCrops] = useState([]);
   const [newPlanName, setNewPlanName] = useState('');
   const [newPlanDescription, setNewPlanDescription] = useState('');
+  const [notification, setNotification] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
 
   const fetchPlans = useCallback(async () => {
     try {
@@ -69,6 +71,9 @@ function Planning() {
     try {
       const forecast = await getWeatherForecast();
       setWeatherForecast(forecast);
+      // Set a notification based on weather forecast
+      setNotification('New weather forecast available!');
+      setShowNotification(true);
     } catch (error) {
       console.error('Error fetching weather forecast:', error);
     }
@@ -107,15 +112,21 @@ function Planning() {
       setPlans([...data, ...plans]);
       setNewPlanName('');
       setNewPlanDescription('');
+      setNotification('New plan added successfully!');
+      setShowNotification(true);
     } catch (error) {
       console.error('Error adding new plan:', error);
     }
   };
 
+  const handleCloseNotification = () => {
+    setShowNotification(false);
+  };
+
   const renderTabContent = () => {
     switch (tabValue) {
       case 0:
-        return <Notifications weatherData={weatherForecast} crops={crops} />;
+        return <Chatbot />;
       case 1:
         return <PlantingRecommendations weatherForecast={weatherForecast} crops={crops} />;
       case 2:
@@ -181,7 +192,7 @@ function Planning() {
       <StyledPaper>
         <StyledAppBar position="static">
           <Tabs value={tabValue} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
-            <StyledTab label="Notifications" />
+            <StyledTab label="Chatbot" />
             <StyledTab label="Planting Recommendations" />
             <StyledTab label="Pest & Disease Prediction" />
             <StyledTab label="Water Management" />
@@ -193,6 +204,16 @@ function Planning() {
           {renderTabContent()}
         </Box>
       </StyledPaper>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={showNotification}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
+        message={notification}
+      />
     </StyledBox>
   );
 }

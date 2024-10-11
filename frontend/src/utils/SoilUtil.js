@@ -1,10 +1,12 @@
 import axios from 'axios';
+import { geocodeLocation } from './geocodeApiClient'; // Import the geocode function
 
-const SOIL_API_URL = 'https://rest.soilgrids.org/query'; // Example soil data API
+const SOIL_API_URL = process.env.REACT_APP_SOIL_API_URL || 'https://rest.soilgrids.org/query'; // Example soil data API
 
-export const analyzeSoil = async (latitude, longitude) => {
+export const analyzeSoil = async (location) => {
   try {
-    const soilData = await fetchSoilData(latitude, longitude);
+    const { lat, lon } = await geocodeLocation(location); // Get latitude and longitude
+    const soilData = await fetchSoilData(lat, lon);
     return processSoilData(soilData);
   } catch (error) {
     console.error('Error analyzing soil:', error);

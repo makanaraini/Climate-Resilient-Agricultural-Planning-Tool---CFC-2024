@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { AuthProvider, useAuth } from './contexts/AuthContext';  // Make sure this is the correct path
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './components/Login';
@@ -19,6 +19,8 @@ import CropRecommendationsProvider from './contexts/CropRecommendationsContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useWeatherData } from './utils/apiService';
 import axios from 'axios';
+import YourParentComponent from './components/YourParentComponent';
+import Chatbot from './components/Chatbot';
 
 const theme = createTheme();
 
@@ -37,8 +39,9 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
-  const { token, user } = useAuth();  // Now it's properly within AuthProvider
+  const { token, user, login, register } = useAuth();
   const { data: weatherData, error: weatherError } = useWeatherData();
+  const [chatbotMessages, setChatbotMessages] = useState([]);
 
   useEffect(() => {
     // Set up axios interceptor to add JWT token to all requests
@@ -68,6 +71,33 @@ function App() {
     };
   }, [token, weatherData, weatherError]);
 
+  const handleLogin = async (credentials) => {
+    try {
+      const response = await axios.post('/api/login', credentials);
+      login(response.data.token, response.data.user);
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
+  const handleRegister = async (userData) => {
+    try {
+      const response = await axios.post('/api/register', userData);
+      register(response.data.token, response.data.user);
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
+  };
+
+  const handleChatbotMessage = async (message) => {
+    try {
+      const response = await axios.post('/api/chatbot', { message });
+      setChatbotMessages([...chatbotMessages, { user: message, bot: response.data.reply }]);
+    } catch (error) {
+      console.error('Chatbot request failed:', error);
+    }
+  };
+
   return (
     <ErrorBoundary>
       <CropRecommendationsProvider>
@@ -76,13 +106,13 @@ function App() {
           <Router>
             <div className="app-container">
               <div className="sidebar">
-                <Navbar />
+                {user && <Navbar />}
               </div>
               <div className="main-content">
                 <Routes>
-                  <Route path="/" element={user ? <Navigate to="/home" /> : <Navigate to="/login" />} />
-                  <Route path="/login" element={user ? <Navigate to="/home" /> : <Login />} />
-                  <Route path="/register" element={user ? <Navigate to="/home" /> : <Register />} />
+                  <Route path="/" element={<Navigate to="/login" />} />
+                  <Route path="/login" element={<Login onLogin={handleLogin} />} />
+                  <Route path="/register" element={<Register onRegister={handleRegister} />} />
                   <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
                   <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
                   <Route path="/reports" element={<PrivateRoute><Reports /></PrivateRoute>} />
@@ -91,7 +121,9 @@ function App() {
                   <Route path="/soil-analysis" element={<PrivateRoute><SoilAnalysis /></PrivateRoute>} />
                   <Route path="/market-trends" element={<PrivateRoute><MarketTrends /></PrivateRoute>} />
                   <Route path="/data-input" element={<PrivateRoute><DataInputForm /></PrivateRoute>} />
+                  <Route path="/data-input" element={<YourParentComponent />} />
                 </Routes>
+                {user && <Chatbot messages={chatbotMessages} onSendMessage={handleChatbotMessage} />}
               </div>
             </div>
           </Router>

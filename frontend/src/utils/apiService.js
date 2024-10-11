@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext'; // Import the useAuth hook
 
+const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: apiUrl,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -25,15 +27,12 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.message === 'Network Error') {
-      console.error('Network error: Please check your CORS settings or server status.');
-      alert('There was a problem connecting to the server. Please try again later.');
-    }
-    if (error.response && error.response.status === 401) {
-      // Use the logout function from AuthContext to handle token expiration
-      const { logout } = useAuth();
-      logout();
-      window.location.href = '/login';
+    if (error.response) {
+      console.error('API error:', error.response.data);
+      alert('An error occurred: ' + error.response.data.message);
+    } else {
+      console.error('Network error:', error.message);
+      alert('Network error: Please check your connection.');
     }
     return Promise.reject(error);
   }

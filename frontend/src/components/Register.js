@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Container, Alert } from '@mui/material';
+import { TextField, Button, Typography, Box, Container, Alert, CircularProgress } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 import { LockOutlined as LockOutlinedIcon } from '@mui/icons-material';
 import { supabase } from '../utils/supabaseClient';
@@ -12,25 +12,20 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+      const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
 
       if (signUpError) throw signUpError;
 
       console.log('Registration successful:', data.user);
 
-      // Automatically log in after successful registration
-      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({ email, password });
 
       if (loginError) throw loginError;
 
@@ -40,14 +35,14 @@ function Register() {
     } catch (error) {
       console.error('Registration error:', error.message);
       setError(error.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Container component="main" maxWidth="xs" className="mt-16">
-      <Box
-        className="flex flex-col items-center p-8 bg-white rounded-lg shadow-md"
-      >
+      <Box className="flex flex-col items-center p-8 bg-white rounded-lg shadow-md">
         <div className="mb-6 p-3 bg-green-500 rounded-full">
           <LockOutlinedIcon className="text-white" />
         </div>
@@ -88,9 +83,10 @@ function Register() {
             type="submit"
             fullWidth
             variant="contained"
-            className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
+            className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-full transition duration-300 ease-in-out"
+            disabled={loading}
           >
-            Register
+            {loading ? <CircularProgress size={24} /> : 'Register'}
           </Button>
           <Link to="/login" className="block mt-4 text-center text-green-600 hover:text-green-700 transition duration-300 ease-in-out">
             <Typography variant="body2">

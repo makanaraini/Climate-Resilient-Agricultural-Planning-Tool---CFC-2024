@@ -23,7 +23,7 @@ function DataInputForm({
       <TextField
         label="Location"
         value={location}
-        onChange={(e) => setLocation(e.target.value)}
+        onChange={(e) => setLocation(e.target.value)} // Ensure this is correct
         fullWidth
         sx={{ mb: 2, backgroundColor: '#ffffff', borderRadius: 1 }}
       />
