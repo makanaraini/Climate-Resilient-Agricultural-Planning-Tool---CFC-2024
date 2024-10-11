@@ -5,7 +5,7 @@ import { styled } from '@mui/material/styles';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { supabase } from '../utils/supabaseClient'; // Ensure this path is correct
 import AgricultureIcon from '@mui/icons-material/Agriculture';
-import axios from 'axios';  // Import axios for making API requests
+import { predictYield } from '../utils/watsonApiClient'; // Adjust the path if necessary
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -105,21 +105,17 @@ function CropYieldPrediction({ weatherData }) {
       date: item.date,
       temperature: parseFloat(item.temperature) || 25,  // Default values
       precipitation: parseFloat(item.precipitation) || 50,
+      // Include any other required fields
+      crop_type: item.crop_type, // Example field
     }));
   };
 
   const predictYieldFromWatson = useCallback(async (processedData) => {
     try {
-      const response = await axios.post('https://eu-gb.ml.cloud.ibm.com', {
-        data: processedData
-      }, {
-        headers: {
-          'Authorization': `Bearer Q9G-adhcsG9PgyuKhIqw-Xpk0RAmXSA0g0Kt4fvzSPjY`
-        }
-      });
+      const predictionData = await predictYield(processedData); // Call the Watsonx API
       
       // Adjust predictions based on temperature
-      const adjustedPredictions = response.data.predictions.map(pred => {
+      const adjustedPredictions = predictionData.predictions.map(pred => {
         const tempFactor = calculateTemperatureFactor(pred.temperature, processedData.cropData.optimal_temperature);
         return {
           ...pred,
