@@ -2,6 +2,7 @@ import React from 'react';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { Link } from 'react-router-dom'; // Import Link for routing
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import GrassIcon from '@mui/icons-material/Grass';
@@ -11,31 +12,31 @@ import PersonIcon from '@mui/icons-material/Person';
 
 export const mainListItems = (
   <React.Fragment>
-    <ListItemButton component="a" href="#dashboard">
+    <ListItemButton component={Link} to="/dashboard" aria-label="Dashboard">
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItemButton>
-    <ListItemButton component="a" href="#water-management">
+    <ListItemButton component={Link} to="/water-management" aria-label="Water Management">
       <ListItemIcon>
         <WaterDropIcon />
       </ListItemIcon>
       <ListItemText primary="Water Management" />
     </ListItemButton>
-    <ListItemButton component="a" href="#soil-analysis">
+    <ListItemButton component={Link} to="/soil-analysis" aria-label="Soil Analysis">
       <ListItemIcon>
         <GrassIcon />
       </ListItemIcon>
       <ListItemText primary="Soil Analysis" />
     </ListItemButton>
-    <ListItemButton component="a" href="#weather-details">
+    <ListItemButton component={Link} to="/weather-details" aria-label="Weather Details">
       <ListItemIcon>
         <WbSunnyIcon />
       </ListItemIcon>
       <ListItemText primary="Weather Details" />
     </ListItemButton>
-    <ListItemButton component="a" href="#reports">
+    <ListItemButton component={Link} to="/reports" aria-label="Reports">
       <ListItemIcon>
         <AssessmentIcon />
       </ListItemIcon>
@@ -46,7 +47,7 @@ export const mainListItems = (
 
 export const secondaryListItems = (
   <React.Fragment>
-    <ListItemButton component="a" href="#user-profile">
+    <ListItemButton component={Link} to="/user-profile" aria-label="User Profile">
       <ListItemIcon>
         <PersonIcon />
       </ListItemIcon>

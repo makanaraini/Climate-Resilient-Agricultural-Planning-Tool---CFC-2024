@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, AppBar, Toolbar, Button, Container, Card, CardContent, CardActionArea, Grid, Paper } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
-import backgroundImage from '../assets/field.jpg'; // Assuming you have an image in the assets folder
+import backgroundImage from '../assets/field.jpg';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PestControlIcon from '@mui/icons-material/PestControl';
 import OpacityIcon from '@mui/icons-material/Opacity';
@@ -11,7 +11,7 @@ import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
 import increasedYieldImage from '../assets/pexels-markus-winkler-1430818-5406582.jpg';
 import sustainablePracticesImage from '../assets/jnjdn.jpg';
 import climateAdaptationImage from '../assets/pexels-pixabay-60013.jpg';
-import mpanziLogo from '../assets/mpanzi-logo.png'; // Import the Mpanzi logo
+import mpanziLogo from '../assets/mpanzi-logo.png';
 import BiotechTwoToneIcon from '@mui/icons-material/BiotechTwoTone';
 
 const theme = createTheme({
@@ -73,6 +73,26 @@ const features = [
   },
 ];
 
+const FeatureCard = ({ title, description, icon, link }) => (
+  <Box sx={{ flex: '0 0 auto', width: '220px', mx: 2 }}>
+    <CardActionArea component={Link} to={link} sx={{ height: '100%', transition: 'box-shadow 0.3s, transform 0.3s', '&:hover': { boxShadow: 6, transform: 'scale(1.10)' } }}>
+      <Card sx={{ border: '1px solid #3BA935', height: '100%', bgcolor: 'rgba(255, 255, 255, 0.5)', transition: 'background-color 0.3s', '&:hover': { bgcolor: 'rgba(255, 255, 255, 1)' } }}>
+        <CardContent>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            {icon}
+          </Box>
+          <Typography variant="h6" gutterBottom>
+            {title}
+          </Typography>
+          <Typography variant="body2">
+            {description}
+          </Typography>
+        </CardContent>
+      </Card>
+    </CardActionArea>
+  </Box>
+);
+
 function Home() {
   return (
     <ThemeProvider theme={theme}>
@@ -96,23 +116,7 @@ function Home() {
           <Box sx={{ p: 3, textAlign: 'center' }}>
             <Box sx={{ display: 'flex', overflowX: 'auto', flexWrap: 'nowrap', scrollbarWidth: 'none', msOverflowStyle: 'none', '&::-webkit-scrollbar': { display: 'none' }, px: 2 }}>
               {features.map((feature, index) => (
-                <Box key={index} sx={{ flex: '0 0 auto', width: '220px', mx: 2 }}>
-                  <CardActionArea component={Link} to={feature.link} sx={{ height: '100%', transition: 'box-shadow 0.3s, transform 0.3s', '&:hover': { boxShadow: 6, transform: 'scale(1.10)' } }}>
-                    <Card sx={{ border: '1px solid #3BA935', height: '100%', bgcolor: 'rgba(255, 255, 255, 0.5)', transition: 'background-color 0.3s', '&:hover': { bgcolor: 'rgba(255, 255, 255, 1)' } }}>
-                      <CardContent>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                          {feature.icon}
-                        </Box>
-                        <Typography variant="h6" gutterBottom>
-                          {feature.title}
-                        </Typography>
-                        <Typography variant="body2">
-                          {feature.description}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </CardActionArea>
-                </Box>
+                <FeatureCard key={index} {...feature} />
               ))}
             </Box>
           </Box>
@@ -121,80 +125,27 @@ function Home() {
               Goals of Mpanzi
             </Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <Paper elevation={3} sx={{ p: 2, bgcolor: '#F5F5DC', color: '#000000' }}>
-                  <img src={increasedYieldImage} alt="Increased Yield" style={{ width: '100%', height: 'auto' }} />
-                  <Typography variant="h6" gutterBottom>
-                    Increased Yield
-                  </Typography>
-                  <Typography variant="body1">
-                    Boost your crop yield with our advanced planning tools.
-                  </Typography>
+              <Grid item xs={12} sm={6} md={4}>
+                <Paper elevation={3} sx={{ p: 2, borderRadius: '8px', backgroundImage: `url(${increasedYieldImage})`, backgroundSize: 'cover' }}>
+                  <Typography variant="h5" align="center">Increase Yield</Typography>
+                  <Typography variant="body1" align="center">Implement data-driven approaches to enhance agricultural productivity.</Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={12} md={4}>
-                <Paper elevation={3} sx={{ p: 2, bgcolor: '#F5F5DC', color: '#000000' }}>
-                  <img src={sustainablePracticesImage} alt="Sustainable Practices" style={{ width: '100%', height: 'auto' }} />
-                  <Typography variant="h6" gutterBottom>
-                    Sustainable Practices
-                  </Typography>
-                  <Typography variant="body1">
-                    Implement sustainable farming practices to protect the environment.
-                  </Typography>
+              <Grid item xs={12} sm={6} md={4}>
+                <Paper elevation={3} sx={{ p: 2, borderRadius: '8px', backgroundImage: `url(${sustainablePracticesImage})`, backgroundSize: 'cover' }}>
+                  <Typography variant="h5" align="center">Sustainable Practices</Typography>
+                  <Typography variant="body1" align="center">Promote environmentally-friendly farming methods to safeguard resources.</Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={12} md={4}>
-                <Paper elevation={3} sx={{ p: 2, bgcolor: '#F5F5DC', color: '#000000' }}>
-                  <img src={climateAdaptationImage} alt="Climate Adaptation" style={{ width: '100%', height: 'auto' }} />
-                  <Typography variant="h6" gutterBottom>
-                    Climate Adaptation
-                  </Typography>
-                  <Typography variant="body1">
-                    Adapt to changing climate conditions with our expert guidance.
-                  </Typography>
+              <Grid item xs={12} sm={6} md={4}>
+                <Paper elevation={3} sx={{ p: 2, borderRadius: '8px', backgroundImage: `url(${climateAdaptationImage})`, backgroundSize: 'cover' }}>
+                  <Typography variant="h5" align="center">Adapt to Climate Change</Typography>
+                  <Typography variant="body1" align="center">Develop strategies to cope with the effects of climate change on agriculture.</Typography>
                 </Paper>
               </Grid>
             </Grid>
-          </Box>
-          <Box sx={{ p: 3, textAlign: 'center' }}>
-            <Button variant="contained" sx={{ bgcolor: '#3BA935', color: '#FFFFFF', mt: 2 }} component={Link} to="/register">
-              Sign Up for Free
-            </Button>
           </Box>
         </Container>
-        <Box sx={{ bgcolor: '#F5F5DC', color: 'black', p: 3, mt: 5 }}>
-          <Container>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <Typography variant="h6" gutterBottom>
-                  Contact Us
-                </Typography>
-                <Typography variant="body2">
-                  Email: info@mpanzi.com
-                </Typography>
-                <Typography variant="body2">
-                  Phone: +123 456 7890
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography variant="h6" gutterBottom>
-                  Follow Us
-                </Typography>
-                <Typography variant="body2">
-                  Facebook | Twitter | Instagram
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography variant="h6" gutterBottom>
-                  About Us
-                </Typography>
-                <Typography variant="body2">
-                  Mpanzi is dedicated to empowering farmers through innovative, climate-resilient agricultural planning tools.
-                </Typography>
-              </Grid>
-            </Grid>
-          </Container>
-        </Box>
       </Box>
     </ThemeProvider>
   );

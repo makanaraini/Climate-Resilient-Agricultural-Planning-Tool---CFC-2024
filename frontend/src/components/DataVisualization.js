@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, TimeScale } from 'chart.js/auto';
 import { Bar, Line, Scatter } from 'react-chartjs-2';
-import { Box, Typography, TextField, Button, Select, MenuItem, Paper, Grid } from '@mui/material/index';
-import { styled } from '@mui/system/index';
+import { Box, Typography, TextField, Button, MenuItem, Paper, Grid } from '@mui/material';
+import { styled } from '@mui/system';
 import 'chartjs-adapter-date-fns';
 
 ChartJS.register(
@@ -52,197 +52,123 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const StyledSelect = styled(Select)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
-  '& .MuiOutlinedInput-notchedOutline': {
-    borderColor: theme.palette.primary.light,
-  },
-  '&:hover .MuiOutlinedInput-notchedOutline': {
-    borderColor: theme.palette.primary.main,
-  },
-  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-    borderColor: theme.palette.primary.dark,
-  },
-}));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  backgroundColor: theme.palette.success.main,
-  color: theme.palette.success.contrastText,
-  fontWeight: 'bold',
-  '&:hover': {
-    backgroundColor: theme.palette.success.dark,
-  },
-  transition: 'all 0.3s ease-in-out',
-}));
-
-const ChartBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  padding: theme.spacing(3),
-  borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[3],
-  marginBottom: theme.spacing(4),
-  transition: 'all 0.3s ease-in-out',
-  '&:hover': {
-    boxShadow: theme.shadows[6],
-  },
-}));
-
 const DataVisualization = ({ agriculturalData }) => {
+  const [cropType, setCropType] = useState('');
+  const [filteredData, setFilteredData] = useState(agriculturalData);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [selectedCrop, setSelectedCrop] = useState('All');
-  const [chartType, setChartType] = useState('bar');
 
-  const filterData = () => {
-    return agriculturalData.filter(item => {
-      const itemDate = new Date(item.date);
-      return (!startDate || itemDate >= new Date(startDate)) &&
-             (!endDate || itemDate <= new Date(endDate)) &&
-             (selectedCrop === 'All' || item.crop === selectedCrop);
-    });
+  const handleCropTypeChange = (event) => {
+    const selectedCrop = event.target.value;
+    setCropType(selectedCrop);
+    filterData(selectedCrop, startDate, endDate);
   };
 
-  const filteredData = filterData();
+  const handleDateChange = () => {
+    filterData(cropType, startDate, endDate);
+  };
 
-  const crops = ['All', ...new Set(agriculturalData.map(item => item.crop))];
+  const filterData = (cropType, startDate, endDate) => {
+    const filtered = agriculturalData.filter((data) => {
+      const date = new Date(data.date);
+      const isWithinCrop = cropType ? data.crop_type === cropType : true;
+      const isWithinDateRange = (!startDate || date >= new Date(startDate)) && (!endDate || date <= new Date(endDate));
+      return isWithinCrop && isWithinDateRange;
+    });
+    setFilteredData(filtered);
+  };
 
-  const barData = {
-    labels: filteredData.map(item => item.date),
+  const cropTypes = [...new Set(agriculturalData.map(item => item.crop_type))];
+
+  const dataLine = {
+    labels: filteredData.map((data) => data.date),
     datasets: [
       {
         label: 'Yield',
-        data: filteredData.map(item => item.yield),
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        data: filteredData.map((data) => data.yield),
+        borderColor: '#42a5f5',
+        backgroundColor: 'rgba(66, 165, 245, 0.2)',
       },
     ],
   };
 
-  const lineData = {
-    labels: filteredData.map(item => item.date),
+  const dataBar = {
+    labels: filteredData.map((data) => data.crop_type),
     datasets: [
       {
-        label: 'Area',
-        data: filteredData.map(item => item.area),
-        borderColor: 'rgb(255, 99, 132)',
+        label: 'Yield',
+        data: filteredData.map((data) => data.yield),
+        backgroundColor: '#66bb6a',
+      },
+    ],
+  };
+
+  const dataScatter = {
+    datasets: [
+      {
+        label: 'Yield vs Soil Nutrient Level',
+        data: filteredData.map((data) => ({ x: data.soil_nutrient_level, y: data.yield })),
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
     ],
   };
 
-  const scatterData = {
-    datasets: crops.filter(crop => crop !== 'All').map((crop, index) => ({
-      label: crop,
-      data: filteredData.filter(item => item.crop === crop).map(item => ({
-        x: item.area,
-        y: item.yield,
-      })),
-      backgroundColor: `hsl(${index * 137.5}, 70%, 50%)`,
-    })),
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Agricultural Data',
-      },
-      tooltip: {
-        mode: 'index',
-        intersect: false,
-      },
-    },
-    scales: {
-      x: {
-        type: 'time',
-        time: {
-          unit: 'day',
-        },
-      },
-    },
-  };
-
-  const toggleChartType = () => {
-    setChartType(chartType === 'bar' ? 'line' : 'bar');
-  };
-
   return (
-    <StyledPaper>
-      <StyledTypography variant="h4">
-        Agricultural Data Visualization
-      </StyledTypography>
-      <Grid container spacing={4} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={6} md={3}>
-          <StyledTextField
-            label="Start Date"
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            fullWidth
-          />
+    <Box sx={{ p: 3 }}>
+      <StyledPaper>
+        <StyledTypography variant="h4">Data Visualization</StyledTypography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4}>
+            <StyledTextField
+              select
+              label="Select Crop Type"
+              value={cropType}
+              onChange={handleCropTypeChange}
+              fullWidth
+            >
+              {cropTypes.map((type) => (
+                <MenuItem key={type} value={type}>{type}</MenuItem>
+              ))}
+            </StyledTextField>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <StyledTextField
+              type="date"
+              label="Start Date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <StyledTextField
+              type="date"
+              label="End Date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StyledTextField
-            label="End Date"
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StyledSelect
-            value={selectedCrop}
-            onChange={(e) => setSelectedCrop(e.target.value)}
-            fullWidth
-          >
-            {crops.map(crop => (
-              <MenuItem key={`crop-${crop}`} value={crop}>{crop}</MenuItem>
-            ))}
-          </StyledSelect>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StyledButton 
-            variant="contained" 
-            onClick={toggleChartType}
-            fullWidth
-          >
-            Toggle Chart Type
-          </StyledButton>
-        </Grid>
-      </Grid>
-      <ChartBox>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'medium', color: 'text.secondary' }}>
-          {chartType === 'bar' ? 'Yield Over Time' : 'Area Over Time'}
-        </Typography>
-        {chartType === 'bar' ? (
-          <Bar data={barData} options={options} />
-        ) : (
-          <Line data={lineData} options={options} />
-        )}
-      </ChartBox>
-      <ChartBox>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'medium', color: 'text.secondary' }}>
-          Yield vs Area (Scatter Plot)
-        </Typography>
-        <Scatter 
-          data={scatterData} 
-          options={{
-            ...options,
-            scales: {
-              x: { title: { display: true, text: 'Area' } },
-              y: { title: { display: true, text: 'Yield' } },
-            },
-          }} 
-        />
-      </ChartBox>
-    </StyledPaper>
+        <Button variant="contained" onClick={handleDateChange} sx={{ mt: 2, backgroundColor: '#1976d2', color: '#ffffff' }}>
+          Filter Data
+        </Button>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6">Yield Line Chart</Typography>
+          <Line data={dataLine} />
+        </Box>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6">Yield Bar Chart</Typography>
+          <Bar data={dataBar} />
+        </Box>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6">Yield vs Soil Nutrient Level (Scatter)</Typography>
+          <Scatter data={dataScatter} />
+        </Box>
+      </StyledPaper>
+    </Box>
   );
 };
 

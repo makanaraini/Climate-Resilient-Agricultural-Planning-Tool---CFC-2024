@@ -1,10 +1,31 @@
 import React from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Tooltip, Divider, Box } from '@mui/material/index';
-import { Home, Dashboard, Assessment, EventNote, Terrain, Person, ExitToApp, LockOpen, PersonAdd, Visibility, Edit } from '@mui/icons-material/index'; // Changed Input to Edit
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+  Divider,
+  Box,
+} from '@mui/material';
+import {
+  Home,
+  Dashboard,
+  Assessment,
+  EventNote,
+  Terrain,
+  Person,
+  ExitToApp,
+  LockOpen,
+  PersonAdd,
+  Visibility,
+  Edit,
+} from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { styled } from '@mui/system/index';
-import mpanziLogo from '../assets/mpanzi-logo.png'; // Import the Mpanzi logo
+import { styled } from '@mui/system';
+import mpanziLogo from '../assets/mpanzi-logo.png';
 
 const HoverDrawer = styled(Drawer)(({ theme }) => ({
   width: 60,
@@ -22,7 +43,8 @@ const HoverDrawer = styled(Drawer)(({ theme }) => ({
     overflowX: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between', // Changed from 'flex-start' to 'space-between'
+    justifyContent: 'space-between',
+    backgroundColor: '#f5f5f5', // Light background color
     '&:hover': {
       width: 240,
       transition: theme.transitions.create('width', {
@@ -46,50 +68,57 @@ function Navbar() {
           <img src={mpanziLogo} alt="Mpanzi Logo" style={{ height: '40px' }} />
         </Box>
         <List>
-          <Tooltip title="Home" placement="right">
-            <ListItem button="true" component={Link} to="/" sx={{ backgroundColor: isActive('/') ? 'lightgreen' : 'inherit' }}>
-              <ListItemIcon>
-                <Home />
-              </ListItemIcon>
-              <ListItemText primary="Home" />
-            </ListItem>
-          </Tooltip>
-          <Tooltip title="Dashboard" placement="right">
-            <ListItem button="true" component={Link} to="/dashboard" sx={{ backgroundColor: isActive('/dashboard') ? 'lightgreen' : 'inherit' }}>
-              <ListItemIcon>
-                <Dashboard />
-              </ListItemIcon>
-              <ListItemText primary="Dashboard" />
-            </ListItem>
-          </Tooltip>
-          <Tooltip title="Reports" placement="right">
-            <ListItem button="true" component={Link} to="/reports" sx={{ backgroundColor: isActive('/reports') ? 'lightgreen' : 'inherit' }}>
-              <ListItemIcon>
-                <Assessment />
-              </ListItemIcon>
-              <ListItemText primary="Reports" />
-            </ListItem>
-          </Tooltip>
-          <Tooltip title="Planning" placement="right">
-            <ListItem button="true" component={Link} to="/planning" sx={{ backgroundColor: isActive('/planning') ? 'lightgreen' : 'inherit' }}>
-              <ListItemIcon>
-                <EventNote />
-              </ListItemIcon>
-              <ListItemText primary="Planning" />
-            </ListItem>
-          </Tooltip>
-          <Tooltip title="Soil Analysis" placement="right">
-            <ListItem button="true" component={Link} to="/soil-analysis" sx={{ backgroundColor: isActive('/soil-analysis') ? 'lightgreen' : 'inherit' }}>
-              <ListItemIcon>
-                <Terrain />
-              </ListItemIcon>
-              <ListItemText primary="Soil Analysis" />
-            </ListItem>
-          </Tooltip>
+          {[
+            { text: 'Home', icon: <Home />, path: '/' },
+            { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
+            { text: 'Reports', icon: <Assessment />, path: '/reports' },
+            { text: 'Planning', icon: <EventNote />, path: '/planning' },
+            { text: 'Soil Analysis', icon: <Terrain />, path: '/soil-analysis' },
+          ].map(({ text, icon, path }) => (
+            <Tooltip title={text} placement="right" key={text}>
+              <ListItem
+                button
+                component={Link}
+                to={path}
+                sx={{
+                  backgroundColor: isActive(path) ? '#c8e6c9' : 'inherit', // Light green for active items
+                  '&:hover': {
+                    backgroundColor: '#a5d6a7', // Darker green on hover
+                  },
+                }}
+                aria-label={text}
+              >
+                <ListItemIcon
+                  sx={{
+                    color: isActive(path) ? '#388e3c' : 'inherit', // Dark green for active icons
+                  }}
+                >
+                  {icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={text}
+                  sx={{
+                    color: isActive(path) ? '#388e3c' : 'inherit', // Dark green for active text
+                  }}
+                />
+              </ListItem>
+            </Tooltip>
+          ))}
           {!user && (
             <>
               <Tooltip title="Login" placement="right">
-                <ListItem button="true" component={Link} to="/login" sx={{ backgroundColor: isActive('/login') ? 'lightgreen' : 'inherit' }}>
+                <ListItem
+                  button
+                  component={Link}
+                  to="/login"
+                  sx={{
+                    backgroundColor: isActive('/login') ? '#c8e6c9' : 'inherit',
+                    '&:hover': {
+                      backgroundColor: '#a5d6a7',
+                    },
+                  }}
+                  aria-label="Login"
+                >
                   <ListItemIcon>
                     <LockOpen />
                   </ListItemIcon>
@@ -97,7 +126,18 @@ function Navbar() {
                 </ListItem>
               </Tooltip>
               <Tooltip title="Register" placement="right">
-                <ListItem button="true" component={Link} to="/register" sx={{ backgroundColor: isActive('/register') ? 'lightgreen' : 'inherit' }}>
+                <ListItem
+                  button
+                  component={Link}
+                  to="/register"
+                  sx={{
+                    backgroundColor: isActive('/register') ? '#c8e6c9' : 'inherit',
+                    '&:hover': {
+                      backgroundColor: '#a5d6a7',
+                    },
+                  }}
+                  aria-label="Register"
+                >
                   <ListItemIcon>
                     <PersonAdd />
                   </ListItemIcon>
@@ -113,7 +153,18 @@ function Navbar() {
           <Divider />
           <List>
             <Tooltip title="Profile" placement="right">
-              <ListItem button="true" component={Link} to="/profile" sx={{ backgroundColor: isActive('/profile') ? 'lightgreen' : 'inherit' }}>
+              <ListItem
+                button
+                component={Link}
+                to="/profile"
+                sx={{
+                  backgroundColor: isActive('/profile') ? '#c8e6c9' : 'inherit',
+                  '&:hover': {
+                    backgroundColor: '#a5d6a7',
+                  },
+                }}
+                aria-label="Profile"
+              >
                 <ListItemIcon>
                   <Person />
                 </ListItemIcon>
@@ -121,15 +172,37 @@ function Navbar() {
               </ListItem>
             </Tooltip>
             <Tooltip title="Input Data" placement="right">
-              <ListItem button="true" component={Link} to="/data-input" sx={{ backgroundColor: isActive('/data-input') ? 'lightgreen' : 'inherit' }}>
+              <ListItem
+                button
+                component={Link}
+                to="/data-input"
+                sx={{
+                  backgroundColor: isActive('/data-input') ? '#c8e6c9' : 'inherit',
+                  '&:hover': {
+                    backgroundColor: '#a5d6a7',
+                  },
+                }}
+                aria-label="Input Data"
+              >
                 <ListItemIcon>
-                  <Edit /> {/* Changed icon from Input to Edit */}
+                  <Edit />
                 </ListItemIcon>
                 <ListItemText primary="Input Data" />
               </ListItem>
             </Tooltip>
             <Tooltip title="View Data" placement="right">
-              <ListItem button="true" component={Link} to="/view-data" sx={{ backgroundColor: isActive('/view-data') ? 'lightgreen' : 'inherit' }}>
+              <ListItem
+                button
+                component={Link}
+                to="/view-data"
+                sx={{
+                  backgroundColor: isActive('/view-data') ? '#c8e6c9' : 'inherit',
+                  '&:hover': {
+                    backgroundColor: '#a5d6a7',
+                  },
+                }}
+                aria-label="View Data"
+              >
                 <ListItemIcon>
                   <Visibility />
                 </ListItemIcon>
@@ -137,7 +210,17 @@ function Navbar() {
               </ListItem>
             </Tooltip>
             <Tooltip title="Logout" placement="right">
-              <ListItem button="true" onClick={logout} sx={{ backgroundColor: isActive('/logout') ? 'lightgreen' : 'inherit' }}>
+              <ListItem
+                button
+                onClick={logout}
+                sx={{
+                  backgroundColor: isActive('/logout') ? '#c8e6c9' : 'inherit',
+                  '&:hover': {
+                    backgroundColor: '#a5d6a7',
+                  },
+                }}
+                aria-label="Logout"
+              >
                 <ListItemIcon>
                   <ExitToApp />
                 </ListItemIcon>

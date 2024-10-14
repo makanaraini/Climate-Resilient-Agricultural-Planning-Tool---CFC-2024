@@ -24,6 +24,14 @@ function Login() {
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    // Basic validation
+    if (!email || !password) {
+      setError('Email and password are required.');
+      setLoading(false);
+      return;
+    }
+
     try {
       // Use Supabase signInWithPassword method
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -71,6 +79,8 @@ function Login() {
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            helperText={!email ? 'Please enter your email' : ''}
+            error={!email}
           />
           <TextField
             margin="normal"
@@ -83,6 +93,8 @@ function Login() {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            helperText={!password ? 'Please enter your password' : ''}
+            error={!password}
           />
           <Button
             type="submit"

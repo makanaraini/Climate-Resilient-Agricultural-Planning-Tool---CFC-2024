@@ -44,40 +44,35 @@ function Reports() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        let weatherQuery = supabase
+        const weatherQuery = supabase
           .from('weather_data')
           .select('*')
           .order('date', { ascending: true });
-        let cropQuery = supabase
-          .from('crops')
-          .select('*');
-        let soilQuery = supabase
+
+        const cropQuery = supabase.from('crops').select('*');
+        const soilQuery = supabase
           .from('soil_data')
           .select('*')
           .order('date', { ascending: true });
 
         if (startDate) {
-          weatherQuery = weatherQuery.gte('date', startDate);
-          soilQuery = soilQuery.gte('date', startDate);
+          weatherQuery.gte('date', startDate);
+          soilQuery.gte('date', startDate);
         }
         if (endDate) {
-          weatherQuery = weatherQuery.lte('date', endDate);
-          soilQuery = soilQuery.lte('date', endDate);
+          weatherQuery.lte('date', endDate);
+          soilQuery.lte('date', endDate);
         }
 
         const [
           { data: weatherData, error: weatherError },
           { data: cropData, error: cropError },
-          { data: soilData, error: soilError }
-        ] = await Promise.all([
-          weatherQuery,
-          cropQuery,
-          soilQuery
-        ]);
+          { data: soilData, error: soilError },
+        ] = await Promise.all([weatherQuery, cropQuery, soilQuery]);
 
-        if (weatherError) throw weatherError;
-        if (cropError) throw cropError;
-        if (soilError) throw soilError;
+        if (weatherError || cropError || soilError) {
+          throw new Error(weatherError?.message || cropError?.message || soilError?.message);
+        }
 
         setWeatherData(weatherData);
         setCropData(cropData);
@@ -119,9 +114,7 @@ function Reports() {
             name="startDate"
             value={startDate}
             onChange={handleDateChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
+            InputLabelProps={{ shrink: true }}
             fullWidth
             variant="outlined"
           />
@@ -133,9 +126,7 @@ function Reports() {
             name="endDate"
             value={endDate}
             onChange={handleDateChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
+            InputLabelProps={{ shrink: true }}
             fullWidth
             variant="outlined"
           />

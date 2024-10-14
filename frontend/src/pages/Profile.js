@@ -1,10 +1,30 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, TextField, Button, Box, Avatar, IconButton, List, ListItem, ListItemText, Tooltip, Paper, Grid } from '@mui/material';
-import { PhotoCamera, Edit, LocationOn, Person, Email, Business } from '@mui/icons-material';
+import {
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Avatar,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Tooltip,
+  Paper,
+  Grid,
+} from '@mui/material';
+import {
+  PhotoCamera,
+  Edit,
+  LocationOn,
+  Person,
+  Email,
+  Business,
+} from '@mui/icons-material';
 import { supabase } from '../utils/supabaseClient'; // Adjust the path if necessary
 import { styled } from '@mui/material/styles';
-import SatelliteTwoToneIcon from '@mui/icons-material/SatelliteTwoTone';
 
+// Styled components
 const AvatarStyled = styled(Avatar)(({ theme }) => ({
   width: 120,
   height: 120,
@@ -85,6 +105,7 @@ function Profile() {
       console.error('Error fetching user:', userError);
       return;
     }
+
     if (user) {
       const { data, error } = await supabase
         .from('farmers')
@@ -112,6 +133,8 @@ function Profile() {
 
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
+    if (!file) return; // Ensure there's a file to upload
+
     const fileExt = file.name.split('.').pop();
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `${fileName}`;
@@ -143,6 +166,7 @@ function Profile() {
       console.error('Error fetching user:', userError);
       return;
     }
+
     if (user) {
       const { error } = await supabase
         .from('farmers')
@@ -161,6 +185,7 @@ function Profile() {
       console.error('Error fetching user:', userError);
       return;
     }
+
     if (user) {
       const { error } = await supabase
         .from('farmers')
@@ -178,7 +203,9 @@ function Profile() {
   return (
     <ProfileContainer>
       <ProfilePaper elevation={3}>
-        <ProfileTextBold variant="h4" gutterBottom align="center">Farmer Profile</ProfileTextBold>
+        <ProfileTextBold variant="h4" gutterBottom align="center">
+          Farmer Profile
+        </ProfileTextBold>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, flexDirection: 'column' }}>
           <AvatarStyled src={avatarUrl} />
           <input
@@ -258,26 +285,28 @@ function Profile() {
           </form>
         ) : (
           <ProfileDetails>
-            <ProfileText variant="body1"><Person sx={{ mr: 1 }} /> <strong>Name:</strong> {name}</ProfileText>
-            <ProfileText variant="body1"><Person sx={{ mr: 1 }} /> <strong>Username:</strong> {username}</ProfileText>
-            <ProfileText variant="body1"><Email sx={{ mr: 1 }} /> <strong>Email:</strong> {email}</ProfileText>
-            <ProfileText variant="body1"><Business sx={{ mr: 1 }} /> <strong>Farm Name:</strong> {farmName}</ProfileText>
-            <ProfileText variant="body1"><LocationOn sx={{ mr: 1 }} /> <strong>Location:</strong> {location}</ProfileText>
+            <ProfileText variant="body1">
+              <Person sx={{ mr: 1 }} /> <strong>Name:</strong> {name}
+            </ProfileText>
+            <ProfileText variant="body1">
+              <Email sx={{ mr: 1 }} /> <strong>Email:</strong> {email}
+            </ProfileText>
+            <ProfileText variant="body1">
+              <Business sx={{ mr: 1 }} /> <strong>Farm Name:</strong> {farmName}
+            </ProfileText>
+            <ProfileText variant="body1">
+              <LocationOn sx={{ mr: 1 }} /> <strong>Location:</strong> {location}
+            </ProfileText>
+            <ProfileTextBold variant="h6">Farms</ProfileTextBold>
+            <FarmsList>
+              {farms.map((farm, index) => (
+                <FarmListItem key={index}>
+                  <ListItemText primary={farm.name} />
+                </FarmListItem>
+              ))}
+            </FarmsList>
           </ProfileDetails>
         )}
-        <Box sx={{ mt: 4 }}>
-          <ProfileTextBold variant="h6" gutterBottom>Farms</ProfileTextBold>
-          <FarmsList>
-            {farms.map((farm, index) => (
-              <FarmListItem key={index}>
-                <ListItemText 
-                  primary={<Typography variant="subtitle1"><SatelliteTwoToneIcon sx={{ mr: 1, verticalAlign: 'middle' }} />{farm.name}</Typography>}
-                  secondary={<Typography variant="body2" color="textSecondary"><LocationOn sx={{ mr: 1, fontSize: 'small', verticalAlign: 'middle' }} />{farm.location}</Typography>}
-                />
-              </FarmListItem>
-            ))}
-          </FarmsList>
-        </Box>
       </ProfilePaper>
     </ProfileContainer>
   );

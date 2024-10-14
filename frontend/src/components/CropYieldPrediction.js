@@ -46,6 +46,11 @@ function CropYieldPrediction({ weatherData }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isWeatherDataLoading, setIsWeatherDataLoading] = useState(true);
 
+  // Constants for temperature factor calculation
+  const OPTIMAL_TEMP_DIFF = 5;
+  const SLIGHTLY_SUBOPTIMAL_DIFF = 10;
+  const SUBOPTIMAL_DIFF = 15;
+
   // Fetch historical yield data
   const fetchHistoricalYieldData = useCallback(async () => {
     try {
@@ -62,33 +67,26 @@ function CropYieldPrediction({ weatherData }) {
       setError('Failed to fetch historical yield data. Please try again later.');
       return []; // Return an empty array in case of an error
     }
-  }, []); // Wrap in useCallback
+  }, []);
 
   // Fetch historical data from Supabase
   const fetchHistoricalData = useCallback(async () => {
     try {
-      // Fetch weather data
-      const { data: weatherData, error: weatherError } = await supabase
-        .from('weather_data')
-        .select('date, temperature, precipitation');
-      
-      // Fetch crop data
-      const { data: cropData, error: cropError } = await supabase
-        .from('crop_data')
-        .select('crop_type, growth_cycle_days, water_requirements');
-
-      // Fetch historical yield data
-      const yieldData = await fetchHistoricalYieldData();
+      const [weatherResponse, cropResponse, yieldData] = await Promise.all([
+        supabase.from('weather_data').select('date, temperature, precipitation'),
+        supabase.from('crop_data').select('crop_type, growth_cycle_days, water_requirements'),
+        fetchHistoricalYieldData(),
+      ]);
 
       // Handle any errors from fetching
-      if (weatherError || cropError) {
+      if (weatherResponse.error || cropResponse.error) {
         throw new Error('Error fetching weather or crop data');
       }
 
       // Return all data if successful
       return {
-        weatherData,
-        cropData,
+        weatherData: weatherResponse.data,
+        cropData: cropResponse.data,
         yieldData,
       };
 
@@ -97,7 +95,7 @@ function CropYieldPrediction({ weatherData }) {
       setError('Failed to fetch historical data. Please try again later.');
       return null; // Ensure the function returns null in case of an error
     }
-  }, [fetchHistoricalYieldData]); // Add fetchHistoricalYieldData as a dependency
+  }, [fetchHistoricalYieldData]);
 
   // Preprocess data before sending it to Watsonx.ai
   const preprocessData = (data) => {
@@ -113,28 +111,28 @@ function CropYieldPrediction({ weatherData }) {
   const predictYieldFromWatson = useCallback(async (processedData) => {
     try {
       const predictionData = await predictYield(processedData); // Call the Watsonx API
-      
+
       // Adjust predictions based on temperature
       const adjustedPredictions = predictionData.predictions.map(pred => {
         const tempFactor = calculateTemperatureFactor(pred.temperature, processedData.cropData.optimal_temperature);
         return {
           ...pred,
-          predictedYield: pred.predictedYield * tempFactor
+          predictedYield: pred.predictedYield * tempFactor,
         };
       });
-      
+
       setPredictions(adjustedPredictions);
     } catch (error) {
       console.error('Error fetching predictions from Watsonx.ai:', error);
       setError('Failed to fetch predictions. Please try again later.');
     }
-  }, []); // Add any dependencies if needed
+  }, []);
 
   const calculateTemperatureFactor = (actualTemp, optimalTemp) => {
     const tempDiff = Math.abs(actualTemp - optimalTemp);
-    if (tempDiff <= 5) return 1; // Optimal range
-    if (tempDiff <= 10) return 0.9; // Slightly suboptimal
-    if (tempDiff <= 15) return 0.7; // Suboptimal
+    if (tempDiff <= OPTIMAL_TEMP_DIFF) return 1; // Optimal range
+    if (tempDiff <= SLIGHTLY_SUBOPTIMAL_DIFF) return 0.9; // Slightly suboptimal
+    if (tempDiff <= SUBOPTIMAL_DIFF) return 0.7; // Suboptimal
     return 0.5; // Very suboptimal
   };
 
@@ -150,7 +148,7 @@ function CropYieldPrediction({ weatherData }) {
         await predictYieldFromWatson({
           weatherData: processedWeatherData,
           yieldData: processedYieldData,
-          cropData: historicalData.cropData.find(crop => crop.crop_type === selectedCrop)
+          cropData: historicalData.cropData.find(crop => crop.crop_type === selectedCrop),
         });
       } else {
         throw new Error('Failed to fetch historical data');
@@ -161,7 +159,7 @@ function CropYieldPrediction({ weatherData }) {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCrop, fetchHistoricalData, predictYieldFromWatson]); // Include missing dependencies
+  }, [selectedCrop, fetchHistoricalData, predictYieldFromWatson]);
 
   // Fetch crops from Supabase
   const fetchCrops = async () => {
@@ -249,34 +247,9 @@ function CropYieldPrediction({ weatherData }) {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
-                <Tooltip content={({ active, payload, label }) => {
-                  if (active && payload && payload.length) {
-                    const value = payload[0].value;
-                    return (
-                      <div style={{ backgroundColor: '#fff', padding: '5px', border: '1px solid #ccc' }}>
-                        <p>{`Date: ${label}`}</p>
-                        <p>{`Predicted Yield: ${typeof value === 'number' && !isNaN(value) ? `${value.toFixed(2)} kg/hectare` : 'N/A'}`}</p>
-                        <p>{`Temperature: ${payload[0].payload.temperature}°C`}</p>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}/>
+                <Tooltip />
                 <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="predictedYield" 
-                  stroke="#8884d8" 
-                  name="Predicted Yield (kg/hectare)"
-                  dot={({ cx, cy, payload }) => {
-                    if (typeof payload.predictedYield !== 'number' || isNaN(payload.predictedYield)) {
-                      return null;
-                    }
-                    return (
-                      <circle cx={cx} cy={cy} r={4} fill="#8884d8" />
-                    );
-                  }}
-                />
+                <Line type="monotone" dataKey="predictedYield" stroke="#82ca9d" />
               </LineChart>
             </ResponsiveContainer>
           </Grid>
@@ -287,11 +260,7 @@ function CropYieldPrediction({ weatherData }) {
 }
 
 CropYieldPrediction.propTypes = {
-  weatherData: PropTypes.arrayOf(PropTypes.shape({
-    date: PropTypes.string.isRequired,
-    temperature: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    precipitation: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  })),
+  weatherData: PropTypes.array.isRequired,
 };
 
 export default CropYieldPrediction;
