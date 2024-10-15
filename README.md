@@ -15,13 +15,7 @@
   - [Project development roadmap](#project-development-roadmap)
 - [Additional details](#additional-details)
   - [How to run the project](#how-to-run-the-project)
-  - [Live demo](#live-demo)
-- [About this template](#about-this-template)
-  - [Contributing](#contributing)
-  - [Versioning](#versioning)
-  - [Authors](#authors)
-  - [License](#license)
-  - [Acknowledgments](#acknowledgments)
+
 
 
 ## Project summary
@@ -50,9 +44,6 @@ Our platform is an improvement over existing solutions by focusing on region-spe
 
 - [watsonx.ai](https://www.ibm.com/products/watsonx-ai) - We used watsonx.ai to develop predictive models that analyze weather patterns and soil conditions for Eastern African farms. The AI models recommend optimal planting times, crop choices, and irrigation strategies based on localized climate data. The tool also provides insights on pest risks and crop yield predictions, enhancing decision-making for smallholder farmers.
 
-- [watsonx.governance](https://www.ibm.com/products/watsonx-governance) - We integrated watsonx.governance to ensure data privacy and compliance, particularly when handling sensitive environmental and user data. This ensures the tool adheres to regional and international data governance standards while maintaining transparency and accountability in AI model usage.
-
-- [watsonx Assistant](https://cloud.ibm.com/catalog/services/watsonx-assistant) - watsonx Assistant serves as the interface through which farmers interact with the platform. Using natural language processing (NLP), it provides easy-to-understand recommendations and answers to user queries about optimal farming practices, weather forecasts, and other relevant agricultural insights.
 
 ### Other IBM technology used
 
@@ -62,9 +53,6 @@ Our platform is an improvement over existing solutions by focusing on region-spe
 
 - [Watson Studio](https://cloud.ibm.com/catalog/services/watson-studio) - Watson Studio was used for collaborative development, data preprocessing, and model training. Our team utilized Watson Studio’s integrated development environment to analyze agricultural datasets and train our machine learning models in a scalable and efficient way.
 
-- [Natural Language Understanding](https://cloud.ibm.com/catalog/services/natural-language-understanding) - Natural Language Understanding is embedded within watsonx Assistant to analyze user input in local languages and dialects, providing accurate responses about farming practices. It processes farmer inquiries and converts them into actionable insights, allowing seamless communication between the AI and farmers in rural areas.
-
-- [Language Translator](https://cloud.ibm.com/catalog/services/language-translator) - Language Translator was implemented to enable multilingual support in our platform, making it accessible to a broader audience across Eastern Africa. This tool helps translate localized content and AI-generated insights into various regional languages such as Swahili, Amharic, and Somali, enhancing user engagement.
 
 ### Solution architecture
 
