@@ -61,25 +61,29 @@ Diagram and step-by-step description of the flow of our solution:
 ![Project Roadmap](timeline.png)
 
 **Climate-Resilient Agricultural Planning Tool Flow:**
-1. **Farmer Interaction with Platform**: The farmer accesses the platform through a mobile app or web portal. They provide input such as crop type, location, soil type, and any specific farming challenges they are facing.
 
-2. **Data Processing via IBM Watsonx AI Services**: The system uses watsonx.ai to analyze farmer inputs along with external data such as weather forecasts, satellite images, and historical agricultural data.
+1. **User Interaction with the Platform**: 
+   - Users (farmers) access the platform via a mobile app or web portal.
+   - They input relevant data, including crop type, location, soil type, and specific farming challenges.
 
-3. **Model Predictions and Recommendations**:
-   - Watson Machine Learning generates predictions on optimal planting times, crop yields, and soil health based on the input and data analysis.
-   - The system provides recommendations for crop selection, irrigation schedules, and soil enhancement techniques, ensuring climate resilience.
+2. **Data Ingestion and Processing**: 
+   - The application collects user inputs and integrates external data sources, such as weather forecasts and historical agricultural data.
+   - Data is processed using IBM watsonx.ai to analyze the inputs and derive insights.
 
-4. **Watsonx for Farmer Queries**:
-   - Farmers can ask questions using voice or text in their local language.
-   - Watsonx Assistant utilizes Natural Language Understanding to process these inquiries. The system responds with specific agricultural advice based on the data-driven recommendations, presented in the farmer’s preferred language using the Language Translator.
+3. **Model Training and Predictions**:
+   - Watson Machine Learning is employed to train models based on the processed data.
+   - The system generates predictions regarding optimal planting times, expected crop yields, and soil health metrics.
 
-5. **Governance and Compliance**: Watsonx.governance ensures data privacy, regulatory compliance, and auditability of the AI models and predictions, ensuring trustworthiness of the recommendations.
+4. **Recommendation Generation**:
+   - Based on the predictions, the system provides actionable recommendations for crop selection, irrigation schedules, and soil enhancement techniques to promote climate resilience.
 
-6. **Multilingual Support and Accessibility**: Language Translator enables translation of both input and output, allowing farmers from different regions to interact with the system in Swahili, Amharic, Somali, and other regional languages. Farmers receive the recommendations in their local language, making the platform user-friendly and accessible.
+5. **User Queries and Responses**:
+   - Users can ask questions through the platform interface.
+   - The system processes these inquiries and delivers tailored agricultural advice based on the data-driven recommendations.
 
-7. **Data Storage and Monitoring**:
-   - The platform stores some user data, environmental data, and model predictions securely in the cloud using IBM Object Storage, enabling easy access and future analysis.
-   - The system continuously monitors environmental changes and adapts predictions and recommendations based on updated data.
+6. **Data Storage and Continuous Monitoring**:
+   - User data, environmental data, and model predictions are securely stored in the cloud using IBM Object Storage for easy access and future analysis.
+   - The system continuously monitors environmental changes, adapting predictions and recommendations based on real-time data updates.
 
 ## Presentation materials
 
