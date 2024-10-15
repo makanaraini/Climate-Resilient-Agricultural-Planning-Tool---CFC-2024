@@ -137,6 +137,21 @@ Starting in January, we will focus on a structured roadmap to enhance our platfo
 
 This roadmap outlines our commitment to continuous improvement and innovation, ensuring that our platform remains a valuable resource for farmers in Eastern Africa.
 
+
+9. **September - Mobile Application Launch**: We will launch a mobile application version of the platform to increase accessibility for farmers in remote areas.
+
+10. **October - Enhanced Data Governance**: We plan to enhance data governance features using watsonx.governance capabilities to ensure compliance and maintain data integrity.
+
+11. **November - AI Model Refinement**: We will focus on refining our AI models to improve the accuracy of recommendations and predictions.
+
+12. **December - Year-End Review and Planning**: We'll conduct a comprehensive review of the year's progress and plan for the upcoming year.
+
+![Project Roadmap](roadmap.png)
+
+This visual representation of our roadmap provides a clear overview of our planned developments and improvements throughout the year.
+
+
+
 ## Additional details
 
 ### How to run the project
