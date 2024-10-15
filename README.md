@@ -104,6 +104,8 @@ In the future, we plan to:
 
 See below for our proposed schedule on next steps after the Call for Code 2024 submission.
 
+![Project Roadmap](roadmap.png)
+
 ## Additional details
 
 ### How to run the project
