@@ -91,20 +91,51 @@ Diagram and step-by-step description of the flow of our solution:
 
 The project currently does the following things:
 
-- *Feature 1*: Collects and processes farmer inputs (crop type, location, soil data).
-- *Feature 2*: Provides climate-resilient farming recommendations using watsonx.ai and weather data.
-- *Feature 3*: Supports farmer queries in local languages using Watsonx Assistant and Language Translator.
+- *Feature 1*: Collects and processes farmer inputs, including crop type, location, soil data, and specific farming challenges.
+- *Feature 2*: Provides climate-resilient farming recommendations using watsonx.ai, integrating weather data and soil health analysis.
+- *Feature 3*: Supports farmer queries in local languages using Watsonx Assistant and Language Translator, allowing for natural language interactions and personalized advice.
+- *Feature 4*: Analyzes historical weather patterns and soil conditions to generate predictive insights for optimal planting times and crop choices.
+- *Feature 5*: Offers a user-friendly interface for farmers to access insights and recommendations through web and mobile applications.
 
 In the future, we plan to:
 
-- *Add advanced soil health monitoring* using IoT sensors. **[Not yet implemented]**
-- *Expand language support* to additional regional languages in Eastern Africa. **[Not yet implemented]**
-- *Integrate real-time market price data* to offer crop profitability insights. **[Not yet implemented]**
-- *Enhance data governance features* with further capabilities from watsonx.governance to meet regional regulatory requirements. **[Not yet implemented]**
+- *Add advanced soil health monitoring* using IoT sensors to provide real-time insights into soil conditions, enabling farmers to make informed decisions about soil management and crop health. **[Not yet implemented]**
+  
+- *Expand language support* to additional regional languages in Eastern Africa, ensuring that our platform is accessible to a broader audience and can cater to the diverse linguistic needs of farmers. **[Not yet implemented]**
+  
+- *Integrate real-time market price data* to offer crop profitability insights, helping farmers make better decisions regarding crop selection and sales strategies based on current market trends. **[Not yet implemented]**
+  
+- *Enhance data governance features* with further capabilities from watsonx.governance to ensure compliance with regional regulatory requirements and to maintain transparency and accountability in data handling. **[Not yet implemented]**
+  
+- *Implement user education and training programs* to help farmers understand how to effectively use the platform and leverage its features for better agricultural practices. **[Not yet implemented]**
+  
+- *Develop a community engagement platform* to foster collaboration among farmers, allowing them to share experiences, tips, and best practices, thereby enhancing the overall user experience. **[Not yet implemented]**
+  
+- *Introduce predictive analytics for pest and disease management* to provide farmers with timely alerts and recommendations based on environmental conditions and historical data. **[Not yet implemented]**
+  
+- *Launch a mobile application version* of the platform to increase accessibility and usability for farmers in remote areas, ensuring they can access insights and recommendations on-the-go. **[Not yet implemented]**
 
-See below for our proposed schedule on next steps after the Call for Code 2024 submission.
+### Future Implementation Roadmap (January Onwards)
 
-![Project Roadmap](roadmap.png)
+Starting in January, we will focus on a structured roadmap to enhance our platform and better serve our users. The key initiatives include:
+
+1. **January - Multilingual Support Expansion**: We will expand language support to additional regional languages, ensuring accessibility for a diverse audience of farmers.
+
+2. **February - Real-Time Market Price Integration**: We aim to integrate real-time market price data, providing farmers with insights that will help them make informed decisions about crop selection and sales strategies.
+
+3. **March - User Education and Training**: We will implement user education and training programs to empower farmers to effectively utilize the platform and its features.
+
+4. **April - Performance Optimization**: Our focus will shift to optimizing application performance, ensuring a smooth and responsive user experience.
+
+5. **May - Community Engagement and Partnerships**: We will develop a community engagement platform to foster collaboration among farmers and explore partnerships with agricultural organizations.
+
+6. **June - Advanced Soil Health Monitoring**: We plan to integrate IoT sensors for real-time soil health monitoring, providing actionable insights for farmers.
+
+7. **July - Enhanced Data Visualization**: We will improve data visualization features to present insights more clearly and effectively.
+
+8. **August - Predictive Analytics for Pest and Disease Management**: We will introduce predictive analytics to help farmers manage pests and diseases proactively.
+
+This roadmap outlines our commitment to continuous improvement and innovation, ensuring that our platform remains a valuable resource for farmers in Eastern Africa.
 
 ## Additional details
 
