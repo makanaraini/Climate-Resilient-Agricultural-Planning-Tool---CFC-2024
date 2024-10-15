@@ -61,6 +61,51 @@ function Navbar() {
 
   const isActive = (path) => location.pathname === path;
 
+  const navItems = [
+    { text: 'Home', icon: <Home />, path: '/' },
+    { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
+    { text: 'Reports', icon: <Assessment />, path: '/reports' },
+    { text: 'Planning', icon: <EventNote />, path: '/planning' },
+    { text: 'Soil Analysis', icon: <Terrain />, path: '/soil-analysis' },
+  ];
+
+  const renderNavItems = (items) => (
+    items.map(({ text, icon, path }) => (
+      <Tooltip title={text} placement="right" key={text}>
+        <ListItem
+          button
+          component={Link}
+          to={path}
+          sx={{
+            backgroundColor: isActive(path) ? '#c8e6c9' : 'inherit',
+            '&:hover': {
+              backgroundColor: '#a5d6a7',
+            },
+          }}
+          aria-label={text}
+        >
+          <ListItemIcon
+            sx={{
+              color: isActive(path) ? '#388e3c' : 'inherit',
+              transition: 'color 0.3s',
+              '&:hover': {
+                color: '#66bb6a', // Light green glow on hover
+              },
+            }}
+          >
+            {icon}
+          </ListItemIcon>
+          <ListItemText
+            primary={text}
+            sx={{
+              color: isActive(path) ? '#388e3c' : 'inherit',
+            }}
+          />
+        </ListItem>
+      </Tooltip>
+    ))
+  );
+
   return (
     <HoverDrawer variant="permanent">
       <Box>
@@ -68,42 +113,7 @@ function Navbar() {
           <img src={mpanziLogo} alt="Mpanzi Logo" style={{ height: '40px' }} />
         </Box>
         <List>
-          {[
-            { text: 'Home', icon: <Home />, path: '/' },
-            { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
-            { text: 'Reports', icon: <Assessment />, path: '/reports' },
-            { text: 'Planning', icon: <EventNote />, path: '/planning' },
-            { text: 'Soil Analysis', icon: <Terrain />, path: '/soil-analysis' },
-          ].map(({ text, icon, path }) => (
-            <Tooltip title={text} placement="right" key={text}>
-              <ListItem
-                button
-                component={Link}
-                to={path}
-                sx={{
-                  backgroundColor: isActive(path) ? '#c8e6c9' : 'inherit', // Light green for active items
-                  '&:hover': {
-                    backgroundColor: '#a5d6a7', // Darker green on hover
-                  },
-                }}
-                aria-label={text}
-              >
-                <ListItemIcon
-                  sx={{
-                    color: isActive(path) ? '#388e3c' : 'inherit', // Dark green for active icons
-                  }}
-                >
-                  {icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={text}
-                  sx={{
-                    color: isActive(path) ? '#388e3c' : 'inherit', // Dark green for active text
-                  }}
-                />
-              </ListItem>
-            </Tooltip>
-          ))}
+          {renderNavItems(navItems)}
           {!user && (
             <>
               <Tooltip title="Login" placement="right">
@@ -119,7 +129,14 @@ function Navbar() {
                   }}
                   aria-label="Login"
                 >
-                  <ListItemIcon>
+                  <ListItemIcon
+                    sx={{
+                      transition: 'color 0.3s',
+                      '&:hover': {
+                        color: '#66bb6a', // Light green glow on hover
+                      },
+                    }}
+                  >
                     <LockOpen />
                   </ListItemIcon>
                   <ListItemText primary="Login" />
@@ -138,7 +155,14 @@ function Navbar() {
                   }}
                   aria-label="Register"
                 >
-                  <ListItemIcon>
+                  <ListItemIcon
+                    sx={{
+                      transition: 'color 0.3s',
+                      '&:hover': {
+                        color: '#66bb6a', // Light green glow on hover
+                      },
+                    }}
+                  >
                     <PersonAdd />
                   </ListItemIcon>
                   <ListItemText primary="Register" />
@@ -152,63 +176,11 @@ function Navbar() {
         <Box>
           <Divider />
           <List>
-            <Tooltip title="Profile" placement="right">
-              <ListItem
-                button
-                component={Link}
-                to="/profile"
-                sx={{
-                  backgroundColor: isActive('/profile') ? '#c8e6c9' : 'inherit',
-                  '&:hover': {
-                    backgroundColor: '#a5d6a7',
-                  },
-                }}
-                aria-label="Profile"
-              >
-                <ListItemIcon>
-                  <Person />
-                </ListItemIcon>
-                <ListItemText primary="Profile" />
-              </ListItem>
-            </Tooltip>
-            <Tooltip title="Input Data" placement="right">
-              <ListItem
-                button
-                component={Link}
-                to="/data-input"
-                sx={{
-                  backgroundColor: isActive('/data-input') ? '#c8e6c9' : 'inherit',
-                  '&:hover': {
-                    backgroundColor: '#a5d6a7',
-                  },
-                }}
-                aria-label="Input Data"
-              >
-                <ListItemIcon>
-                  <Edit />
-                </ListItemIcon>
-                <ListItemText primary="Input Data" />
-              </ListItem>
-            </Tooltip>
-            <Tooltip title="View Data" placement="right">
-              <ListItem
-                button
-                component={Link}
-                to="/view-data"
-                sx={{
-                  backgroundColor: isActive('/view-data') ? '#c8e6c9' : 'inherit',
-                  '&:hover': {
-                    backgroundColor: '#a5d6a7',
-                  },
-                }}
-                aria-label="View Data"
-              >
-                <ListItemIcon>
-                  <Visibility />
-                </ListItemIcon>
-                <ListItemText primary="View Data" />
-              </ListItem>
-            </Tooltip>
+            {renderNavItems([
+              { text: 'Profile', icon: <Person />, path: '/profile' },
+              { text: 'Input Data', icon: <Edit />, path: '/data-input' },
+              { text: 'View Data', icon: <Visibility />, path: '/view-data' },
+            ])}
             <Tooltip title="Logout" placement="right">
               <ListItem
                 button
@@ -221,7 +193,14 @@ function Navbar() {
                 }}
                 aria-label="Logout"
               >
-                <ListItemIcon>
+                <ListItemIcon
+                  sx={{
+                    transition: 'color 0.3s',
+                    '&:hover': {
+                      color: '#66bb6a', // Light green glow on hover
+                    },
+                  }}
+                >
                   <ExitToApp />
                 </ListItemIcon>
                 <ListItemText primary="Logout" />

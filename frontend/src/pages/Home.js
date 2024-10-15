@@ -38,37 +38,37 @@ const features = [
   {
     title: 'Dashboard',
     description: 'Access your personalized dashboard with all your farming data, including crop performance, weather updates, and financial summaries, all in one place.',
-    icon: <DashboardIcon />,
+    icon: <DashboardIcon sx={{ fontSize: 40 }} />,
     link: '/dashboard',
   },
   {
     title: 'Reports',
     description: 'Generate and view detailed reports on your farming activities, including yield analysis, resource usage, and financial performance, to help you track progress and plan for the future.',
-    icon: <ListAltIcon />,
+    icon: <ListAltIcon sx={{ fontSize: 40 }} />,
     link: '/reports',
   },
   {
     title: 'Planning',
     description: 'Plan your farming activities with precision using our advanced planning tools, which include crop rotation schedules, planting calendars, and resource allocation.',
-    icon: <InsertChartOutlinedIcon />,
+    icon: <InsertChartOutlinedIcon sx={{ fontSize: 40 }} />,
     link: '/planning',
   },
   {
     title: 'Soil Analysis',
     description: 'Get detailed soil analysis reports to understand soil health, nutrient levels, and recommendations for soil improvement to ensure optimal crop growth.',
-    icon: <BiotechTwoToneIcon />,
+    icon: <BiotechTwoToneIcon sx={{ fontSize: 40 }} />,
     link: '/soil-analysis',
   },
   {
     title: 'Pest and Disease Analysis',
     description: 'Monitor and analyze pest and disease occurrences in your fields, receive alerts, and get recommendations for effective pest and disease management.',
-    icon: <PestControlIcon />,
+    icon: <PestControlIcon sx={{ fontSize: 40 }} />,
     link: '/pest-disease-analysis',
   },
   {
     title: 'Water Management',
     description: 'Optimize your water usage with our water management tools, which provide irrigation schedules, water usage reports, and recommendations for efficient water use.',
-    icon: <OpacityIcon />,
+    icon: <OpacityIcon sx={{ fontSize: 40 }} />,
     link: '/water-management',
   },
 ];
@@ -126,21 +126,81 @@ function Home() {
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6} md={4}>
-                <Paper elevation={3} sx={{ p: 2, borderRadius: '8px', backgroundImage: `url(${increasedYieldImage})`, backgroundSize: 'cover' }}>
-                  <Typography variant="h5" align="center">Increase Yield</Typography>
-                  <Typography variant="body1" align="center">Implement data-driven approaches to enhance agricultural productivity.</Typography>
+                <Paper elevation={3} sx={{ 
+                  p: 2, 
+                  borderRadius: '8px', 
+                  backgroundImage: `url(${increasedYieldImage})`, 
+                  backgroundSize: 'cover',
+                  position: 'relative',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Dark overlay
+                    zIndex: 1,
+                  }
+                }}>
+                  <Typography variant="h5" align="center" sx={{ color: 'white', position: 'relative', zIndex: 2 }}>
+                    Increase Yield
+                  </Typography>
+                  <Typography variant="body1" align="center" sx={{ color: 'white', position: 'relative', zIndex: 2 }}>
+                    Implement data-driven approaches to enhance agricultural productivity.
+                  </Typography>
                 </Paper>
               </Grid>
               <Grid item xs={12} sm={6} md={4}>
-                <Paper elevation={3} sx={{ p: 2, borderRadius: '8px', backgroundImage: `url(${sustainablePracticesImage})`, backgroundSize: 'cover' }}>
-                  <Typography variant="h5" align="center">Sustainable Practices</Typography>
-                  <Typography variant="body1" align="center">Promote environmentally-friendly farming methods to safeguard resources.</Typography>
+                <Paper elevation={3} sx={{ 
+                  p: 2, 
+                  borderRadius: '8px', 
+                  backgroundImage: `url(${sustainablePracticesImage})`, 
+                  backgroundSize: 'cover',
+                  position: 'relative',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Dark overlay
+                    zIndex: 1,
+                  }
+                }}>
+                  <Typography variant="h5" align="center" sx={{ color: 'white', position: 'relative', zIndex: 2 }}>
+                    Sustainable Practices
+                  </Typography>
+                  <Typography variant="body1" align="center" sx={{ color: 'white', position: 'relative', zIndex: 2 }}>
+                    Promote environmentally-friendly farming methods to safeguard resources.
+                  </Typography>
                 </Paper>
               </Grid>
               <Grid item xs={12} sm={6} md={4}>
-                <Paper elevation={3} sx={{ p: 2, borderRadius: '8px', backgroundImage: `url(${climateAdaptationImage})`, backgroundSize: 'cover' }}>
-                  <Typography variant="h5" align="center">Adapt to Climate Change</Typography>
-                  <Typography variant="body1" align="center">Develop strategies to cope with the effects of climate change on agriculture.</Typography>
+                <Paper elevation={3} sx={{ 
+                  p: 2, 
+                  borderRadius: '8px', 
+                  backgroundImage: `url(${climateAdaptationImage})`, 
+                  backgroundSize: 'cover',
+                  position: 'relative',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Dark overlay
+                    zIndex: 1,
+                  }
+                }}>
+                  <Typography variant="h5" align="center" sx={{ color: 'white', position: 'relative', zIndex: 2 }}>
+                    Adapt to Climate Change
+                  </Typography>
+                  <Typography variant="body1" align="center" sx={{ color: 'white', position: 'relative', zIndex: 2 }}>
+                    Develop strategies to cope with the effects of climate change on agriculture.
+                  </Typography>
                 </Paper>
               </Grid>
             </Grid>

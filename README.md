@@ -71,32 +71,25 @@ Our platform is an improvement over existing solutions by focusing on region-spe
 Diagram and step-by-step description of the flow of our solution:
 
 **Climate-Resilient Agricultural Planning Tool Flow:**
-1. Farmer Interaction with Platform:
-The farmer accesses the platform through a mobile app or web portal. They provide input such as crop type, location, soil type, and any specific farming challenges they are facing.
+1. **Farmer Interaction with Platform**: The farmer accesses the platform through a mobile app or web portal. They provide input such as crop type, location, soil type, and any specific farming challenges they are facing.
 
-2. Data Processing via IBM Watsonx AI Services:
-The system uses watsonx.ai to analyze farmer inputs along with external data such as weather forecasts, satellite images, and historical agricultural data.
+2. **Data Processing via IBM Watsonx AI Services**: The system uses watsonx.ai to analyze farmer inputs along with external data such as weather forecasts, satellite images, and historical agricultural data.
 
-3. Model Predictions and Recommendations:
+3. **Model Predictions and Recommendations**:
+   - Watson Machine Learning generates predictions on optimal planting times, crop yields, and soil health based on the input and data analysis.
+   - The system provides recommendations for crop selection, irrigation schedules, and soil enhancement techniques, ensuring climate resilience.
 
-- Watson Machine Learning generates predictions on optimal planting times, crop yields, and soil health based on the input and data analysis.
-- The system provides recommendations for crop selection, irrigation schedules, and soil enhancement techniques, ensuring climate resilience.
-4. Watsonx Assistant for Farmer Queries:
+4. **Watsonx for Farmer Queries**:
+   - Farmers can ask questions using voice or text in their local language.
+   - Watsonx Assistant utilizes Natural Language Understanding to process these inquiries. The system responds with specific agricultural advice based on the data-driven recommendations, presented in the farmer’s preferred language using the Language Translator.
 
-- Farmers can ask questions using voice or text in their local language.
-- Watsonx Assistant utilizes Natural Language Understanding to process these inquiries.
-The system responds with specific agricultural advice based on the data-driven - recommendations, presented in the farmer’s preferred language using the Language Translator.
-5. Governance and Compliance:
-Watsonx.governance ensures data privacy, regulatory compliance, and auditability of the AI models and predictions, ensuring trustworthiness of the recommendations.
+5. **Governance and Compliance**: Watsonx.governance ensures data privacy, regulatory compliance, and auditability of the AI models and predictions, ensuring trustworthiness of the recommendations.
 
-6. Multilingual Support and Accessibility:
+6. **Multilingual Support and Accessibility**: Language Translator enables translation of both input and output, allowing farmers from different regions to interact with the system in Swahili, Amharic, Somali, and other regional languages. Farmers receive the recommendations in their local language, making the platform user-friendly and accessible.
 
-Language Translator enables translation of both input and output, allowing farmers from different regions to interact with the system in Swahili, Amharic, Somali, and other regional languages.
-Farmers receive the recommendations in their local language, making the platform user-friendly and accessible.
-7. Data Storage and Monitoring:
-
-- The platform stores all user data, environmental data, and model predictions securely in the cloud using IBM Object Storage, enabling easy access and future analysis.
-- The system continuously monitors environmental changes and adapts predictions and recommendations based on updated data.
+7. **Data Storage and Monitoring**:
+   - The platform stores some user data, environmental data, and model predictions securely in the cloud using IBM Object Storage, enabling easy access and future analysis.
+   - The system continuously monitors environmental changes and adapts predictions and recommendations based on updated data.
 
 ## Presentation materials
 
@@ -114,17 +107,14 @@ The project currently does the following things:
 
 In the future, we plan to:
 
-- *Add advanced soil health monitoring* using IoT sensors.
-- *Expand language support* to additional regional languages in Eastern Africa.
-- *Integrate real-time market price data* to offer crop profitability insights.
-- *Enhance data governance features* with further capabilities from watsonx.governance to meet regional regulatory requirements.
+- *Add advanced soil health monitoring* using IoT sensors. **[Not yet implemented]**
+- *Expand language support* to additional regional languages in Eastern Africa. **[Not yet implemented]**
+- *Integrate real-time market price data* to offer crop profitability insights. **[Not yet implemented]**
+- *Enhance data governance features* with further capabilities from watsonx.governance to meet regional regulatory requirements. **[Not yet implemented]**
 
 See below for our proposed schedule on next steps after the Call for Code 2024 submission.
 
-
-
 ## Additional details
-
 
 ### How to run the project
 
@@ -148,7 +138,7 @@ To run the project locally for development and testing, follow these steps:
    ```
 
 4. **Set Up Environment Variables:**
-   Create a `.env` file in the root directory and add the required environment variables (e.g., API keys, database URLs).
+   Create a `.env` file in the root directory and add the required environment variables (e.g., API keys, database URLs). **[Ensure this is completed]**
 
 5. **Run the Application:**
    - For the backend:
@@ -163,12 +153,3 @@ To run the project locally for development and testing, follow these steps:
 6. **Access the Application:**
    Open your web browser and go to `http://localhost:3000` to view the application.
 
-### Live demo
-
-You can find a running version of the system to test at: [Live Demo](http://example.com)
-
-For access details, visit our [description document](./docs/DESCRIPTION.md).
-
----
-
-You can adjust these instructions based on your actual setup and deployment process.

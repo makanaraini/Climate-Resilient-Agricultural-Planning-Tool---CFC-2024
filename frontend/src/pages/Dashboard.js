@@ -17,7 +17,6 @@ import { supabase } from '../utils/supabaseClient'; // Adjust the path if necess
 import WeatherWidget from '../components/WeatherWidget';
 import CropYieldPrediction from '../components/CropYieldPrediction';
 import Notifications from '../components/Notifications';
-import SoilAnalysis from '../components/SoilAnalysis';
 import DataCard from '../components/DataCard';
 import CropRecommendation from '../components/CropRecommendations';
 import DataVisualization from '../components/DataVisualization';
@@ -118,7 +117,6 @@ const Dashboard = () => {
         <Tab label="Crop Recommendations" />
         <Tab label="Crop Yield Prediction" />
         <Tab label="Notifications" />
-        <Tab label="Soil Analysis" />
         <Tab label="Data Visualization" />
       </Tabs>
       {tabIndex === 0 && (
@@ -176,11 +174,6 @@ const Dashboard = () => {
         </Paper>
       )}
       {tabIndex === 5 && (
-        <Paper sx={{ p: 2, mt: 2 }}>
-          <SoilAnalysis />
-        </Paper>
-      )}
-      {tabIndex === 6 && (
         <Paper sx={{ p: 2, mt: 2 }}>
           <DataVisualization agriculturalData={cropData} />
         </Paper>

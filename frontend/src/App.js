@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -21,8 +21,18 @@ import { useWeatherData } from './utils/apiService';
 import axios from 'axios';
 import YourParentComponent from './components/YourParentComponent';
 import Chatbot from './components/Chatbot';
+import '@fontsource/inter'; // Import the Inter font
 
-const theme = createTheme();
+const theme = createTheme({
+  typography: {
+    fontFamily: [
+      'Inter', // Set Inter as the default font
+      'Arial',
+      'sans-serif',
+    ].join(','),
+  },
+  // You can add other theme customizations here
+});
 
 // Configure axios defaults for CORS
 axios.defaults.withCredentials = true;
@@ -42,6 +52,7 @@ function App() {
   const { token, user, login, register } = useAuth();
   const { data: weatherData, error: weatherError } = useWeatherData();
   const [chatbotMessages, setChatbotMessages] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Set up axios interceptor to add JWT token to all requests
@@ -75,6 +86,8 @@ function App() {
     try {
       const response = await axios.post('/api/login', credentials);
       login(response.data.token, response.data.user);
+      // Redirect to home page after login
+      navigate('/home');
     } catch (error) {
       console.error('Login failed:', error);
     }
@@ -84,6 +97,8 @@ function App() {
     try {
       const response = await axios.post('/api/register', userData);
       register(response.data.token, response.data.user);
+      // Redirect to home page after registration
+      navigate('/home');
     } catch (error) {
       console.error('Registration failed:', error);
     }
@@ -99,44 +114,43 @@ function App() {
   };
 
   return (
-    <ErrorBoundary>
-      <CropRecommendationsProvider>
-        <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <ErrorBoundary>
+        <CropRecommendationsProvider>
           <CssBaseline />
-          <Router>
-            <div className="app-container">
-              <div className="sidebar">
-                {user && <Navbar />}
-              </div>
-              <div className="main-content">
-                <Routes>
-                  <Route path="/" element={<Navigate to="/login" />} />
-                  <Route path="/login" element={<Login onLogin={handleLogin} />} />
-                  <Route path="/register" element={<Register onRegister={handleRegister} />} />
-                  <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
-                  <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-                  <Route path="/reports" element={<PrivateRoute><Reports /></PrivateRoute>} />
-                  <Route path="/planning" element={<PrivateRoute><Planning /></PrivateRoute>} />
-                  <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-                  <Route path="/soil-analysis" element={<PrivateRoute><SoilAnalysis /></PrivateRoute>} />
-                  <Route path="/market-trends" element={<PrivateRoute><MarketTrends /></PrivateRoute>} />
-                  <Route path="/data-input" element={<PrivateRoute><DataInputForm /></PrivateRoute>} />
-                  <Route path="/data-input" element={<YourParentComponent />} />
-                </Routes>
-                {user && <Chatbot messages={chatbotMessages} onSendMessage={handleChatbotMessage} />}
-              </div>
+          <div className="app-container">
+            <div className="sidebar">
+              {user && <Navbar />}
             </div>
-          </Router>
-        </ThemeProvider>
-      </CropRecommendationsProvider>
-    </ErrorBoundary>
+            <div className="main-content">
+              <Routes>
+                <Route path="/" element={user ? <Navigate to="/home" /> : <Navigate to="/login" />} />
+                <Route path="/login" element={<Login onLogin={handleLogin} />} />
+                <Route path="/register" element={<Register onRegister={handleRegister} />} />
+                <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
+                <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+                <Route path="/reports" element={<PrivateRoute><Reports /></PrivateRoute>} />
+                <Route path="/planning" element={<PrivateRoute><Planning /></PrivateRoute>} />
+                <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+                <Route path="/soil-analysis" element={<PrivateRoute><SoilAnalysis /></PrivateRoute>} />
+                <Route path="/market-trends" element={<PrivateRoute><MarketTrends /></PrivateRoute>} />
+                <Route path="/data-input" element={<PrivateRoute><DataInputForm /></PrivateRoute>} />
+              </Routes>
+              {user && <Chatbot messages={chatbotMessages} onSendMessage={handleChatbotMessage} />}
+            </div>
+          </div>
+        </CropRecommendationsProvider>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
 
 export default function WrappedApp() {
   return (
     <AuthProvider>
-      <App />
+      <Router>
+        <App />
+      </Router>
     </AuthProvider>
   );
 }

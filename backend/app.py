@@ -1,8 +1,17 @@
 import sys
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Add the path to the frontend/src/utils directory
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../frontend/src/utils')))
+
+# Access environment variables after loading
+print("WATSONX_API_KEY:", os.getenv("WATSONX_API_KEY"))
+print("WATSONX_URL:", os.getenv("WATSONX_URL"))
+print("WATSONX_PROJECT_ID:", os.getenv("WATSONX_PROJECT_ID"))
 
 from flask import Flask, request, jsonify, send_file, abort
 from flask_cors import CORS  # type: ignore
@@ -19,12 +28,17 @@ import pandas as pd
 from reportlab.pdfgen import canvas  # type: ignore
 from reportlab.lib.pagesizes import letter  # type: ignore
 
-from dotenv import load_dotenv
 from supabase import create_client, Client  # type: ignore
 from ibm_watsonx_ai.foundation_models import Model
+from ibm_watsonx_ai.metanames import GenTextParamsMetaNames
 
-# Load environment variables from .env file
-load_dotenv(dotenv_path='../frontend/.env')
+# Access environment variables
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+WATSONX_API_KEY = os.getenv("WATSONX_API_KEY")
+WATSONX_URL = os.getenv("WATSONX_URL")
+WATSONX_PROJECT_ID = os.getenv("WATSONX_PROJECT_ID")
+WATSONX_SPACE_ID = os.getenv("WATSONX_SPACE_ID")
 
 # Initialize Supabase client with credentials from .env
 url = os.getenv("REACT_APP_SUPABASE_URL")
@@ -54,10 +68,10 @@ jwt = JWTManager(app)
 
 # Configure CORS
 CORS(app, resources={
-    r"/api/*": {
+    r"/chatbot": {  # Adjust this to match your endpoint
         "origins": [
             "http://localhost:3000",
-            "http://localhost:5000",  # Add this line if your frontend runs on port 5000
+            "http://localhost:5000",  # This line is not necessary for CORS
             "https://your-production-domain.com",
             "https://api.watsonx.ai"
         ],
@@ -125,26 +139,24 @@ def get_credentials():
 
 # Initialize the Watsonx Model
 def initialize_model():
-    model_id = "meta-llama/llama-3-8b-instruct"  # Adjust the model ID as necessary
+    model_id = "ibm/granite-13b-instruct-v2"  # Updated to a newer model
     parameters = {
-        "decoding_method": "greedy",
-        "max_new_tokens": 100,
-        "stop_sequences": ["\n\n"],
-        "repetition_penalty": 1
+        GenTextParamsMetaNames.DECODING_METHOD: "greedy",
+        GenTextParamsMetaNames.MAX_NEW_TOKENS: 100,
+        GenTextParamsMetaNames.MIN_NEW_TOKENS: 1,
+        GenTextParamsMetaNames.TEMPERATURE: 0.7,
+        GenTextParamsMetaNames.TOP_K: 50,
+        GenTextParamsMetaNames.TOP_P: 1
     }
 
     project_id = os.getenv("WATSONX_PROJECT_ID")  # Ensure this environment variable is set
-    space_id = os.getenv("SPACE_ID")  # Ensure this environment variable is set
 
-    model = Model(
+    return Model(
         model_id=model_id,
         params=parameters,
-        credentials=get_credentials(),  # Ensure this function returns the correct credentials
-        project_id=project_id,
-        space_id=space_id
+        credentials=get_credentials(),
+        project_id=project_id
     )
-
-    return model
 
 model = initialize_model()
 
@@ -162,11 +174,15 @@ def chatbot():
     Answer:"""
 
     # Generate response from watsonx.ai model
-    generated_response = model.generate_text(prompt=prompt_input, guardrails=False)
+    generated_response = model.generate_text(prompt=prompt_input)
 
     return jsonify({
         "response": generated_response
     })
+
+@app.route('/chatbot', methods=['OPTIONS'])
+def options_chatbot():
+    return '', 200  # Respond with a 200 OK for preflight requests
 
 @app.errorhandler(400)
 def bad_request(error):
@@ -247,4 +263,4 @@ def login():
         abort(500, description="An error occurred during login")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)  # Changed debug mode to False for production
