@@ -58,6 +58,8 @@ Our platform is an improvement over existing solutions by focusing on region-spe
 
 Diagram and step-by-step description of the flow of our solution:
 
+![Project Roadmap](timeline.png)
+
 **Climate-Resilient Agricultural Planning Tool Flow:**
 1. **Farmer Interaction with Platform**: The farmer accesses the platform through a mobile app or web portal. They provide input such as crop type, location, soil type, and any specific farming challenges they are facing.
 
