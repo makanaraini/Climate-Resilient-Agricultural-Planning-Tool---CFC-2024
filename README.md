@@ -89,8 +89,7 @@ Diagram and step-by-step description of the flow of our solution:
 
 ### Solution demo video
 
-[![Watch the video](https://imgur.com/a/x5vyy6i)](https://youtu.be/TeG4AeNfdeg)
-
+[![Watch the video](https://imgur.com/aaS7HJK.jpg)](https://youtu.be/TeG4AeNfdeg)
 ### Project development roadmap
 
 The project currently does the following things:
