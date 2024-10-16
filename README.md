@@ -47,7 +47,7 @@ Our platform is an improvement over existing solutions by focusing on region-spe
 
 ### Other IBM technology used
 
-**Additional IBM AI services (Remove any that you did not use)**
+**Additional IBM AI services**
 
 - [Watson Machine Learning](https://cloud.ibm.com/catalog/services/watson-machine-learning) - Watson Machine Learning was used to train and deploy machine learning models that predict crop yields and soil health. The trained models help farmers in Eastern Africa make informed decisions about crop rotation, soil management, and harvest times based on environmental data and historical records.
 
